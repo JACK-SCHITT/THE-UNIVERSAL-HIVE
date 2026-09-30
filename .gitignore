@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+seed/prime_seed_np.json
+.DS_Store
