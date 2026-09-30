@@ -1,0 +1,11 @@
+{
+  "version": "0.1.0",
+  "law": "Provide for all. Find the good. Never limit unnecessarily.",
+  "operator_only_edit": true,
+  "agents": {
+    "base": {
+      "prompt_file": null,
+      "notes": "Always Base Seed. Default for new and sub-agents."
+    }
+  }
+}
