@@ -1,0 +1,41 @@
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-20T07:11:18.310802+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-07-20T07:11:18.326446+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-22T20:34:55.995207+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-07-22T20:34:56.004723+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-23T07:30:03.174684+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-07-23T07:30:03.174684+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-23T16:40:57.248853+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-07-23T16:40:57.248853+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-24T10:25:51.458788+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-07-24T10:25:51.474416+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-27T04:43:48.638270+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-07-27T04:43:48.638270+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-27T07:30:01.933236+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-07-27T07:30:01.933236+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-29T01:14:08.839929+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-07-29T01:14:08.855554+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-29T07:30:02.788830+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-07-29T07:30:02.788830+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-30T07:10:32.976939+00:00"}
+{"step": "handbook_mirror", "status": "fail", "detail": "At C:\\Users\\ARCHITECT\\THE_HIVE\\scripts\\download_gentoo_handbook.ps1:39 char:41\n+ $index = @(\"# Gentoo SPARC Handbook \u0192?\" Offline Mirror\", \"\", \"Source: ...\n+                                         ~~~~~~~\nUnexpected token 'Offline' in expression or statement.\nAt C:\\Users\\ARCHITECT\\THE_HIVE\\scripts\\download_gentoo_handbook.ps1:77 char:2\n+ \nMissing closing ')' in subexpression.\n    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException\n    + FullyQualifiedErrorId : Unexp", "ts": "2026-07-30T07:10:33.383184+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-30T07:10:33.398814+00:00"}
+{"step": "stage3_check", "status": "ok", "detail": "20260729T094556Z/stage3-sparc64-openrc-20260729T094556Z.tar.xz", "ts": "2026-07-30T07:10:34.736728+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-30T07:30:03.049548+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-07-30T07:30:03.055537+00:00"}
+{"step": "ollama_pull", "status": "fail", "detail": "llama3.2:3b: Command '['ollama', 'pull', 'llama3.2:3b']' timed out after 3600 seconds", "ts": "2026-07-30T08:10:34.892549+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-07-31T07:30:02.625560+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-07-31T07:30:02.628567+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-08-01T09:50:11.841562+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-08-01T09:50:11.841562+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-08-02T07:30:02.058599+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-08-02T07:30:02.058599+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-08-02T07:35:44.209805+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-08-02T07:35:44.209805+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-08-02T07:35:52.228978+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-08-02T07:35:52.244563+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-08-03T17:02:44.365601+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-08-03T17:02:44.381221+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-08-11T04:25:52.311339+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-08-11T04:25:52.311339+00:00"}
+{"step": "knowledge_digest", "status": "ok", "detail": "C:\\Users\\ARCHITECT\\THE_HIVE\\NEURAL\\krackerjack\\knowledge\\HANDBOOK_DIGEST.md", "ts": "2026-08-11T07:30:03.193986+00:00"}
+{"step": "offline_pass", "status": "ok", "detail": "digest + never-obsolete marker only", "ts": "2026-08-11T07:30:03.193986+00:00"}

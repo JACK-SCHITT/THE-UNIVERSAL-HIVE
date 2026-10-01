@@ -1,0 +1,80 @@
+{
+  "version": "2.0.0",
+  "updated": "2026-07-22",
+  "architect": "KRACKERJACK1134",
+  "github_account": "JACK-SCHITT",
+  "protocol": "ASSIMILATE OR DIE",
+  "local_mirror": "FLEET/",
+  "note": "Consolidated fleet. Thermal-light. ZORG owns security.",
+  "operation": {
+    "name": "HIVE FULL OPS",
+    "chosen_one": "KRACKERJACK AI",
+    "testers": ["JAGUAR AI", "COUNSEL", "ZORG"],
+    "war_room": "C:/Users/ARCHITECT/THE_HIVE"
+  },
+  "core_fleet": [
+    {
+      "id": "krackerjack-ai-hive-core-os",
+      "label": "KRACKERJACK AI HIVE CORE OS",
+      "local": "FLEET/KRACKERJACK AI HIVE CORE OS",
+      "role": "Core OS / cold DNA product package",
+      "merged_from": ["HIVE-OS-CORE", "THE-HIVE-OS", "KRACKERJACK-AI-HIVE"],
+      "tags": ["core", "os", "hive"]
+    },
+    {
+      "id": "krackerjack-ai",
+      "label": "KRACKERJACK AI",
+      "local": "FLEET/KRACKERJACK AI",
+      "role": "Chosen one app + Capricorn companion line",
+      "renamed_from": "KrackerjackAI",
+      "tags": ["chosen_one", "companion"]
+    },
+    {
+      "id": "capricorn-ai",
+      "label": "CAPRICORN AI",
+      "local": "FLEET/CAPRICORN AI",
+      "role": "Companion factory — Capricorn base, user zodiac runtime",
+      "renamed_from": "LunaCompanion",
+      "tags": ["companion", "zodiac"]
+    },
+    {
+      "id": "grokschitt",
+      "label": "GROKSCHITT",
+      "local": "FLEET/GROKSCHITT",
+      "role": "GROKSCHITT node + Capricorn companion concept",
+      "tags": ["node", "companion"]
+    },
+    {
+      "id": "jaguar-ai",
+      "label": "JAGUAR AI",
+      "local": "FLEET/JAGUAR AI",
+      "role": "Action + foundry (HunterPrime + OpenClawPrime)",
+      "merged_from": ["HunterPrime", "OpenClawPrime"],
+      "tags": ["action", "foundry"]
+    },
+    {
+      "id": "neural-scam-shield-ai",
+      "label": "NEURAL SCAM SHIELD AI",
+      "local": "FLEET/NEURAL SCAM SHIELD AI",
+      "role": "Unified scam + neural defense under ZORG",
+      "merged_from": ["NeuralShield", "Scam-Shield", "SCAM-SHIELD-AND-SCAM-SHIELD-AI-COMBINED-UPDATE-FIX-FUKUP"],
+      "tags": ["security", "scam", "neural"],
+      "zorg_partner": true
+    },
+    {
+      "id": "assimilate-or-die",
+      "label": "AssimilateOrDie",
+      "local": "FLEET/AssimilateOrDie",
+      "role": "Protocol foundry product",
+      "merged_from": ["AssimilateOrDie", "AssimilateOrDie-9bhyln"],
+      "tags": ["assimilate", "foundry"]
+    },
+    {
+      "id": "mcgillicuddy",
+      "label": "MCGILLICUDDY",
+      "local": "FLEET/MCGILLICUDDY",
+      "role": "Identity node",
+      "tags": ["identity"]
+    }
+  ]
+}

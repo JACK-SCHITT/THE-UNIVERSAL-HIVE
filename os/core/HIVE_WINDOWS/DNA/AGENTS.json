@@ -1,0 +1,90 @@
+{
+  "version": "2.0.0",
+  "protocol": "ASSIMILATE OR DIE",
+  "law": "100% individual · 100% combined · learn when unknown · thermal-light",
+  "chosen_one": "krackerjack",
+  "agents": [
+    {
+      "id": "krackerjack",
+      "label": "KRACKERJACK AI",
+      "taskbar": "KJ",
+      "chamber": "krackerjack-ai",
+      "fleet": "KRACKERJACK AI",
+      "role": "chosen_one",
+      "autonomous": true
+    },
+    {
+      "id": "jaguar",
+      "label": "JAGUAR AI",
+      "taskbar": "JG",
+      "chamber": "jaguar-ai",
+      "fleet": "JAGUAR AI",
+      "role": "action_foundry",
+      "aliases": ["hunterprime", "openclaw"],
+      "autonomous": true
+    },
+    {
+      "id": "counsel",
+      "label": "COUNSEL",
+      "taskbar": "CO",
+      "chamber": "hive-cockpit",
+      "role": "truth",
+      "autonomous": true
+    },
+    {
+      "id": "zorg",
+      "label": "ZORG SECURITY",
+      "taskbar": "ZG",
+      "chamber": "hive-cockpit",
+      "role": "security_chief",
+      "autonomous": true
+    },
+    {
+      "id": "scamshield",
+      "label": "NEURAL SCAM SHIELD AI",
+      "taskbar": "NS",
+      "chamber": "neural-scam-shield",
+      "fleet": "NEURAL SCAM SHIELD AI",
+      "role": "protector",
+      "aliases": ["neuralshield"],
+      "zorg_partner": true,
+      "autonomous": true
+    },
+    {
+      "id": "capricorn",
+      "label": "CAPRICORN AI",
+      "taskbar": "CP",
+      "chamber": "capricorn-ai",
+      "fleet": "CAPRICORN AI",
+      "role": "companion",
+      "aliases": ["luna"],
+      "autonomous": true
+    },
+    {
+      "id": "grokschitt",
+      "label": "GROKSCHITT",
+      "taskbar": "GS",
+      "chamber": "grokschitt",
+      "fleet": "GROKSCHITT",
+      "role": "node",
+      "autonomous": true
+    },
+    {
+      "id": "assimilate",
+      "label": "AssimilateOrDie",
+      "taskbar": "AD",
+      "chamber": "assimilate-or-die",
+      "fleet": "AssimilateOrDie",
+      "role": "foundry",
+      "autonomous": true
+    },
+    {
+      "id": "hive",
+      "label": "HIVE ORCHESTRATOR",
+      "taskbar": "HV",
+      "chamber": "hive-cockpit",
+      "role": "orchestrator",
+      "autonomous": true
+    }
+  ]
+}

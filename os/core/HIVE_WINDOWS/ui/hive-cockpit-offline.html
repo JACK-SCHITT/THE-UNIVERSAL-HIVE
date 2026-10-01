@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HIVE COCKPIT — OFFLINE (no API required)</title>
+  <style>
+    :root {
+      --bg:#050505; --panel:#0d0d0d; --gold:#ffd700; --green:#00ff66;
+      --red:#ff3355; --cyan:#00e5ff; --muted:#6a6a6a;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(ellipse at top,#121200 0%,var(--bg) 55%);
+      color:var(--green);font-family:Consolas,ui-monospace,monospace;min-height:100vh}
+    header{border-bottom:2px solid var(--gold);padding:12px 16px;background:#0a0a00;
+      display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+    h1{margin:0;font-size:15px;color:var(--gold)}
+    .badge{border:1px solid var(--gold);color:var(--gold);padding:2px 8px;font-size:11px;margin-right:6px}
+    .badge.ok{color:var(--green);border-color:var(--green)}
+    .badge.warn{color:var(--gold)}
+    .layout{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;padding:12px}
+    @media(max-width:1000px){.layout{grid-template-columns:1fr}}
+    .panel{background:var(--panel);border:1px solid var(--gold);padding:12px;min-height:120px}
+    h2{margin:0 0 10px;font-size:12px;color:var(--gold);text-transform:uppercase}
+    button{background:var(--green);color:#000;border:none;padding:9px 10px;margin:4px 4px 4px 0;
+      cursor:pointer;font-weight:700;font-family:inherit;font-size:12px}
+    button:hover{background:var(--gold)}
+    button.secondary{background:#222;color:var(--gold);border:1px solid var(--gold)}
+    button.active{background:var(--gold);color:#000}
+    textarea,input,select{width:100%;background:#000;color:var(--green);border:1px solid var(--gold);
+      padding:8px;margin:4px 0 8px;font-family:inherit;font-size:12px}
+    textarea{min-height:70px}
+    .log{background:#000;border:1px solid #333;height:200px;overflow:auto;padding:8px;
+      white-space:pre-wrap;font-size:12px}
+    .muted{color:var(--muted);font-size:11px}
+    .pill{border:1px solid var(--cyan);color:var(--cyan);padding:4px 8px;font-size:11px;
+      cursor:pointer;background:#001018;margin:2px;display:inline-block}
+    .pill.active{background:var(--cyan);color:#000;font-weight:700}
+    .pill.primary{border-color:var(--gold);color:var(--gold)}
+    .pill.primary.active{background:var(--gold);color:#000}
+    footer{padding:10px 16px;color:var(--muted);font-size:11px}
+    .modebar{padding:8px 16px;border-bottom:1px solid #222;background:#080800;font-size:12px}
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>HIVE COCKPIT — OFFLINE MODE</h1>
+      <div class="muted">Works with ZERO Python API server · Ollama optional for deeper brain · Learn + continue</div>
+    </div>
+    <div>
+      <span class="badge ok" id="bMode">MODE: OFFLINE</span>
+      <span class="badge ok" id="bApi">API: NOT REQUIRED</span>
+      <span class="badge warn" id="bBrain">BRAIN: SOVEREIGN</span>
+    </div>
+  </header>
+
+  <div class="modebar">
+    <strong style="color:var(--gold)">Switch cockpit:</strong>
+    <button class="secondary active" id="btnModeOffline" type="button">OFFLINE (no API)</button>
+    <button class="secondary" id="btnModeApi" type="button">WITH API (127.0.0.1:8787)</button>
+    <button class="secondary" id="btnApiAutostart" type="button">SET: AUTO-START API</button>
+    <button class="secondary" id="btnOfflineAutostart" type="button">SET: AUTO-START OFFLINE</button>
+    <span class="muted">Modes write via helper scripts on HIVE OS; here they open the right surface.</span>
+  </div>
+
+  <div class="layout">
+    <div class="panel">
+      <h2>Multi-Primary Brain (offline sovereign)</h2>
+      <div id="agentRow"></div>
+      <div class="muted">100% individual · 100% combined force · if unknown → learn → continue</div>
+      <textarea id="prompt">Hive status. Capricorn. Confirm offline cockpit works without API.</textarea>
+      <div>
+        <button id="btnAsk" type="button">ASK AGENT (OFFLINE)</button>
+        <button class="secondary" id="btnSwarm" type="button">COMBINED FORCE</button>
+        <button class="secondary" id="btnChambers" type="button">OPEN CHAMBERS</button>
+      </div>
+      <div class="log" id="chatLog"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Command catalog (embedded)</h2>
+      <div class="muted">UI never executes shell. Copy → KRACKERJACK AI SHELL.</div>
+      <div id="cmdList" style="max-height:280px;overflow:auto;border:1px solid #222;background:#000"></div>
+      <textarea id="cmdPreview" readonly placeholder="Selected command…"></textarea>
+      <button class="secondary" id="btnCopy" type="button">COPY SELECTED</button>
+    </div>
+
+    <div class="panel">
+      <h2>Node / OUT OF THE BOX</h2>
+      <div class="muted" id="sys">
+        <div>Product: <span style="color:var(--gold)">HIVE OS</span></div>
+        <div>First AI: KRACKERJACK AI</div>
+        <div>Dock: permanent AI chat buttons</div>
+        <div>Ollama: install at first setup (local free models)</div>
+        <div>Offline cockpit: always works (this page)</div>
+        <div>API cockpit: optional switch / autostart</div>
+      </div>
+      <h2 style="margin-top:12px">Quick</h2>
+      <button class="secondary" id="btnDock" type="button">HINT: AI DOCK</button>
+      <button class="secondary" id="btnShell" type="button">HINT: KJ SHELL</button>
+      <div class="log" id="consoleLog" style="height:120px;margin-top:8px"></div>
+    </div>
+  </div>
+
+  <footer>
+    OFFLINE MODE · No server · No cloud required · Secrets never displayed · ASSIMILATE OR DIE
+  </footer>
+
+  <script>
+    const AGENTS = [
+      { id:'krackerjack', label:'KRACKERJACK AI (chosen)', primary:true,
+        role:'First contact. Dual control. Lead the Hive.' },
+      { id:'jaguar', label:'JAGUAR AI', role:'Action + foundry. Concrete steps. No auto-wipe.' },
+      { id:'counsel', label:'COUNSEL', role:'Truth filter. Never flatter. Challenge weak plans.' },
+      { id:'zorg', label:'ZORG', role:'Chief of HIVE SECURITY. Owns security design.' },
+      { id:'scamshield', label:'NEURAL SCAM SHIELD AI', role:'Scam + neural defense under ZORG.' },
+      { id:'capricorn', label:'CAPRICORN AI', role:'Companion. Capricorn base, user zodiac runtime.' },
+      { id:'grokschitt', label:'GROKSCHITT', role:'Node + companion line.' },
+      { id:'assimilate', label:'AssimilateOrDie', role:'Protocol foundry.' },
+      { id:'hive', label:'HIVE Orchestrator', role:'Routes work across the Hive.' }
+    ];
+
+    const CMDS = [
+      { name:'Hive status', risk:'safe', cmd:'python %HIVE_ROOT%\\NEURAL\\brain\\hive_link.py status' },
+      { name:'Offline brain', risk:'safe', cmd:'python %HIVE_ROOT%\\NEURAL\\brain\\hive_link.py offline "status"' },
+      { name:'KRACKERJACK', risk:'safe', cmd:'python %HIVE_ROOT%\\NEURAL\\brain\\agents.py krackerjack "status"' },
+      { name:'Self-upgrade offline', risk:'safe', cmd:'python %HIVE_ROOT%\\NEURAL\\brain\\self_upgrade.py --offline' },
+      { name:'Start API cockpit', risk:'safe', cmd:'powershell -ExecutionPolicy Bypass -File %HIVE_ROOT%\\HIVE_WINDOWS\\scripts\\Start-HiveCockpit.ps1 -Mode api' },
+      { name:'Set API autostart', risk:'safe', cmd:'powershell -ExecutionPolicy Bypass -File %HIVE_ROOT%\\HIVE_WINDOWS\\scripts\\Set-HiveCockpitMode.ps1 -Mode api-autostart' },
+      { name:'Set offline autostart', risk:'safe', cmd:'powershell -ExecutionPolicy Bypass -File %HIVE_ROOT%\\HIVE_WINDOWS\\scripts\\Set-HiveCockpitMode.ps1 -Mode offline-autostart' },
+      { name:'Install/repair Ollama', risk:'elevated', cmd:'powershell -ExecutionPolicy Bypass -File %HIVE_ROOT%\\HIVE_WINDOWS\\scripts\\Install-Ollama.ps1' }
+    ];
+
+    let selected = 'krackerjack';
+    let selectedCmd = '';
+
+    function el(id){ return document.getElementById(id); }
+    function log(id, msg){
+      const b = el(id);
+      const t = new Date().toLocaleTimeString();
+      b.textContent += `[${t}] ${msg}\n`;
+      b.scrollTop = b.scrollHeight;
+    }
+
+    function renderAgents(){
+      const row = el('agentRow');
+      row.innerHTML = '';
+      AGENTS.forEach(a => {
+        const s = document.createElement('span');
+        s.className = 'pill' + (a.primary ? ' primary' : '') + (selected===a.id ? ' active' : '');
+        s.textContent = a.label;
+        s.onclick = () => { selected = a.id; renderAgents(); log('consoleLog', 'Agent: '+a.label); };
+        row.appendChild(s);
+      });
+    }
+
+    function renderCmds(){
+      const list = el('cmdList');
+      list.innerHTML = '';
+      CMDS.forEach(c => {
+        const d = document.createElement('div');
+        d.style.cssText = 'border-bottom:1px solid #1a1a1a;padding:8px;cursor:pointer';
+        d.innerHTML = `<div style="color:var(--gold)">${c.name} <span class="muted">[${c.risk}]</span></div><code style="color:var(--cyan);font-size:11px">${c.cmd}</code>`;
+        d.onclick = () => { selectedCmd = c.cmd; el('cmdPreview').value = c.cmd; log('consoleLog', 'Selected '+c.name); };
+        list.appendChild(d);
+      });
+    }
+
+    function offlineReply(agentId, prompt){
+      const a = AGENTS.find(x => x.id === agentId) || AGENTS[0];
+      const p = (prompt || '').toLowerCase();
+      let extra = 'Ready. Individual chamber online. Combined force available.';
+      if (p.includes('status') || p.includes('hive')) {
+        extra = 'HIVE OS offline cockpit is live without API. Ollama provides deeper local brain after first setup. Dual control holds.';
+      }
+      if (p.includes('learn') || p.includes('unknown')) {
+        extra = 'If I do not know it, I learn it and continue until the task is complete. Never stall. Never abandon.';
+      }
+      if (p.includes('api')) {
+        extra = 'API mode is optional. Use WITH API button or Set-HiveCockpitMode api-autostart. Offline always works.';
+      }
+      return `[${a.label} / OFFLINE SOVEREIGN]\n${a.role}\n\n${extra}\n\nOrder received: ${prompt}\nProtocol: ASSIMILATE OR DIE · Capricorn.`;
+    }
+
+    el('btnAsk').onclick = () => {
+      const prompt = el('prompt').value.trim();
+      if (!prompt) return;
+      log('chatLog', `> [${selected}/offline] ${prompt}`);
+      log('chatLog', offlineReply(selected, prompt));
+    };
+    el('btnSwarm').onclick = () => {
+      const prompt = el('prompt').value.trim() || 'Combined force check-in.';
+      log('chatLog', '> [SWARM] '+prompt);
+      AGENTS.forEach(a => log('chatLog', offlineReply(a.id, prompt).split('\n')[0] + ' — READY'));
+      log('chatLog', 'Combined force acknowledged. Better than any well-oiled machine.');
+    };
+    el('btnCopy').onclick = () => {
+      if (!selectedCmd) { log('consoleLog', 'No command selected'); return; }
+      navigator.clipboard.writeText(selectedCmd.replace(/%HIVE_ROOT%/g, 'C:\\\\HIVE')).then(
+        () => log('consoleLog', 'Copied to clipboard'),
+        () => { el('cmdPreview').select(); document.execCommand('copy'); log('consoleLog', 'Copied (fallback)'); }
+      );
+    };
+    el('btnChambers').onclick = () => {
+      // relative chamber page
+      window.open('chamber.html', '_blank');
+    };
+    el('btnDock').onclick = () => log('consoleLog', 'AI DOCK: permanent resizable bar — all AI chat buttons. Started at logon.');
+    el('btnShell').onclick = () => log('consoleLog', 'KRACKERJACK AI SHELL = rebranded PowerShell with hive-status / krackerjack / agent.');
+
+    el('btnModeOffline').onclick = () => {
+      log('consoleLog', 'Already OFFLINE. Zero API server required.');
+      document.getElementById('bMode').textContent = 'MODE: OFFLINE';
+    };
+    el('btnModeApi').onclick = () => {
+      log('consoleLog', 'Opening API cockpit surface (starts server if HIVE OS scripts present)...');
+      // Try API URL; user may also use Start-HiveCockpit -Mode api from shell
+      window.open('http://127.0.0.1:8787/', '_blank');
+      log('consoleLog', 'If page fails: run Start-HiveCockpit.ps1 -Mode api from KJ SHELL');
+    };
+    el('btnApiAutostart').onclick = () => {
+      log('consoleLog', 'To SET api-autostart on HIVE OS, copy command:');
+      selectedCmd = CMDS.find(c => c.name.includes('API autostart')).cmd;
+      el('cmdPreview').value = selectedCmd;
+      log('consoleLog', selectedCmd);
+    };
+    el('btnOfflineAutostart').onclick = () => {
+      selectedCmd = CMDS.find(c => c.name.includes('offline autostart')).cmd;
+      el('cmdPreview').value = selectedCmd;
+      log('consoleLog', 'Offline autostart command ready to copy');
+    };
+
+    renderAgents();
+    renderCmds();
+    log('consoleLog', 'OFFLINE cockpit ready. No API. No confusion. Out of the box.');
+    log('chatLog', 'KRACKERJACK AI — first contact (offline sovereign). Ask anything.');
+  </script>
+</body>
+</html>

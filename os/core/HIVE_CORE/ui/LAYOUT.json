@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "law": "Layout self-upgrades when apps/AIs/sub-apps are assimilated",
+  "updated": "2026-07-21",
+  "shell": {
+    "id": "hive-cockpit",
+    "title": "THE HIVE COCKPIT — SOVEREIGN",
+    "chrome": "hive",
+    "note": "Outer chrome stays Hive gold/black; work panel wears active chamber skin"
+  },
+  "default_chamber": "hive-cockpit",
+  "nav": [
+    { "chamber_id": "hive-cockpit", "order": 0, "group": "shell", "visible": true },
+    { "chamber_id": "krackerjack-ai", "order": 10, "group": "chosen", "visible": true },
+    { "chamber_id": "assimilate-or-die", "order": 20, "group": "foundry", "visible": true },
+    { "chamber_id": "hunterprime", "order": 30, "group": "testers", "visible": true },
+    { "chamber_id": "scam-shield", "order": 40, "group": "shield", "visible": true },
+    { "chamber_id": "neural-shield", "order": 41, "group": "shield", "visible": true },
+    { "chamber_id": "luna", "order": 50, "group": "companion", "visible": true },
+    { "chamber_id": "openclawprime", "order": 60, "group": "foundry", "visible": true },
+    { "chamber_id": "grokschitt", "order": 70, "group": "nodes", "visible": true },
+    { "chamber_id": "mcgillicuddy", "order": 80, "group": "identity", "visible": true }
+  ],
+  "panels": [
+    { "id": "chambers", "title": "Assimilated Chambers", "slot": "top", "upgradeable": true },
+    { "id": "brain", "title": "Multi-Primary Brain", "slot": "left", "upgradeable": true },
+    { "id": "commands", "title": "Command Catalog", "slot": "center", "upgradeable": true },
+    { "id": "node", "title": "Node / Beachhead / Fleet", "slot": "right", "upgradeable": true },
+    { "id": "console", "title": "Hive Console", "slot": "bottom", "upgradeable": true },
+    { "id": "chamber_work", "title": "Active Chamber (native skin)", "slot": "chamber", "upgradeable": true }
+  ],
+  "agents_in_chambers": {
+    "krackerjack": "krackerjack-ai",
+    "hunterprime": "hunterprime",
+    "counsel": "hive-cockpit",
+    "zorg": "hive-cockpit",
+    "scamshield": "scam-shield",
+    "luna": "luna",
+    "hive": "hive-cockpit"
+  },
+  "upgrade_hooks": {
+    "on_assimilate_app": "append nav + skin if missing",
+    "on_assimilate_subapp": "nest under parent chamber",
+    "on_assimilate_agent": "map agent_id → chamber_id",
+    "on_self_upgrade": "NEURAL/brain/assimilate_ui.py"
+  }
+}

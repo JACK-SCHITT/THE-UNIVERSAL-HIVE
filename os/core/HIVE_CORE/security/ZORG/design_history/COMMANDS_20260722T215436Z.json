@@ -1,0 +1,50 @@
+{
+  "department": "HIVE SECURITY",
+  "chief": "ZORG-\u03a9",
+  "version": "0.1.0-seed",
+  "note": "Initial command design only. ZORG expands and owns this file after live deployment.",
+  "commands": [
+    {
+      "id": "zorg.status",
+      "name": "Security posture",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Report security posture of this HIVE node. Capricorn.\"",
+      "why": "ZORG status"
+    },
+    {
+      "id": "zorg.rundown",
+      "name": "User security rundown",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Give the user the Hive Security rundown from your charter. Plain language.\"",
+      "why": "Agreement: ZORG explains how security works"
+    },
+    {
+      "id": "zorg.threat_model",
+      "name": "Threat model",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Threat model this Windows HIVE war-room node.\"",
+      "why": "ZORG threat model"
+    },
+    {
+      "id": "zorg.harden",
+      "name": "Harden recommendations",
+      "risk": "elevated",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Hardening plan. No lockout. Recovery path required.\"",
+      "why": "ZORG hardening"
+    },
+    {
+      "id": "zorg.audit",
+      "name": "Audit autostart and keys presence",
+      "risk": "safe",
+      "cmd": "powershell -NoProfile -ExecutionPolicy Bypass -File %HIVE_ROOT%\\HIVE_WINDOWS\\scripts\\Zorg-SecurityAudit.ps1",
+      "why": "Local audit under ZORG"
+    },
+    {
+      "id": "zorg.design",
+      "name": "Design next security revision",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"As HIVE SECURITY chief, design the next security-system revision you will own. List modules, surfaces, and user rundown updates.\"",
+      "why": "ZORG owns design after seed"
+    }
+  ]
+}

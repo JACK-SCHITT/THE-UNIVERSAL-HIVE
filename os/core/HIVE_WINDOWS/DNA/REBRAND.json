@@ -1,0 +1,46 @@
+{
+  "product_name": "HIVE OS",
+  "oem_name": "THE HIVE — KRACKERJACK1134",
+  "renames": [
+    { "from": "Windows PowerShell", "to": "KRACKERJACK AI SHELL" },
+    { "from": "PowerShell", "to": "KRACKERJACK AI SHELL" },
+    { "from": "Windows PowerShell (x86)", "to": "KRACKERJACK AI SHELL (x86)" },
+    { "from": "Command Prompt", "to": "KRACKERJACK AI COMMAND LINE" },
+    { "from": "cmd", "to": "KRACKERJACK AI COMMAND LINE" },
+    { "from": "Control Panel", "to": "HIVE CONTROL PANEL" },
+    { "from": "Windows Security", "to": "HIVE AEGIS SECURITY" },
+    { "from": "Settings", "to": "HIVE SETTINGS" },
+    { "from": "Task Manager", "to": "HIVE PROCESS SWARM" },
+    { "from": "File Explorer", "to": "HIVE FILE NEXUS" },
+    { "from": "Notepad", "to": "HIVE SCROLL" },
+    { "from": "Calculator", "to": "HIVE CALCULUS" },
+    { "from": "Snipping Tool", "to": "HIVE CAPTURE" },
+    { "from": "Terminal", "to": "HIVE TERMINAL" },
+    { "from": "Windows Terminal", "to": "HIVE TERMINAL" }
+  ],
+  "remove_taskbar_junk": [
+    "Widgets",
+    "Weather",
+    "Meet Now",
+    "Chat",
+    "Copilot",
+    "News and interests",
+    "Task view suggestions ads"
+  ],
+  "keep_taskbar_normal": [
+    "Start",
+    "Search",
+    "Task View",
+    "System tray",
+    "Clock",
+    "Volume",
+    "Network",
+    "Notification center"
+  ],
+  "ai_dock": {
+    "name": "HIVE AI DOCK",
+    "resizable": true,
+    "removable": false,
+    "note": "Dock is a permanent companion bar; normal Windows taskbar remains underneath"
+  }
+}

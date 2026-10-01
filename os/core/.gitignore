@@ -1,0 +1,32 @@
+﻿.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+
+# local push artifacts
+_batch_*.json
+_core_push.json
+_push_payload.json
+
+# Local clones of multi-repo fleet (never push trees)
+# Leading slash = repo root only (do NOT ignore HIVE_CORE/fleet/)
+/FLEET/
+
+# Large seeds stay local only
+GENESIS/gentoo-sparc/
+GENESIS/iso/
+*.iso
+*.tar.xz
+*.tar.gz
+*.img
+*.dmg

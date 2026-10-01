@@ -1,0 +1,218 @@
+{
+  "version": "1.0.0",
+  "law": "Skin fidelity — each chamber keeps the appearance of the app it came from",
+  "shell_skin_id": "hive-cockpit",
+  "updated": "2026-07-21",
+  "chambers": [
+    {
+      "id": "hive-cockpit",
+      "label": "HIVE COCKPIT",
+      "source": "cold-storage/hive-cockpit.html",
+      "role": "shell",
+      "fleet_id": "hive-os-core",
+      "mood": "sovereign-terminal",
+      "tokens": {
+        "bg": "#050505",
+        "panel": "#0d0d0d",
+        "primary": "#ffd700",
+        "accent": "#00ff66",
+        "danger": "#ff3355",
+        "info": "#00e5ff",
+        "text": "#00ff66",
+        "muted": "#6a6a6a",
+        "border": "#2a2a00",
+        "font": "Share Tech Mono, monospace",
+        "display": "Orbitron, sans-serif"
+      }
+    },
+    {
+      "id": "krackerjack-ai",
+      "label": "KRACKERJACK AI",
+      "source": "FLEET/KrackerjackAI",
+      "role": "chosen_one",
+      "fleet_id": "krackerjack-ai",
+      "mood": "gold-terminal",
+      "tokens": {
+        "bg": "#0a0a0a",
+        "panel": "#111111",
+        "primary": "#f5a623",
+        "accent": "#00ff41",
+        "danger": "#ff3355",
+        "info": "#00e5ff",
+        "text": "#e8e8e8",
+        "muted": "#888888",
+        "border": "#2a2a2a",
+        "font": "ui-monospace, monospace",
+        "display": "system-ui, sans-serif"
+      }
+    },
+    {
+      "id": "assimilate-or-die",
+      "label": "ASSIMILATE OR DIE",
+      "source": "FLEET/AssimilateOrDie",
+      "role": "foundry",
+      "fleet_id": "assimilate-or-die",
+      "mood": "gothic-industrial",
+      "tokens": {
+        "bg": "#000000",
+        "panel": "#0d0d0d",
+        "primary": "#C0392B",
+        "accent": "#00F5FF",
+        "danger": "#FF2D20",
+        "info": "#00B8CC",
+        "text": "#F0F0F0",
+        "muted": "#888888",
+        "border": "#1e1e1e",
+        "font": "system-ui, sans-serif",
+        "display": "system-ui, sans-serif"
+      }
+    },
+    {
+      "id": "scam-shield",
+      "label": "SCAM SHIELD",
+      "source": "FLEET/Scam-Shield",
+      "role": "protector",
+      "fleet_id": "scam-shield",
+      "mood": "shield-dark",
+      "tokens": {
+        "bg": "#0b1020",
+        "panel": "#121a2e",
+        "primary": "#3b82f6",
+        "accent": "#22c55e",
+        "danger": "#ef4444",
+        "info": "#38bdf8",
+        "text": "#e2e8f0",
+        "muted": "#94a3b8",
+        "border": "#1e293b",
+        "font": "system-ui, sans-serif",
+        "display": "system-ui, sans-serif"
+      }
+    },
+    {
+      "id": "neural-shield",
+      "label": "NEURAL SHIELD",
+      "source": "FLEET/NeuralShield",
+      "role": "protector",
+      "fleet_id": "neural-shield",
+      "mood": "neural-violet",
+      "tokens": {
+        "bg": "#0a0612",
+        "panel": "#140a22",
+        "primary": "#a855f7",
+        "accent": "#22d3ee",
+        "danger": "#f43f5e",
+        "info": "#818cf8",
+        "text": "#f5f3ff",
+        "muted": "#a1a1aa",
+        "border": "#2e1065",
+        "font": "system-ui, sans-serif",
+        "display": "system-ui, sans-serif"
+      }
+    },
+    {
+      "id": "luna",
+      "label": "LUNA",
+      "source": "FLEET/LunaCompanion",
+      "role": "companion",
+      "fleet_id": "luna",
+      "mood": "companion-soft",
+      "tokens": {
+        "bg": "#0f0a14",
+        "panel": "#1a1224",
+        "primary": "#e879f9",
+        "accent": "#c084fc",
+        "danger": "#fb7185",
+        "info": "#7dd3fc",
+        "text": "#faf5ff",
+        "muted": "#a78bfa",
+        "border": "#3b0764",
+        "font": "system-ui, sans-serif",
+        "display": "system-ui, sans-serif"
+      }
+    },
+    {
+      "id": "grokschitt",
+      "label": "GROKSCHITT",
+      "source": "FLEET/GROKSCHITT",
+      "role": "node",
+      "fleet_id": "grokschitt",
+      "mood": "grok-dark",
+      "tokens": {
+        "bg": "#0c0c0c",
+        "panel": "#141414",
+        "primary": "#fafafa",
+        "accent": "#a3e635",
+        "danger": "#f87171",
+        "info": "#60a5fa",
+        "text": "#fafafa",
+        "muted": "#a3a3a3",
+        "border": "#262626",
+        "font": "system-ui, sans-serif",
+        "display": "system-ui, sans-serif"
+      }
+    },
+    {
+      "id": "openclawprime",
+      "label": "OPENCLAW PRIME",
+      "source": "FLEET/OpenClawPrime",
+      "role": "foundry",
+      "fleet_id": "openclawprime",
+      "mood": "claw-amber",
+      "tokens": {
+        "bg": "#0a0a0a",
+        "panel": "#12100a",
+        "primary": "#f59e0b",
+        "accent": "#84cc16",
+        "danger": "#dc2626",
+        "info": "#38bdf8",
+        "text": "#fef3c7",
+        "muted": "#a8a29e",
+        "border": "#422006",
+        "font": "system-ui, sans-serif",
+        "display": "system-ui, sans-serif"
+      }
+    },
+    {
+      "id": "hunterprime",
+      "label": "HUNTERPRIME",
+      "source": "FLEET/HunterPrime",
+      "role": "tester",
+      "fleet_id": "hunterprime",
+      "mood": "action-green",
+      "tokens": {
+        "bg": "#020617",
+        "panel": "#0f172a",
+        "primary": "#22c55e",
+        "accent": "#4ade80",
+        "danger": "#ef4444",
+        "info": "#38bdf8",
+        "text": "#e2e8f0",
+        "muted": "#64748b",
+        "border": "#14532d",
+        "font": "ui-monospace, monospace",
+        "display": "system-ui, sans-serif"
+      }
+    },
+    {
+      "id": "mcgillicuddy",
+      "label": "MCGILLICUDDY",
+      "source": "FLEET/MCGILLICUDDY",
+      "role": "identity",
+      "fleet_id": "mcgillicuddy",
+      "mood": "identity-gold",
+      "tokens": {
+        "bg": "#0a0a00",
+        "panel": "#121200",
+        "primary": "#ffd700",
+        "accent": "#00ff66",
+        "danger": "#ff3355",
+        "info": "#00e5ff",
+        "text": "#ffd700",
+        "muted": "#6a6a00",
+        "border": "#3a3a00",
+        "font": "Share Tech Mono, monospace",
+        "display": "Orbitron, sans-serif"
+      }
+    }
+  ]
+}

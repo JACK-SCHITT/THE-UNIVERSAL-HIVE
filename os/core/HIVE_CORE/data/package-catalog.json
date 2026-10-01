@@ -1,0 +1,33 @@
+{
+  "schema": "hive-package-catalog/v1",
+  "bases": ["termux", "gentoo", "kali", "debian", "arch", "alpine", "macos", "windows", "wsl"],
+  "categories": {
+    "core": [
+      { "name": "git",        "deps": [] },
+      { "name": "curl",       "deps": [] },
+      { "name": "openssh",    "deps": [] },
+      { "name": "python",     "deps": [] }
+    ],
+    "dev": [
+      { "name": "clang",      "deps": [] },
+      { "name": "make",       "deps": [] },
+      { "name": "cmake",      "deps": [] },
+      { "name": "node",       "deps": [] }
+    ],
+    "security": [
+      { "name": "nmap",          "deps": [] },
+      { "name": "netcat",        "deps": [] },
+      { "name": "hydra",         "deps": ["libssh"] },
+      { "name": "openssh-tools", "deps": ["openssh"] }
+    ],
+    "net": [
+      { "name": "traceroute", "deps": [] },
+      { "name": "iptables",   "deps": [] },
+      { "name": "wireguard",  "deps": [] }
+    ],
+    "ai": [
+      { "name": "ollama", "deps": [] }
+    ],
+    "custom": []
+  }
+}

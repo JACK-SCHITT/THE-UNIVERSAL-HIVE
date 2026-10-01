@@ -1,0 +1,16 @@
+{
+  "version": "1.1.0",
+  "cockpit_mode": "offline",
+  "autostart_cockpit": true,
+  "autostart_api": "set true to always start Python cockpit API at logon",e,
+  "autostart_ollama": true,
+  "autostart_dock": true,
+  "ollama_models": ["tinyllama"],
+  "ollama_background_models": ["llama3.2:3b"],
+  "default_model": "tinyllama",
+  "notes": {
+    "cockpit_mode": "offline = file UI works with zero server; api = hive_api.py on 127.0.0.1:8787",
+    "autostart_api": "set true to always start Python cockpit API at logon",
+    "switch": "Run Set-HiveCockpitMode.ps1 -Mode offline|api|api-autostart|offline-autostart"
+  }
+}

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HIVE OS unattended layer on Windows install media. Architect can edit product key / locale. -->
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+  <settings pass="windowsPE">
+    <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <SetupUILanguage>
+        <UILanguage>en-US</UILanguage>
+      </SetupUILanguage>
+      <InputLocale>en-US</InputLocale>
+      <SystemLocale>en-US</SystemLocale>
+      <UILanguage>en-US</UILanguage>
+      <UserLocale>en-US</UserLocale>
+    </component>
+    <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <UserData>
+        <AcceptEula>true</AcceptEula>
+        <FullName>Architect KRACKERJACK1134</FullName>
+        <Organization>THE HIVE</Organization>
+      </UserData>
+    </component>
+  </settings>
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <ComputerName>HIVE-NODE</ComputerName>
+      <RegisteredOwner>Architect KRACKERJACK1134</RegisteredOwner>
+      <RegisteredOrganization>THE HIVE</RegisteredOrganization>
+      <TimeZone>Central Standard Time</TimeZone>
+      <OEMInformation>
+        <Manufacturer>THE HIVE — KRACKERJACK1134</Manufacturer>
+        <Model>HIVE OS</Model>
+        <SupportHours>Always — dual control</SupportHours>
+        <SupportURL>file:///C:/HIVE/docs/HIVE_HANDBOOK/00_PRIME_DIRECTIVE.md</SupportURL>
+      </OEMInformation>
+    </component>
+    <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <RunSynchronous>
+        <RunSynchronousCommand wcm:action="add" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+          <Order>1</Order>
+          <Path>cmd /c mkdir C:\ProgramData\THE_HIVE\logs &amp; echo HIVE specialize&gt;&gt;C:\ProgramData\THE_HIVE\logs\specialize.log</Path>
+          <Description>HIVE specialize marker</Description>
+        </RunSynchronousCommand>
+      </RunSynchronous>
+    </component>
+  </settings>
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+        <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+        <HideWirelessSetupInOOBE>false</HideWirelessSetupInOOBE>
+        <ProtectYourPC>3</ProtectYourPC>
+        <NetworkLocation>Work</NetworkLocation>
+      </OOBE>
+      <FirstLogonCommands>
+        <SynchronousCommand wcm:action="add" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+          <Order>1</Order>
+          <CommandLine>powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\HIVE\HIVE_WINDOWS\scripts\Hive-FirstLogon.ps1</CommandLine>
+          <Description>HIVE OS first logon transformation</Description>
+        </SynchronousCommand>
+      </FirstLogonCommands>
+    </component>
+  </settings>
+</unattend>

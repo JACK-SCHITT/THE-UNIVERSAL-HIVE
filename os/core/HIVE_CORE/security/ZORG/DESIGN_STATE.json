@@ -1,0 +1,10 @@
+{
+  "version": "1.2.0-zorg",
+  "design_runs": 2,
+  "first_design_at": "2026-07-22T21:54:36.165325+00:00",
+  "last_design_at": "2026-07-22T21:55:21.748630+00:00",
+  "owner": "ZORG-OMEGA",
+  "seed_only": false,
+  "command_count": 22,
+  "last_prompt": "Second design pass. Expand coverage."
+}

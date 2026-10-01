@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KRACKERJACK1134 | HIVE COCKPIT v7.0</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+:root { --black:#000; --gold:#c5a059; --neon:#00ff41; --red:#ff0044; --cyan:#00f2ff; }
+* { box-sizing:border-box; }
+body { background:var(--black); color:var(--gold); font-family:'Press Start 2P', monospace; margin:0; padding:0; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+.rain { position:fixed; inset:0; opacity:0.10; pointer-events:none; white-space:pre; font-size:11px; color:var(--neon); z-index:1; overflow:hidden; }
+header { background:#111; padding:14px; text-align:center; border-bottom:3px solid var(--gold); z-index:10; }
+h1 { margin:0; font-size:24px; color:var(--red); text-shadow:0 0 10px var(--gold); letter-spacing:3px; }
+.sub { color:var(--cyan); font-size:11px; margin-top:6px; letter-spacing:2px; }
+.status-bar { display:flex; justify-content:space-around; flex-wrap:wrap; gap:8px; background:#111; padding:8px; font-size:11px; border-bottom:2px solid var(--neon); z-index:10; }
+.status-bar span b { color:var(--neon); }
+.row { display:flex; flex-wrap:wrap; gap:12px; padding:12px; overflow-y:auto; flex:1; z-index:2; }
+.panel { background:rgba(20,20,20,0.95); border:2px solid var(--gold); padding:12px; flex:1; min-width:300px; box-shadow:0 0 15px rgba(197,160,89,0.3); }
+h2 { color:var(--red); margin:0 0 10px 0; font-size:12px; text-align:center; letter-spacing:2px; }
+button { background:var(--gold); color:#000; border:none; padding:10px 14px; margin:4px 2px; font-weight:bold; cursor:pointer; font-family:inherit; font-size:10px; width:100%; }
+button:hover { background:var(--red); color:#fff; }
+button.danger { background:#f00; color:#fff; }
+button.cyan   { background:#0ff; color:#000; }
+.log { height:180px; overflow-y:auto; background:#111; padding:10px; margin:8px 0; border:1px solid var(--neon); font-size:10px; white-space:pre-wrap; }
+input, textarea { background:#111; border:1px solid var(--gold); color:var(--neon); padding:10px; width:100%; font-size:11px; margin:6px 0; font-family:inherit; }
+.ask { display:flex; gap:6px; }
+canvas { display:block; margin:6px auto; border:2px solid var(--neon); background:#000; }
+.bigt { font-size:20px; text-align:center; color:var(--neon); margin:10px 0; }
+</style>
+</head>
+<body>
+<pre class="rain" id="rain"></pre>
+<header>
+  <h1>KRACKERJACK HIVE OS</h1>
+  <div class="sub" id="subtitle">COCKPIT v7.0  -  FULLEST POTENTIAL  -  SOVEREIGN</div>
+</header>
+<div class="status-bar">
+  <div>NODE: <span id="nodeCount"><b>--</b></span></div>
+  <div>BASE: <span id="baseTag"><b>--</b></span></div>
+  <div>ROLE: <span id="roleTag"><b>--</b></span></div>
+  <div>KEY:  <span id="keyTag"><b>--</b></span></div>
+  <div>API:  <span id="apiTag"><b>--</b></span></div>
+</div>
+<div class="row">
+  <div class="panel" style="min-width:320px;">
+    <h2>ASK THE HIVE</h2>
+    <div class="ask">
+      <input id="ask" placeholder='try: "make my system secure"' />
+      <button class="cyan" onclick="doAsk()">ASK</button>
+    </div>
+    <div class="log" id="askLog"></div>
+    <h2 style="margin-top:14px;">QUICK COMMANDS</h2>
+    <button onclick="askText('make my system secure')">SECURE SYSTEM</button>
+    <button onclick="askText('update everything')">UPDATE ALL</button>
+    <button onclick="askText('teach me something')">TEACH ME</button>
+    <button onclick="askText('who am i')">IDENTITY</button>
+  </div>
+
+  <div class="panel" style="flex:2; min-width:380px;">
+    <h2>THE ARCHITECT'S EYES</h2>
+    <div id="eyesView" class="log" style="height:220px;"></div>
+    <button onclick="loadEyes()">RELOAD EYES</button>
+    <button onclick="randomSaying()">RANDOM SAYING</button>
+    <h2 style="margin-top:14px;">ZORG-Ω SHADOW SCAN</h2>
+    <div class="log" id="zorgLog" style="height:200px;"></div>
+    <button onclick="zorgScan()">RUN ZORG SCAN (127.0.0.1)</button>
+    <button class="danger" onclick="zorgScan('0.0.0.0')">RUN ZORG SCAN (0.0.0.0)</button>
+  </div>
+
+  <div class="panel">
+    <h2>REFINERY  -  SELF EVOLVE</h2>
+    <div class="bigt" id="refineryStatus">--</div>
+    <button onclick="refineryRun()">CHECK UPSTREAM</button>
+    <button onclick="refineryChain()">VIEW CHAIN</button>
+    <h2 style="margin-top:14px;">CLAUDE SUB-AGENT</h2>
+    <div class="log" id="claudeLog" style="height:140px;"></div>
+    <button onclick="claudeInit()">INIT CLAUDE</button>
+    <h2 style="margin-top:14px;">HIVE STATUS</h2>
+    <div class="log" id="statusLog" style="height:140px;"></div>
+    <button onclick="loadStatus()">REFRESH</button>
+  </div>
+</div>
+<script>
+const API = "http://127.0.0.1:8787";
+const $ = (id) => document.getElementById(id);
+const log = (id, msg, color="#00ff41") => {
+  const el = $(id); const t = new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+  el.innerHTML += `<span style="color:#ff0044">[${t}]</span> <span style="color:${color}">${msg}</span>\n`;
+  el.scrollTop = el.scrollHeight;
+};
+async function getJson(path) {
+  try { const r = await fetch(API + path); return await r.json(); }
+  catch (e) { return { error: String(e) }; }
+}
+async function postJson(path, body) {
+  try { const r = await fetch(API + path, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(body||{}) }); return await r.json(); }
+  catch (e) { return { error: String(e) }; }
+}
+async function getText(path) {
+  try { const r = await fetch(API + path); return await r.text(); }
+  catch (e) { return String(e); }
+}
+function setTag(id, val) { const el = $(id); if (typeof val === "object" && val) { el.innerHTML = `<b>${(val.user_name||"")} / ${(val.role||"")} / ${(val.base||"")}</b>`; } else { el.innerHTML = `<b>${val||"--"}</b>`; } }
+async function apiPing() {
+  try { const r = await fetch(API + "/status"); $("apiTag").innerHTML = r.ok ? "<b>UP</b>" : "<b style='color:#f00'>DOWN</b>"; return r.ok; }
+  catch (_) { $("apiTag").innerHTML = "<b style='color:#f00'>DOWN</b>"; return false; }
+}
+async function loadStatus() {
+  if (!await apiPing()) { log("statusLog", "cockpit API offline (python hive-cockpit-api.py)", "#f00"); return; }
+  const s = await getJson("/status");
+  log("statusLog", JSON.stringify(s, null, 2));
+  if (s && s.identity) { $("baseTag").innerHTML = `<b>${s.identity.base||"--"}</b>`; $("roleTag").innerHTML = `<b>${s.identity.role||"--"} (rbac ${s.identity.rbac_level||"--"})</b>`; $("keyTag").innerHTML = `<b>${s.identity.product_key||"--"}</b>`; $("subtitle").textContent = `COCKPIT v7.0  -  ${s.identity.os_name||""}`; }
+  $("nodeCount").innerHTML = `<b>${(s && s.audit) ? "AUDITED" : "FRESH"}</b>`;
+}
+async function loadEyes() {
+  const e = await getText("/teach/eyes");
+  $("eyesView").textContent = e;
+}
+async function randomSaying() {
+  const t = await getText("/teach/random");
+  log("askLog", "RANDOM SAYING: " + t, "#00f2ff");
+}
+async function doAsk() {
+  const text = $("ask").value.trim(); if (!text) return; await askText(text);
+}
+async function askText(text) {
+  $("ask").value = text;
+  log("askLog", ">> " + text, "#ff0");
+  const r = await postJson("/ask", { text });
+  log("askLog", JSON.stringify(r, null, 2));
+}
+async function zorgScan(target="127.0.0.1") {
+  log("zorgLog", "ZORG-Ω scanning " + target + " ...", "#f00");
+  const r = await getText("/zorg/scan?target=" + encodeURIComponent(target) + "&type=ports");
+  $("zorgLog").textContent = r;
+}
+async function refineryRun() {
+  log("statusLog", "refinery run...", "#0f0");
+  const r = await getText("/refinery");
+  $("refineryStatus").textContent = (r.match(/\"fallback\":\s*\"([^\"]+)\"/) || ["","?"])[1].toUpperCase();
+  log("statusLog", r);
+}
+async function refineryChain() {
+  const r = await getText("/refinery?sources="); // sources empty -> still runs, just shows last state
+  $("refineryStatus").textContent = "CHAIN";
+  log("statusLog", r);
+}
+async function claudeInit() {
+  const r = await getText("/claude/promise");
+  log("claudeLog", r);
+}
+// rain
+const rain = $("rain");
+setInterval(() => {
+  rain.textContent = Array(20).fill().map(() => Array(80).fill().map(() => "01アイウエオHIVE◆◇"[Math.floor(Math.random()*15)]).join("")).join("\n");
+}, 90);
+// boot
+window.addEventListener("load", async () => {
+  await loadStatus();
+  await loadEyes();
+});
+</script>
+</body>
+</html>

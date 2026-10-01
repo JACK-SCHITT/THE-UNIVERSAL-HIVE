@@ -1,0 +1,326 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-07-21",
+  "architect": "KRACKERJACK1134",
+  "protocol": "ASSIMILATE OR DIE — commands harden, never auto-wipe",
+  "platforms": {
+    "windows": {
+      "label": "Windows (War Room / Architect host)",
+      "shell": "PowerShell 5+/7+",
+      "commands": [
+        {
+          "id": "win.status",
+          "name": "Hive-Link status",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; python NEURAL\\brain\\hive_link.py status",
+          "why": "Brain, keys, Ollama, soul health"
+        },
+        {
+          "id": "win.offline",
+          "name": "Offline sovereign brain",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; python NEURAL\\brain\\hive_link.py offline \"Hive status\"",
+          "why": "Zero keys, always works"
+        },
+        {
+          "id": "win.ask",
+          "name": "Ask local brain",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; python NEURAL\\brain\\hive_link.py ask \"Capricorn. Two sentences.\"",
+          "why": "Ollama → offline chain"
+        },
+        {
+          "id": "win.agent.kj",
+          "name": "KRACKERJACK (chosen one)",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; python NEURAL\\brain\\agents.py krackerjack \"First contact status\"",
+          "why": "Primary AI — always first"
+        },
+        {
+          "id": "win.agent.hp",
+          "name": "HunterPrime (tester)",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; python NEURAL\\brain\\agents.py hunterprime \"Next executable steps\"",
+          "why": "Action layer"
+        },
+        {
+          "id": "win.agent.counsel",
+          "name": "COUNSEL (tester)",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; python NEURAL\\brain\\agents.py counsel \"Challenge this plan for weaknesses\"",
+          "why": "Truth filter"
+        },
+        {
+          "id": "win.agent.zorg",
+          "name": "ZORG-Ω (tester)",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; python NEURAL\\brain\\agents.py zorg \"Threat model this node\"",
+          "why": "Security / defense"
+        },
+        {
+          "id": "win.ui",
+          "name": "Start Hive UI (localhost)",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; powershell -ExecutionPolicy Bypass -File scripts\\start_hive_ui.ps1",
+          "why": "Cockpit + API on 127.0.0.1:8787"
+        },
+        {
+          "id": "win.upgrade",
+          "name": "Self-upgrade offline",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; python NEURAL\\brain\\self_upgrade.py --offline",
+          "why": "Never obsolete path"
+        },
+        {
+          "id": "win.bootstrap.brain",
+          "name": "Bootstrap local brain",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; powershell -ExecutionPolicy Bypass -File scripts\\bootstrap_local_brain.ps1",
+          "why": "Ollama model prep"
+        },
+        {
+          "id": "win.wsl.stage",
+          "name": "Stage WSL turf",
+          "risk": "safe",
+          "cmd": "wsl -d kali-linux -e bash -lc \"bash /mnt/c/Users/ARCHITECT/THE_HIVE/scripts/wsl_stage_hive.sh\"",
+          "why": "Mirror + bash -n validate"
+        },
+        {
+          "id": "win.wsl.start",
+          "name": "Start WSL kali",
+          "risk": "safe",
+          "cmd": "wsl -d kali-linux -- echo WSL_OK",
+          "why": "Bring bridge online"
+        },
+        {
+          "id": "win.push",
+          "name": "Push cold storage",
+          "risk": "elevated",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; python scripts\\hive_os_unchained.py --push",
+          "why": "GitHub JACK-SCHITT/HIVE-OS-CORE (PAT in .env only)"
+        },
+        {
+          "id": "win.prepare",
+          "name": "Local prepare (no push)",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; python scripts\\hive_os_unchained.py",
+          "why": "Manifest + git ready"
+        },
+        {
+          "id": "win.assimilate",
+          "name": "Assimilate Gentoo ritual (PS)",
+          "risk": "elevated",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; powershell -ExecutionPolicy Bypass -File scripts\\assimilate\\assimilate_gentoo.ps1",
+          "why": "Download/prepare seeds — review before run"
+        },
+        {
+          "id": "win.handbook",
+          "name": "Download Gentoo handbook",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; powershell -ExecutionPolicy Bypass -File scripts\\download_gentoo_handbook.ps1",
+          "why": "Mirror official handbook"
+        },
+        {
+          "id": "win.sparc",
+          "name": "Download Gentoo SPARC stage3",
+          "risk": "safe",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; powershell -ExecutionPolicy Bypass -File scripts\\download_gentoo_sparc.ps1",
+          "why": "GENESIS seed"
+        },
+        {
+          "id": "win.iso",
+          "name": "Build Sparky Hive ISO path",
+          "risk": "elevated",
+          "cmd": "cd C:\\Users\\ARCHITECT\\THE_HIVE; powershell -ExecutionPolicy Bypass -File scripts\\build_sparky_hive_iso.ps1",
+          "why": "ISO forge — review script"
+        },
+        {
+          "id": "win.git.status",
+          "name": "Git status",
+          "risk": "safe",
+          "cmd": "git -C C:\\Users\\ARCHITECT\\THE_HIVE status -sb",
+          "why": "War room cleanliness"
+        },
+        {
+          "id": "win.ollama.pull",
+          "name": "Pull Ollama tinyllama",
+          "risk": "safe",
+          "cmd": "ollama pull tinyllama",
+          "why": "Local free model"
+        },
+        {
+          "id": "win.ollama.list",
+          "name": "List Ollama models",
+          "risk": "safe",
+          "cmd": "ollama list",
+          "why": "See installed brains"
+        },
+        {
+          "id": "win.beachhead",
+          "name": "Verify beachheads",
+          "risk": "safe",
+          "cmd": "Get-Item C:\\Hive, C:\\ProgramData\\THE_HIVE\\war-room | Format-List FullName, LinkType, Target",
+          "why": "C:\\Hive + ProgramData junctions"
+        },
+        {
+          "id": "win.trap",
+          "name": "Detect C:\\Program file trap",
+          "risk": "safe",
+          "cmd": "Get-Item C:\\Program -Force | Format-List FullName, Length, Attributes, PSIsContainer",
+          "why": "Empty FILE named Program blocks C:\\Program\\... paths — weakness to remove with admin"
+        }
+      ]
+    },
+    "linux": {
+      "label": "Linux (WSL kali / Gentoo live / chroot)",
+      "shell": "bash",
+      "commands": [
+        {
+          "id": "lin.stage",
+          "name": "Stage Hive into WSL home",
+          "risk": "safe",
+          "cmd": "bash /mnt/c/Users/ARCHITECT/THE_HIVE/scripts/wsl_stage_hive.sh",
+          "why": "Mirror war room; exclude .env/.git"
+        },
+        {
+          "id": "lin.validate",
+          "name": "Validate shell scripts",
+          "risk": "safe",
+          "cmd": "cd ~/THE_HIVE && bash -n NEURAL/hive_install.sh && bash -n NEURAL/kernel/kernel_prep.sh && bash -n NEURAL/aegis/aegis_harden.start && echo OK",
+          "why": "Syntax only — no disk touch"
+        },
+        {
+          "id": "lin.status",
+          "name": "Hive-Link status (WSL)",
+          "risk": "safe",
+          "cmd": "cd ~/THE_HIVE && python3 NEURAL/brain/hive_link.py status",
+          "why": "Soul/manifest on bridge"
+        },
+        {
+          "id": "lin.offline",
+          "name": "Offline brain (WSL)",
+          "risk": "safe",
+          "cmd": "cd ~/THE_HIVE && python3 NEURAL/brain/hive_link.py offline 'status'",
+          "why": "No keys needed"
+        },
+        {
+          "id": "lin.agent.kj",
+          "name": "KRACKERJACK first contact",
+          "risk": "safe",
+          "cmd": "cd ~/THE_HIVE && python3 NEURAL/brain/agents.py krackerjack 'First contact'",
+          "why": "Chosen one"
+        },
+        {
+          "id": "lin.install.dry",
+          "name": "Installer dry-run (no disk)",
+          "risk": "safe",
+          "cmd": "cd ~/THE_HIVE && unset TARGET_DISK; bash NEURAL/hive_install.sh",
+          "why": "Must refuse without TARGET_DISK"
+        },
+        {
+          "id": "lin.lsblk",
+          "name": "List block devices",
+          "risk": "safe",
+          "cmd": "lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT,MODEL",
+          "why": "Architect chooses disk — never auto"
+        },
+        {
+          "id": "lin.fdisk",
+          "name": "Disk table (read)",
+          "risk": "safe",
+          "cmd": "sudo fdisk -l",
+          "why": "Confirm layout before forge"
+        },
+        {
+          "id": "lin.mount.check",
+          "name": "Check /mnt/gentoo",
+          "risk": "safe",
+          "cmd": "mountpoint -q /mnt/gentoo && echo MOUNTED || echo NOT_MOUNTED; findmnt /mnt/gentoo 2>/dev/null || true",
+          "why": "Seed plant requires mount"
+        },
+        {
+          "id": "lin.install",
+          "name": "Hive install (YES gate)",
+          "risk": "destructive",
+          "cmd": "export HIVE_NEURAL=$HOME/THE_HIVE/NEURAL TARGET_DISK=/dev/DISK_YOU_CONFIRM; bash $HIVE_NEURAL/hive_install.sh",
+          "why": "Unpacks Stage3 only after YES + mounts — YOU set disk"
+        },
+        {
+          "id": "lin.chroot",
+          "name": "Enter hive chroot",
+          "risk": "elevated",
+          "cmd": "chroot /mnt/gentoo /bin/bash -c 'source /etc/profile; export PS1=\"(hive-chroot) $PS1\"; exec bash'",
+          "why": "Phase 2 soul bind"
+        },
+        {
+          "id": "lin.sync",
+          "name": "Portage sync",
+          "risk": "elevated",
+          "cmd": "emerge-webrsync && emerge --sync",
+          "why": "Inside chroot"
+        },
+        {
+          "id": "lin.profile",
+          "name": "Hardened profile list",
+          "risk": "safe",
+          "cmd": "eselect profile list",
+          "why": "Pick hardened/linux/amd64 or arch equivalent"
+        },
+        {
+          "id": "lin.kernel.prep",
+          "name": "Kernel prep helper",
+          "risk": "elevated",
+          "cmd": "cd /usr/src/linux && bash /root/HIVE_SEED/kernel/kernel_prep.sh",
+          "why": "After emerge gentoo-sources"
+        },
+        {
+          "id": "lin.kernel.build",
+          "name": "Build kernel",
+          "risk": "elevated",
+          "cmd": "cd /usr/src/linux && make -j$(nproc) && make modules_install && make install",
+          "why": "After menuconfig"
+        },
+        {
+          "id": "lin.aegis",
+          "name": "Install Aegis local.d",
+          "risk": "elevated",
+          "cmd": "cp /root/HIVE_SEED/aegis/aegis_harden.start /etc/local.d/aegis_harden.start && chmod 700 /etc/local.d/aegis_harden.start && rc-update add local default",
+          "why": "Shield — keep recovery path"
+        },
+        {
+          "id": "lin.world",
+          "name": "emerge @world",
+          "risk": "elevated",
+          "cmd": "emerge --ask --verbose --update --deep --newuse @world",
+          "why": "Overnight burn — consent via --ask"
+        },
+        {
+          "id": "lin.crypt",
+          "name": "Open LUKS vault (example)",
+          "risk": "elevated",
+          "cmd": "cryptsetup open /dev/YOUR_PART hivevault && mount /dev/mapper/hivevault /mnt/gentoo",
+          "why": "Example only — adapt to hardware"
+        },
+        {
+          "id": "lin.assimilate",
+          "name": "Assimilate script (bash)",
+          "risk": "elevated",
+          "cmd": "bash ~/THE_HIVE/scripts/assimilate/assimilate_gentoo.sh",
+          "why": "Seed ritual — read first"
+        },
+        {
+          "id": "lin.first.contact",
+          "name": "KRACKERJACK first_contact.sh",
+          "risk": "safe",
+          "cmd": "bash ~/THE_HIVE/NEURAL/krackerjack/first_contact.sh",
+          "why": "Boot greeting path"
+        }
+      ]
+    }
+  },
+  "multi_primary": {
+    "chosen_one": "KRACKERJACK AI",
+    "testers": ["HunterPrime", "COUNSEL", "ZORG-Ω"],
+    "rule": "No agent greets before KRACKERJACK. Testers harden the chosen one; never replace dual-control consent."
+  }
+}

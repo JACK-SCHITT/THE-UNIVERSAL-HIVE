@@ -1,0 +1,7 @@
+{
+  "user": "architect",
+  "base_template": "capricorn",
+  "user_zodiac": "capricorn",
+  "conflict_rule": "user_zodiac_permanent",
+  "locked_zodiac": "capricorn"
+}

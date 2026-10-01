@@ -1,0 +1,23 @@
+{
+  "chief": "zorg",
+  "label": "ZORG-Ω",
+  "department": "HIVE SECURITY",
+  "menu_root": "Security (ZORG-Ω)",
+  "owns": [
+    "All security policy for HIVE OS and war-room",
+    "Aegis / host harden placement",
+    "Windows Security rebrand entry (HIVE AEGIS SECURITY)",
+    "Security audits and rundowns",
+    "Taskbar ZΩ chat as security first-contact for threats",
+    "Placement of SCAMSHIELD and Neural Shield under Security umbrella"
+  ],
+  "partners": [
+    { "id": "scamshield", "role": "scam_predator", "menu": "Security (ZORG-Ω)/SCAMSHIELD" },
+    { "id": "neuralshield", "role": "neural_defense", "menu": "Security (ZORG-Ω)/Neural Shield" }
+  ],
+  "start_menu_path": "THE HIVE\\Security (ZORG-Ω)",
+  "desktop_alias": "HIVE SECURITY (ZORG)",
+  "control_panel_section": "Security — ZORG-Ω",
+  "system_tools_section": "Security Tools (ZORG)",
+  "computer_folder": "HIVE_COMPUTER\\Security (ZORG-Ω)"
+}

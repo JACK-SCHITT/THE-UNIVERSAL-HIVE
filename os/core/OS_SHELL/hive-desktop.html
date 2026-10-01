@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HIVE AI OS — LIVE DESKTOP</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+:root {
+  --black:#000; --gold:#c5a059; --neon:#00ff41; --red:#ff0044; --cyan:#00f2ff;
+  --panel:#0e0e0e; --muted:#6a6a6a;
+}
+* { box-sizing:border-box; }
+html,body { height:100%; margin:0; background:var(--black); color:var(--gold);
+  font-family:'Press Start 2P', monospace; overflow:hidden; }
+.rain { position:fixed; inset:0; opacity:.08; pointer-events:none; color:var(--neon); font-size:10px; white-space:pre; z-index:0; }
+#topbar {
+  position:relative; z-index:50; display:flex; align-items:center; justify-content:space-between;
+  gap:10px; padding:8px 12px; background:#0a0a0a; border-bottom:3px solid var(--gold); flex-wrap:wrap;
+}
+#topbar h1 { margin:0; font-size:13px; color:var(--red); letter-spacing:2px; text-shadow:0 0 8px var(--gold); }
+#topbar .sub { color:var(--cyan); font-size:8px; margin-top:4px; }
+.stat { font-size:8px; color:var(--muted); } .stat b { color:var(--neon); }
+.pill { border:1px solid var(--neon); color:var(--neon); padding:3px 8px; border-radius:999px; font-size:8px; }
+.pill.bad { border-color:var(--red); color:var(--red); }
+#shell { position:relative; z-index:2; display:grid; grid-template-columns:200px 1fr; height:calc(100vh - 96px); }
+#sidebar { background:var(--panel); border-right:2px solid var(--gold); overflow-y:auto; padding:8px; }
+#sidebar h3 { font-size:9px; color:var(--red); margin:10px 4px 6px; }
+.navbtn {
+  display:block; width:100%; text-align:left; background:transparent; border:1px solid #333;
+  color:var(--gold); padding:10px 8px; margin:4px 0; font-family:inherit; font-size:8px; cursor:pointer;
+}
+.navbtn:hover, .navbtn.active { background:var(--gold); color:#000; }
+.navbtn .tag { display:block; color:var(--muted); font-size:7px; margin-top:4px; }
+#desktop {
+  position:relative; overflow:hidden; background:radial-gradient(ellipse at center, #0a120a 0%, #000 70%);
+  padding:10px; padding-bottom:70px;
+}
+.win {
+  position:absolute; min-width:340px; min-height:240px; background:rgba(14,14,14,.97);
+  border:2px solid var(--gold); box-shadow:0 0 20px rgba(197,160,89,.25);
+  display:flex; flex-direction:column; resize:both; overflow:auto;
+}
+.win.maximized { left:8px !important; top:8px !important; width:calc(100% - 16px) !important; height:calc(100% - 16px) !important; }
+.win-title {
+  background:#111; border-bottom:1px solid var(--neon); padding:8px 10px; font-size:9px;
+  display:flex; justify-content:space-between; align-items:center; cursor:move; user-select:none;
+}
+.win-controls button {
+  width:auto; margin:0 2px; padding:4px 8px; font-size:8px; background:#333; color:var(--gold);
+  border:1px solid #555; font-family:inherit; cursor:pointer;
+}
+.win-controls button:hover { background:var(--red); color:#fff; }
+.win-body { flex:1; overflow:auto; padding:10px; font-size:9px; line-height:1.5; }
+.win-body h2 { color:var(--red); font-size:10px; margin:0 0 10px; }
+.win-body button, .actions button {
+  background:var(--gold); color:#000; border:none; padding:10px; margin:3px 0; width:100%;
+  font-family:inherit; font-size:8px; cursor:pointer; font-weight:bold;
+}
+.win-body button:hover { background:var(--red); color:#fff; }
+.win-body button.cyan { background:var(--cyan); color:#000; }
+.win-body button.danger { background:var(--red); color:#fff; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.log {
+  background:#050505; border:1px solid var(--neon); color:var(--neon); padding:8px;
+  height:150px; overflow:auto; white-space:pre-wrap; font-size:8px; margin:8px 0;
+}
+input, textarea {
+  width:100%; background:#111; border:1px solid var(--gold); color:var(--neon);
+  padding:8px; font-family:inherit; font-size:8px; margin:4px 0;
+}
+.tabs { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px; }
+.tab {
+  border:1px solid #444; background:#111; color:var(--gold); padding:6px 8px;
+  font-family:inherit; font-size:7px; cursor:pointer;
+}
+.tab.on { background:var(--gold); color:#000; }
+#dock {
+  position:fixed; left:0; right:0; bottom:0; z-index:60;
+  display:flex; justify-content:center; gap:6px; flex-wrap:wrap;
+  padding:8px; background:rgba(10,10,10,.95); border-top:2px solid var(--gold);
+}
+.dock-item {
+  background:#111; border:1px solid var(--gold); color:var(--gold); padding:10px 8px;
+  font-family:inherit; font-size:7px; cursor:pointer; min-width:72px; text-align:center;
+}
+.dock-item:hover { background:var(--gold); color:#000; }
+.dock-item .ico { display:block; font-size:12px; margin-bottom:4px; color:var(--neon); }
+#start {
+  position:fixed; left:8px; bottom:62px; width:300px; max-height:70vh; overflow:auto;
+  background:#0c0c0c; border:2px solid var(--gold); z-index:70; display:none; padding:8px;
+}
+#start h3 { font-size:9px; color:var(--red); margin:8px 4px; }
+#start button { width:100%; text-align:left; margin:3px 0; }
+#chatbar {
+  position:fixed; right:10px; bottom:70px; width:360px; z-index:65;
+  background:#0c0c0c; border:2px solid var(--cyan); padding:8px; display:none;
+}
+</style>
+</head>
+<body>
+<pre class="rain" id="rain"></pre>
+
+<div id="topbar">
+  <div>
+    <h1>KRACKERJACK HIVE AI OS</h1>
+    <div class="sub">LIVE WIRE · APPS = OS · LOCAL AI · FEDERATION</div>
+  </div>
+  <div class="stat">RUNTIME <b id="st-rt">…</b></div>
+  <div class="stat">GENESIS <b id="st-gen">…</b></div>
+  <div class="stat">OLLAMA <b id="st-ai">…</b></div>
+  <div class="stat">MEDIA <b id="st-media">…</b></div>
+  <span class="pill" id="st-pill">BOOTING</span>
+  <button class="dock-item" style="min-width:auto;padding:8px" onclick="toggleStart()">START</button>
+  <button class="dock-item" style="min-width:auto;padding:8px" onclick="toggleChat()">AI</button>
+</div>
+
+<div id="shell">
+  <aside id="sidebar">
+    <h3>OS MODULES</h3>
+    <div id="modlist"></div>
+    <h3>SYSTEM</h3>
+    <button class="navbtn" onclick="openModule('genesis')"><b>GENESIS COCKPIT</b><span class="tag">live API</span></button>
+    <button class="navbtn" onclick="openModule('local_ai')"><b>LOCAL AI</b><span class="tag">ollama brain</span></button>
+    <button class="navbtn" onclick="live('open_media')"><b>ISO / BOOT MEDIA</b><span class="tag">explorer</span></button>
+    <button class="navbtn" onclick="openSystem('federation')"><b>FEDERATION MAP</b><span class="tag">all nodes</span></button>
+    <button class="navbtn" onclick="live('open_apps')"><b>APP SOURCE TREE</b><span class="tag">D: Apps</span></button>
+  </aside>
+  <main id="desktop"></main>
+</div>
+
+<div id="start">
+  <h3>ALL APPS</h3>
+  <div id="start-apps"></div>
+  <h3>LIVE POWER</h3>
+  <button onclick="live('open_desktop')">Reload Desktop</button>
+  <button onclick="live('run_windows_autoinstall')">Windows Auto-Install</button>
+  <button onclick="live('wsl_kali')">Open WSL Kali</button>
+  <button onclick="live('rufus')">Rufus USB</button>
+  <button onclick="live('ai_pull_model')">Pull Local Model</button>
+  <button class="danger" onclick="closeAll()">Close all windows</button>
+</div>
+
+<div id="chatbar">
+  <div style="font-size:8px;color:var(--cyan);margin-bottom:6px">KRACKERJACK LOCAL AI</div>
+  <div class="log" id="chatlog" style="height:180px"></div>
+  <input id="chatin" placeholder="Ask local AI…" onkeydown="if(event.key==='Enter')doChat()" />
+  <button class="cyan" onclick="doChat()">SEND</button>
+</div>
+
+<div id="dock">
+  <button class="dock-item" onclick="openSurface('foundry')"><span class="ico">◆</span>FOUNDRY</button>
+  <button class="dock-item" onclick="openSurface('hunter')"><span class="ico">▲</span>HUNTER</button>
+  <button class="dock-item" onclick="openSurface('chat')"><span class="ico">◉</span>CHAT</button>
+  <button class="dock-item" onclick="openSurface('dna')"><span class="ico">◎</span>DNA</button>
+  <button class="dock-item" onclick="openSurface('analytics')"><span class="ico">▣</span>ANALYTICS</button>
+  <button class="dock-item" onclick="openSurface('search')"><span class="ico">⌕</span>SEARCH</button>
+  <button class="dock-item" onclick="openSurface('terminal')"><span class="ico">⌘</span>TERMINAL</button>
+  <button class="dock-item" onclick="openSurface('config')"><span class="ico">⚙</span>CONFIG</button>
+  <button class="dock-item" onclick="openSurface('media')"><span class="ico">▶</span>MEDIA</button>
+  <button class="dock-item" onclick="openSurface('cockpit')"><span class="ico">⬢</span>COCKPIT</button>
+</div>
+
+<script>
+const API = location.origin.includes('8790') ? '' : 'http://127.0.0.1:8790';
+let zTop = 10;
+const windows = {};
+
+const MODULES = {
+  openclaw: {
+    name: 'OpenClaw Prime', color: '#00ff41',
+    tabs: ['architect','chat','terminal','zorg','settings','hunter','vault','wizard'],
+    launch: 'OpenClawPrime'
+  },
+  assimilate: {
+    name: 'AssimilateOrDie', color: '#ff0044',
+    tabs: ['hive','build','chat','progress','submit','profile','architect','prime'],
+    launch: 'AssimilateOrDie'
+  },
+  krackerjack: {
+    name: 'KRACKERJACK AI', color: '#c5a059',
+    tabs: ['chat','foundry','dna','analytics','search','config','soul'],
+    launch: 'KrackerjackAI'
+  },
+  grokschitt: {
+    name: 'GROKSCHITT', color: '#00f2ff',
+    tabs: ['home','dash'],
+    launch: 'GROKSCHITT'
+  },
+  onspace: {
+    name: 'OnSpace Builder', color: '#7c5cff',
+    tabs: ['builder','deploy'],
+    launch: 'OnSpace'
+  },
+  moviemaker: {
+    name: 'Movie Maker', color: '#ff66aa',
+    tabs: ['library','characters','story','charnew','import'],
+    launch: 'MovieMaker'
+  },
+  genesis: {
+    name: 'GENESIS Cockpit', color: '#ff0044',
+    tabs: ['ask','eyes','zorg','refinery','status']
+  },
+  local_ai: {
+    name: 'Local KRACKERJACK AI', color: '#00ff41',
+    tabs: ['assist','policy']
+  }
+};
+
+const SURFACE_MAP = {
+  foundry:'assimilate', hunter:'openclaw', chat:'krackerjack', dna:'grokschitt',
+  analytics:'onspace', search:'krackerjack', terminal:'openclaw', config:'krackerjack',
+  media:'moviemaker', cockpit:'genesis', assist:'local_ai'
+};
+
+async function live(action, args={}) {
+  try {
+    const r = await fetch(API + '/api/action', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, ...args, args })
+    });
+    const j = await r.json();
+    toast(j.ok ? j.message : ('FAIL: ' + j.message), j.ok);
+    // dump data into focused log if present
+    const last = document.querySelector('.win .log');
+    if (last && j.data) {
+      last.textContent += '\n' + (typeof j.data === 'string' ? j.data : JSON.stringify(j.data, null, 2));
+      last.scrollTop = last.scrollHeight;
+    }
+    if (last && j.answer) {
+      last.textContent += '\nAI> ' + j.answer;
+      last.scrollTop = last.scrollHeight;
+    }
+    if (last && j.output) {
+      last.textContent += '\n' + j.output;
+      last.scrollTop = last.scrollHeight;
+    }
+    return j;
+  } catch (e) {
+    toast('Runtime offline — start hive-os-runtime.py', false);
+    return { ok:false, message:String(e) };
+  }
+}
+
+function toast(msg, ok=true) {
+  const p = document.getElementById('st-pill');
+  p.textContent = (ok ? 'OK: ' : 'ERR: ') + String(msg).slice(0,40);
+  p.className = 'pill' + (ok ? '' : ' bad');
+}
+
+function note(modId, msg) {
+  const log = document.getElementById('log-' + modId);
+  if (!log) return;
+  log.textContent += `\n[${new Date().toLocaleTimeString()}] ${msg}`;
+  log.scrollTop = log.scrollHeight;
+}
+
+function rain() {
+  const el = document.getElementById('rain');
+  const chars = '01KRACKERJACKHIVEOS';
+  let s = '';
+  for (let i=0;i<35;i++) {
+    let line='';
+    for (let j=0;j<100;j++) line += chars[Math.floor(Math.random()*chars.length)]+' ';
+    s += line+'\n';
+  }
+  el.textContent = s;
+}
+setInterval(rain, 5000); rain();
+
+function buildSidebar() {
+  const box = document.getElementById('modlist');
+  const start = document.getElementById('start-apps');
+  box.innerHTML = ''; start.innerHTML = '';
+  Object.keys(MODULES).forEach(id => {
+    const m = MODULES[id];
+    const b = document.createElement('button');
+    b.className = 'navbtn';
+    b.innerHTML = `<b>${m.name}</b><span class="tag">${m.tabs.length} screens · LIVE</span>`;
+    b.onclick = () => openModule(id);
+    box.appendChild(b);
+    const s = document.createElement('button');
+    s.textContent = m.name;
+    s.onclick = () => { openModule(id); toggleStart(false); };
+    start.appendChild(s);
+  });
+}
+
+function toggleStart(force) {
+  const el = document.getElementById('start');
+  if (typeof force === 'boolean') el.style.display = force ? 'block' : 'none';
+  else el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+function toggleChat() {
+  const el = document.getElementById('chatbar');
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+async function doChat() {
+  const input = document.getElementById('chatin');
+  const q = input.value.trim(); if (!q) return;
+  input.value = '';
+  const log = document.getElementById('chatlog');
+  log.textContent += '\nYOU> ' + q;
+  try {
+    const r = await fetch(API + '/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ text: q })
+    });
+    const j = await r.json();
+    log.textContent += '\nKJ> ' + (j.answer || j.message || JSON.stringify(j));
+  } catch (e) {
+    log.textContent += '\nERR> ' + e;
+  }
+  log.scrollTop = log.scrollHeight;
+}
+
+function openSurface(name) {
+  openModule(SURFACE_MAP[name] || name);
+}
+
+function openSystem(kind) {
+  if (kind === 'federation') {
+    spawnWin('sys-fed', 'FEDERATION MAP', `
+      <h2>ONE OS · APPS = FACE · ORGANS = KERNELS</h2>
+      <p>Windows + WSL Kali + Gentoo + Sparky + SPARC seed + Hive DNA + Local AI</p>
+      <div class="grid2 actions">
+        <button onclick="live('open_hive')">Open THE_HIVE</button>
+        <button onclick="live('open_genesis')">Open GENESIS</button>
+        <button onclick="live('open_bootlab')">Open BOOTLAB</button>
+        <button onclick="live('open_media')">Open ISO folder</button>
+        <button onclick="live('media_inventory')">Refresh media inventory</button>
+        <button class="cyan" onclick="live('wsl_kali')">WSL Kali</button>
+      </div>
+      <div class="log" id="log-sys-fed"></div>
+    `);
+  }
+}
+
+function actionsFor(modId, tab) {
+  // LIVE-WIRED action maps
+  const L = (label, action, args) => [label, () => live(action, args || {})];
+  const N = (label, msg) => [label, () => note(modId, msg)];
+  const maps = {
+    openclaw: {
+      architect: [L('Open Architect source', 'launch_app:OpenClawPrime'), L('Open Apps folder', 'open_apps')],
+      chat: [L('Launch OpenClaw app', 'launch_app:OpenClawPrime'), L('Local AI chat panel', 'open_local_ai_ui')],
+      terminal: [L('WSL Kali Terminal', 'wsl_kali'), L('Kali uname', 'hive_status_wsl'), L('Open BOOTLAB', 'open_bootlab')],
+      zorg: [L('ZORG scan 127.0.0.1', 'genesis_zorg', {target:'127.0.0.1'}), L('ZORG scan 0.0.0.0', 'genesis_zorg', {target:'0.0.0.0'})],
+      settings: [L('Local AI policy UI', 'open_local_ai_ui'), L('Windows auto-install', 'run_windows_autoinstall')],
+      hunter: [L('Launch OpenClaw (Hunter)', 'launch_app:OpenClawPrime'), L('Open Assimilate', 'launch_app:AssimilateOrDie')],
+      vault: [L('Open GENESIS', 'open_genesis'), L('Open THE_HIVE', 'open_hive')],
+      wizard: [L('Install assistant', 'open_local_ai_ui'), L('Auto-install', 'run_windows_autoinstall')]
+    },
+    assimilate: {
+      hive: [L('Launch AssimilateOrDie', 'launch_app:AssimilateOrDie'), L('Open Apps', 'open_apps')],
+      build: [L('Launch app (build)', 'launch_app:AssimilateOrDie'), L('Open source tree', 'open_apps')],
+      chat: [L('Launch app chat', 'launch_app:AssimilateOrDie'), L('Local AI', 'open_local_ai_ui')],
+      progress: [L('Launch app progress', 'launch_app:AssimilateOrDie'), L('Media inventory', 'media_inventory')],
+      submit: [L('Launch app submit', 'launch_app:AssimilateOrDie')],
+      profile: [L('Launch app profile', 'launch_app:AssimilateOrDie')],
+      architect: [L('Launch Assimilate architect', 'launch_app:AssimilateOrDie'), L('GENESIS status', 'genesis_status')],
+      prime: [L('GENESIS eyes', 'genesis_eyes'), L('Open cockpit HTML', 'open_cockpit_html')]
+    },
+    krackerjack: {
+      chat: [L('Launch KrackerjackAI app', 'launch_app:KrackerjackAI'), L('Local AI UI', 'open_local_ai_ui'), L('AI health', 'ai_health')],
+      foundry: [L('Open BOOTLAB', 'open_bootlab'), L('Rufus', 'rufus'), L('ISO folder', 'open_media')],
+      dna: [L('Open THE_HIVE DNA', 'open_hive'), L('Open GENESIS', 'open_genesis')],
+      analytics: [L('Media inventory', 'media_inventory'), L('Runtime health', 'ai_health')],
+      search: [L('Open Apps source', 'open_apps'), L('Open ISO media', 'open_media')],
+      config: [L('Windows auto-install', 'run_windows_autoinstall'), L('Pull local model', 'ai_pull_model')],
+      soul: [L('GENESIS eyes / constitution', 'genesis_eyes'), L('Who am I', 'genesis_ask', {text:'who am i'})]
+    },
+    grokschitt: {
+      home: [L('Launch GROKSCHITT (npm dev)', 'launch_app:GROKSCHITT'), L('Open Apps', 'open_apps')],
+      dash: [L('Launch GROKSCHITT', 'launch_app:GROKSCHITT')]
+    },
+    onspace: {
+      builder: [L('Launch OnSpace', 'launch_app:OnSpace'), L('Open Apps', 'open_apps')],
+      deploy: [L('Launch OnSpace deploy', 'launch_app:OnSpace'), L('Open BOOTLAB', 'open_bootlab')]
+    },
+    moviemaker: {
+      library: [L('Launch MovieMaker', 'launch_app:MovieMaker')],
+      characters: [L('Launch MovieMaker characters', 'launch_app:MovieMaker')],
+      story: [L('Launch MovieMaker story', 'launch_app:MovieMaker')],
+      charnew: [L('Launch MovieMaker', 'launch_app:MovieMaker')],
+      import: [L('Launch MovieMaker import', 'launch_app:MovieMaker')]
+    },
+    genesis: {
+      ask: [
+        L('Secure system', 'genesis_ask', {text:'make my system secure'}),
+        L('Update everything', 'genesis_ask', {text:'update everything'}),
+        L('Teach me', 'genesis_ask', {text:'teach me something'}),
+        L('Who am I', 'genesis_ask', {text:'who am i'})
+      ],
+      eyes: [L("Architect's Eyes", 'genesis_eyes'), L('Random saying', 'genesis_saying')],
+      zorg: [L('Scan 127.0.0.1', 'genesis_zorg', {target:'127.0.0.1'}), L('Scan 0.0.0.0', 'genesis_zorg', {target:'0.0.0.0'})],
+      refinery: [L('Refinery run', 'genesis_refinery'), L('Open cockpit HTML', 'open_cockpit_html')],
+      status: [L('GENESIS status', 'genesis_status'), L('Full cockpit HTML', 'open_cockpit_html'), L('Refresh runtime', 'ai_health')]
+    },
+    local_ai: {
+      assist: [
+        L('Open Local AI UI :8788', 'open_local_ai_ui'),
+        L('AI health / models', 'ai_health'),
+        L('Pull phi3:mini', 'ai_pull_model'),
+        L('Chat: status report', 'ai_chat', {text:'Full HIVE OS status. What is ready? What is missing?'})
+      ],
+      policy: [
+        L('Local only confirmed', 'ai_health'),
+        L('Windows auto-install', 'run_windows_autoinstall'),
+        N('Policy', 'cloud_forbidden=true · models on D:\\HIVE_LOCAL_AI')
+      ]
+    }
+  };
+  return (maps[modId] && maps[modId][tab]) || [N('No live map', 'No actions for ' + tab)];
+}
+
+function openModule(id) {
+  const m = MODULES[id];
+  if (!m) return;
+  const wid = 'mod-' + id;
+  if (windows[wid]) { focusWin(wid); return; }
+  const body = `
+    <h2 style="color:${m.color}">${m.name}</h2>
+    <p style="color:var(--muted);font-size:7px">LIVE WIRED · runtime :8790</p>
+    <div class="tabs" id="tabs-${id}"></div>
+    <div id="pane-${id}"></div>
+    <div class="log" id="log-${id}">[${m.name}] live surface online.</div>
+    ${m.launch ? `<button class="cyan" onclick="live('launch_app:${m.launch}')">LAUNCH FULL APP (npm)</button>` : ''}
+  `;
+  spawnWin(wid, m.name, body, m.color);
+  const tabs = document.getElementById('tabs-' + id);
+  m.tabs.forEach((t, i) => {
+    const b = document.createElement('button');
+    b.className = 'tab' + (i===0?' on':'');
+    b.textContent = t;
+    b.onclick = () => {
+      tabs.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      renderTab(id, t);
+    };
+    tabs.appendChild(b);
+  });
+  renderTab(id, m.tabs[0]);
+}
+
+function renderTab(modId, tabId) {
+  const pane = document.getElementById('pane-' + modId);
+  const acts = actionsFor(modId, tabId);
+  pane.innerHTML = `<p style="color:var(--cyan)">SCREEN: <b>${tabId}</b></p><div class="actions" id="acts-${modId}"></div>`;
+  const box = document.getElementById('acts-' + modId);
+  acts.forEach(([label, fn]) => {
+    const b = document.createElement('button');
+    b.textContent = label;
+    b.onclick = () => { note(modId, '→ ' + label); fn(); };
+    box.appendChild(b);
+  });
+}
+
+function spawnWin(id, title, html, color) {
+  if (windows[id]) { focusWin(id); return; }
+  const desk = document.getElementById('desktop');
+  const n = Object.keys(windows).length;
+  const el = document.createElement('div');
+  el.className = 'win'; el.id = id;
+  el.style.left = (20 + (n%6)*28) + 'px';
+  el.style.top = (20 + (n%5)*24) + 'px';
+  el.style.width = '500px'; el.style.height = '440px';
+  el.style.zIndex = ++zTop;
+  el.innerHTML = `
+    <div class="win-title">
+      <span style="color:${color||'var(--cyan)'}">${title}</span>
+      <div class="win-controls">
+        <button onclick="toggleMax('${id}')">□</button>
+        <button onclick="closeWin('${id}')">X</button>
+      </div>
+    </div>
+    <div class="win-body">${html}</div>`;
+  desk.appendChild(el);
+  windows[id] = el;
+  makeDrag(el);
+  el.addEventListener('mousedown', () => focusWin(id));
+}
+function focusWin(id) { const el = windows[id]; if (el) el.style.zIndex = ++zTop; }
+function closeWin(id) { if (windows[id]) { windows[id].remove(); delete windows[id]; } }
+function closeAll() { Object.keys(windows).forEach(closeWin); toggleStart(false); }
+function toggleMax(id) { if (windows[id]) windows[id].classList.toggle('maximized'); }
+function cascadeWindows() {
+  let i=0; Object.values(windows).forEach(el => {
+    el.classList.remove('maximized');
+    el.style.left=(16+i*24)+'px'; el.style.top=(16+i*20)+'px'; i++;
+  });
+}
+function makeDrag(win) {
+  const bar = win.querySelector('.win-title');
+  let ox=0,oy=0,dragging=false;
+  bar.addEventListener('mousedown', e => {
+    if (e.target.tagName==='BUTTON') return;
+    dragging=true; ox=e.clientX-win.offsetLeft; oy=e.clientY-win.offsetTop; focusWin(win.id);
+  });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    win.style.left=(e.clientX-ox)+'px'; win.style.top=(e.clientY-oy)+'px';
+  });
+  window.addEventListener('mouseup', ()=> dragging=false);
+}
+
+async function refreshHealth() {
+  try {
+    const r = await fetch(API + '/api/health');
+    const h = await r.json();
+    document.getElementById('st-rt').textContent = h.ok ? '8790 UP' : 'DOWN';
+    document.getElementById('st-gen').textContent = h.genesis_api ? 'UP' : 'DOWN';
+    const o = h.ollama || {};
+    document.getElementById('st-ai').textContent = o.local_ready ? 'LOCAL READY' : (o.ok ? 'NO LOCAL MODEL' : 'OFF');
+    const readyMedia = (h.media && h.media.items || []).filter(x => x.ready).length;
+    const totalMedia = (h.media && h.media.items || []).length;
+    document.getElementById('st-media').textContent = readyMedia + '/' + totalMedia + ' READY';
+    document.getElementById('st-pill').textContent = h.ok ? 'HIVE OS LIVE' : 'DEGRADED';
+    document.getElementById('st-pill').className = 'pill' + (h.ok ? '' : ' bad');
+  } catch {
+    document.getElementById('st-rt').textContent = 'OFF';
+    document.getElementById('st-pill').textContent = 'START RUNTIME';
+    document.getElementById('st-pill').className = 'pill bad';
+  }
+}
+
+buildSidebar();
+openModule('genesis');
+openModule('krackerjack');
+openModule('openclaw');
+setTimeout(cascadeWindows, 40);
+refreshHealth();
+setInterval(refreshHealth, 8000);
+</script>
+</body>
+</html>

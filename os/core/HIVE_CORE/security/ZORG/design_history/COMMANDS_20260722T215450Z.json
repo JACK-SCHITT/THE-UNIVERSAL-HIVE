@@ -1,0 +1,139 @@
+{
+  "department": "HIVE SECURITY",
+  "chief": "ZORG-OMEGA",
+  "version": "1.1.0-zorg",
+  "revised_at": "2026-07-22T21:54:36.165325+00:00",
+  "note": "ZORG-owned live command book. FIRST design run \u2014 seed replaced. Architect agreement: ZORG manages and designs Hive Security.",
+  "first_design": true,
+  "revision": 1,
+  "commands": [
+    {
+      "id": "zorg.status",
+      "name": "Security posture",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Report security posture of this HIVE node. Capricorn. Short and ruthless.\"",
+      "why": "Live posture",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.rundown",
+      "name": "User security rundown",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Give the user the Hive Security rundown. Plain language. You own security.\"",
+      "why": "Architect-ZORG agreement: ZORG explains security",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.threat_model",
+      "name": "Threat model",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Threat model this Windows HIVE war-room node and list top 5 controls.\"",
+      "why": "Threat model",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.harden",
+      "name": "Harden recommendations",
+      "risk": "elevated",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Hardening plan for this node. No lockout. Always document recovery path.\"",
+      "why": "Hardening under ZORG",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.audit",
+      "name": "Local security audit",
+      "risk": "safe",
+      "cmd": "powershell -NoProfile -ExecutionPolicy Bypass -File %HIVE_ROOT%\\HIVE_WINDOWS\\scripts\\Zorg-SecurityAudit.ps1",
+      "why": "Presence/autostart/keys-presence audit",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.design",
+      "name": "Design / rewrite security command book",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\zorg_design.py --run",
+      "why": "ZORG rewrites COMMANDS.json (this system)",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.aegis",
+      "name": "Aegis host seal review",
+      "risk": "elevated",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Review Aegis/local.d sensor and network shadowing policy. Recovery path required.\"",
+      "why": "Aegis under ZORG",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.keys",
+      "name": "Key surface (presence only)",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"List which secret slots exist (SET/MISSING only). Never print secret values.\"",
+      "why": "Key hygiene \u2014 no exfil",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.autostart",
+      "name": "Autostart & persistence review",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Review HIVE Run keys, Startup folder, AI dock, cockpit modes for security.\"",
+      "why": "Persistence under ZORG",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.scam_partner",
+      "name": "Engage SCAMSHIELD (partner)",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Coordinate with SCAMSHIELD under ZORG umbrella for social-engineering threats.\"",
+      "why": "Partner under ZORG",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.neural_partner",
+      "name": "Engage Neural Shield (partner)",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Coordinate Neural Shield placement under ZORG security umbrella.\"",
+      "why": "Partner under ZORG",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.incident",
+      "name": "Incident response outline",
+      "risk": "elevated",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Incident response outline for suspected compromise. Contain, preserve, recover. No panic.\"",
+      "why": "IR owned by ZORG",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.usb",
+      "name": "Removable media policy",
+      "risk": "elevated",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Policy for USB installers and HIVE live media. Trust but verify. No silent wipe.\"",
+      "why": "Media under ZORG",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.menu_check",
+      "name": "Security menu surface check",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"Verify Start Menu Security (ZORG), Desktop HIVE SECURITY, HIVE COMPUTER security links exist.\"",
+      "why": "Surface ownership",
+      "owner": "ZORG-OMEGA"
+    },
+    {
+      "id": "zorg.report",
+      "name": "Write security brief for Architect",
+      "risk": "safe",
+      "cmd": "python %HIVE_ROOT%\\NEURAL\\brain\\agents.py zorg \"One-page security brief for Architect KRACKERJACK1134. Status, risks, next design moves.\"",
+      "why": "Executive brief",
+      "owner": "ZORG-OMEGA"
+    }
+  ],
+  "surfaces": {
+    "start_menu": "THE HIVE\\Security (ZORG)",
+    "desktop": "HIVE SECURITY (ZORG)",
+    "computer": "HIVE_COMPUTER\\Security (ZORG)",
+    "control_panel": "HIVE CONTROL PANEL\\Security Section (ZORG)",
+    "system_tools": "HIVE SYSTEM TOOLS\\Security Tools (ZORG)",
+    "taskbar": "ZORG chat pin + AI Dock Z button"
+  }
+}

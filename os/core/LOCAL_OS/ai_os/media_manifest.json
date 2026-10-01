@@ -1,0 +1,44 @@
+{
+  "product": "HIVE AI OS",
+  "arch_host": "amd64",
+  "policy": {
+    "ai": "local_only",
+    "default_model": "phi3:mini",
+    "user_friendly_default": "windows_host + wsl_kali + sparky_or_kali_baremetal"
+  },
+  "downloads": {
+    "kali": {
+      "file": "kali-linux-2026.2-installer-netinst-amd64.iso",
+      "kind": "netinst_minimal",
+      "url": "https://cdimage.kali.org/current/kali-linux-2026.2-installer-netinst-amd64.iso",
+      "includes_metasploit_framework": "after install: apt install metasploit-framework (or default kali metapackages)"
+    },
+    "gentoo": {
+      "file": "install-amd64-minimal-20260712T170110Z.iso",
+      "kind": "minimal_install_cd",
+      "url": "https://distfiles.gentoo.org/releases/amd64/autobuilds/20260712T170110Z/install-amd64-minimal-20260712T170110Z.iso"
+    },
+    "sparky": {
+      "file": "sparkylinux-8.3-x86_64-minimalcli.iso",
+      "kind": "minimal_cli_amd64",
+      "url": "https://downloads.sourceforge.net/project/sparkylinux/cli/sparkylinux-8.3-x86_64-minimalcli.iso",
+      "note": "Correct arch for this PC (NOT arm64)"
+    },
+    "metasploit_lab": {
+      "file": "metasploitable-linux-2.0.0.zip",
+      "kind": "vulnerable_target_vm",
+      "url": "https://downloads.sourceforge.net/project/metasploitable/Metasploitable2/metasploitable-linux-2.0.0.zip",
+      "note": "Lab target only. Metasploit attack tools run from Kali."
+    }
+  },
+  "combine": {
+    "method": "multi-boot USB (Ventoy recommended) + Hive DNA overlay",
+    "control_center": "LOCAL_OS/ai_os/Start-HiveAIOS.cmd",
+    "not": "single magically fused kernel of all distros"
+  },
+  "paths": {
+    "iso_root": "D:/HIVE_BOOTLAB/Linux/ISO_amd64",
+    "hive": "C:/Users/ARCHITECT/THE_HIVE",
+    "genesis": "C:/Users/ARCHITECT/THE_HIVE/GENESIS"
+  }
+}

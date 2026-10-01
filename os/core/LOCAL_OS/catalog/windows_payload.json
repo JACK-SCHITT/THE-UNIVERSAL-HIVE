@@ -1,0 +1,41 @@
+{
+  "name": "HIVE Windows Payload Catalog",
+  "policy": {
+    "ai_mode": "local_only",
+    "cloud_forbidden": true,
+    "ollama_required": true,
+    "default_model": "phi3:mini",
+    "models_root": "D:/HIVE_LOCAL_AI/ollama/models"
+  },
+  "dna": [
+    "C:/Hive",
+    "C:/Users/ARCHITECT/THE_HIVE",
+    "C:/HIVE_COMPUTER"
+  ],
+  "runtime": [
+    { "id": "ollama", "path": "C:/Users/ARCHITECT/AppData/Local/Programs/Ollama/ollama.exe", "role": "local_llm" },
+    { "id": "node", "path": "C:/Users/ARCHITECT/AppData/Local/hermes/node/node.exe", "role": "hive_core" },
+    { "id": "python", "path": "C:/Users/ARCHITECT/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe", "role": "cockpit_api" },
+    { "id": "wsl_kali", "distro": "kali-linux", "role": "ops_node" }
+  ],
+  "tools_bulk": [
+    "D:/HIVE_BOOTLAB/Tools/rufus-4.15.exe",
+    "D:/BULK_OFFLOAD"
+  ],
+  "linux_media": [
+    "D:/HIVE_BOOTLAB/Linux/SparkyLinux_arm64",
+    "D:/HIVE_BOOTLAB/Linux/Kali_NetHunter_armhf",
+    "D:/HIVE_BOOTLAB/Linux/ISO_amd64"
+  ],
+  "apps_source": [
+    "D:/HIVE_BOOTLAB/Apps/Source"
+  ],
+  "genesis": [
+    "C:/Users/ARCHITECT/THE_HIVE/GENESIS"
+  ],
+  "first_boot": {
+    "assistant": "LOCAL_OS/firstboot/krackerjack_local_assistant.py",
+    "ui": "LOCAL_OS/firstboot/install_assistant.html",
+    "autostart": "LOCAL_OS/autoinstall/Install-HiveLocal.ps1"
+  }
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KRACKERJACK AI — Local Install Assistant</title>
+  <style>
+    :root { --bg:#050505; --fg:#00ff88; --yl:#ffd000; --muted:#6a6a6a; --panel:#0d0d0d; --bad:#ff3355; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Consolas, "Courier New", monospace; background:var(--bg); color:var(--fg); min-height:100vh; }
+    header { border-bottom:1px solid #1f1f1f; padding:14px 18px; background:#0a0a0a; }
+    header h1 { margin:0; font-size:16px; color:var(--yl); letter-spacing:1px; }
+    header p { margin:6px 0 0; color:var(--muted); font-size:12px; }
+    .wrap { display:grid; grid-template-columns: 280px 1fr; gap:0; min-height: calc(100vh - 70px); }
+    aside { border-right:1px solid #1f1f1f; padding:14px; background:var(--panel); }
+    main { display:flex; flex-direction:column; padding:14px; }
+    .pill { display:inline-block; padding:2px 8px; border:1px solid var(--fg); border-radius:999px; font-size:11px; margin-right:6px; }
+    .pill.bad { border-color:var(--bad); color:var(--bad); }
+    .pill.warn { border-color:var(--yl); color:var(--yl); }
+    #log { flex:1; overflow:auto; border:1px solid #1f1f1f; background:#000; padding:12px; white-space:pre-wrap; font-size:13px; line-height:1.45; min-height:320px; }
+    .row { display:flex; gap:8px; margin-top:10px; }
+    input, button, textarea { font:inherit; }
+    input, textarea { flex:1; background:#000; color:var(--fg); border:1px solid #2a2a2a; padding:10px; }
+    button { background:var(--fg); color:#000; border:0; padding:10px 14px; cursor:pointer; font-weight:700; }
+    button.secondary { background:transparent; color:var(--yl); border:1px solid var(--yl); }
+    button:disabled { opacity:0.5; cursor:not-allowed; }
+    ul { padding-left:18px; color:#b8ffd6; font-size:12px; }
+    li { margin:6px 0; }
+    .msg-user { color:#7fd3ff; }
+    .msg-ai { color:var(--fg); }
+    .msg-sys { color:var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>KRACKERJACK AI · LOCAL INSTALL ASSISTANT</h1>
+    <p>100% local via Ollama · Sparky AI / Hive Federation · No cloud required</p>
+  </header>
+  <div class="wrap">
+    <aside>
+      <div id="status">Checking local brain…</div>
+      <h3 style="color:var(--yl); font-size:12px; margin-top:18px;">INSTALL PATH</h3>
+      <ul>
+        <li>Verify local model ready</li>
+        <li>Run Windows Hive auto-install</li>
+        <li>Start WSL Kali node</li>
+        <li>Mount DNA (THE_HIVE / GENESIS)</li>
+        <li>Build / flash boot media (Rufus)</li>
+        <li>Edge media: Sparky ARM / NetHunter stay edge-only</li>
+      </ul>
+      <button class="secondary" style="width:100%; margin-top:12px" onclick="quick('What is my install status and what should I do first?')">Status briefing</button>
+      <button class="secondary" style="width:100%; margin-top:8px" onclick="quick('Walk me through full-send local Hive install on this Windows host step by step.')">Full-send guide</button>
+      <button class="secondary" style="width:100%; margin-top:8px" onclick="quick('How do I flash a bootable USB for this AMD64 PC without using ARM Sparky by mistake?')">USB boot help</button>
+    </aside>
+    <main>
+      <div id="log"></div>
+      <div class="row">
+        <input id="q" placeholder="Ask KRACKERJACK (local)…" onkeydown="if(event.key==='Enter')ask()" />
+        <button id="go" onclick="ask()">SEND</button>
+      </div>
+    </main>
+  </div>
+  <script>
+    const logEl = document.getElementById('log');
+    function line(cls, text) {
+      const d = document.createElement('div');
+      d.className = cls;
+      d.textContent = text;
+      logEl.appendChild(d);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+    async function refreshHealth() {
+      try {
+        const r = await fetch('/health');
+        const h = await r.json();
+        const ready = h.local_ready && h.ollama_up;
+        document.getElementById('status').innerHTML =
+          `<span class="pill ${ready ? '' : 'bad'}">${ready ? 'LOCAL BRAIN ONLINE' : 'LOCAL BRAIN NOT READY'}</span>` +
+          `<div style="margin-top:10px;font-size:12px;color:#9f9f9f">model: ${h.model}<br>ollama: ${h.ollama_up ? 'up' : 'down'}<br>models: ${(h.models||[]).join(', ') || 'none'}</div>`;
+        if (!ready) line('msg-sys', '[system] Local model not ready. Run: ollama pull phi3:mini');
+        else line('msg-sys', '[system] KRACKERJACK AI local assistant ready. Cloud disabled.');
+      } catch (e) {
+        document.getElementById('status').innerHTML = '<span class="pill bad">ASSISTANT API DOWN</span>';
+      }
+    }
+    async function ask(text) {
+      const input = document.getElementById('q');
+      const q = (text || input.value || '').trim();
+      if (!q) return;
+      input.value = '';
+      line('msg-user', 'YOU> ' + q);
+      document.getElementById('go').disabled = true;
+      try {
+        const r = await fetch('/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: q })
+        });
+        const j = await r.json();
+        if (j.ok) line('msg-ai', 'KJ> ' + j.answer);
+        else line('msg-sys', '[error] ' + (j.error || 'unknown') + (j.hint ? ' — ' + j.hint : ''));
+      } catch (e) {
+        line('msg-sys', '[error] ' + e);
+      }
+      document.getElementById('go').disabled = false;
+    }
+    function quick(t) { ask(t); }
+    refreshHealth();
+    line('msg-sys', 'Welcome to HIVE OS Federation install. Mind = local KRACKERJACK AI. Soul = THE HIVE.');
+  </script>
+</body>
+</html>

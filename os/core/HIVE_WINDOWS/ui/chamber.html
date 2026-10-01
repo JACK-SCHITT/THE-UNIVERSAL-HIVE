@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HIVE CHAMBERS — Individual + Combined Force</title>
+  <style>
+    :root {
+      --bg: #050505; --panel: #0d0d0d; --primary: #ffd700;
+      --accent: #00ff66; --text: #e8e8e8; --muted: #888; --border: #333;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      background: var(--bg); color: var(--text);
+      font-family: Consolas, ui-monospace, monospace;
+    }
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding: 12px 16px; background: #0a0a00;
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+    }
+    h1 { margin: 0; font-size: 15px; color: var(--primary); letter-spacing: 1px; }
+    .law { font-size: 11px; color: var(--muted); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px; padding: 14px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--primary);
+      padding: 12px; min-height: 140px;
+      box-shadow: 0 0 12px rgba(255,215,0,0.08);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .card h2 { margin: 0; font-size: 13px; color: var(--primary); }
+    .card .role { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+    .card p { margin: 0; font-size: 11px; flex: 1; }
+    button {
+      background: var(--accent); color: #000; border: none;
+      padding: 8px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    button:hover { background: var(--primary); }
+    button.secondary { background: #222; color: var(--primary); border: 1px solid var(--primary); }
+    #work {
+      margin: 0 14px 14px; border: 1px solid var(--primary);
+      background: #000; min-height: 180px; padding: 12px;
+    }
+    #work h3 { margin: 0 0 8px; color: var(--primary); font-size: 13px; }
+    textarea {
+      width: 100%; min-height: 70px; background: #0a0a0a; color: var(--accent);
+      border: 1px solid var(--border); font-family: inherit; padding: 8px;
+    }
+    .bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .log {
+      margin-top: 8px; height: 120px; overflow: auto;
+      border: 1px solid #222; padding: 8px; font-size: 11px; white-space: pre-wrap;
+    }
+    .pill {
+      display: inline-block; border: 1px solid var(--primary);
+      color: var(--primary); padding: 2px 8px; font-size: 10px; margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>THE HIVE — AI &amp; APP CHAMBERS</h1>
+      <div class="law">100% individual · 100% combined force · learn when unknown · complete the task</div>
+    </div>
+    <div>
+      <span class="pill">DOCK + CHAMBERS</span>
+      <span class="pill">SKIN FIDELITY</span>
+      <span class="pill">SELF-UPGRADE</span>
+    </div>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <div id="work">
+    <h3 id="activeTitle">Select a chamber</h3>
+    <div class="law" id="activeMeta"></div>
+    <textarea id="prompt" placeholder="Order for this AI / chamber…">Status. Capricorn. Ready solo or swarm. If unknown — learn and continue.</textarea>
+    <div class="bar">
+      <button id="btnSolo">RUN SOLO</button>
+      <button class="secondary" id="btnSwarm">COMBINED FORCE (ALL)</button>
+      <button class="secondary" id="btnCockpit">OPEN HIVE COCKPIT</button>
+    </div>
+    <div class="log" id="log"></div>
+  </div>
+
+  <script>
+    const DEFAULT_AGENTS = [
+      { id: 'krackerjack', label: 'KRACKERJACK AI', role: 'chosen_one', chamber: 'krackerjack-ai', skills: ['first_contact'] },
+      { id: 'jaguar', label: 'JAGUAR AI', role: 'action_foundry', chamber: 'jaguar-ai', skills: ['execute','foundry'] },
+      { id: 'counsel', label: 'COUNSEL', role: 'truth', chamber: 'hive-cockpit', skills: ['reason'] },
+      { id: 'zorg', label: 'ZORG', role: 'security_chief', chamber: 'hive-cockpit', skills: ['hardening'] },
+      { id: 'scamshield', label: 'NEURAL SCAM SHIELD AI', role: 'protector', chamber: 'neural-scam-shield', skills: ['scam','neural'] },
+      { id: 'capricorn', label: 'CAPRICORN AI', role: 'companion', chamber: 'capricorn-ai', skills: ['companion','zodiac'] },
+      { id: 'grokschitt', label: 'GROKSCHITT', role: 'node', chamber: 'grokschitt', skills: ['node','companion'] },
+      { id: 'assimilate', label: 'AssimilateOrDie', role: 'foundry', chamber: 'assimilate-or-die', skills: ['assimilate'] },
+      { id: 'hive', label: 'HIVE ORCHESTRATOR', role: 'orchestrator', chamber: 'hive-cockpit', skills: ['route'] }
+    ];
+
+    const SKINS = {
+      'hive-cockpit': { primary: '#ffd700', panel: '#0d0d0d', accent: '#00ff66', bg: '#050505' },
+      'krackerjack-ai': { primary: '#f5a623', panel: '#111', accent: '#00ff41', bg: '#0a0a0a' },
+      'jaguar-ai': { primary: '#22c55e', panel: '#0f172a', accent: '#84cc16', bg: '#020617' },
+      'assimilate-or-die': { primary: '#C0392B', panel: '#0d0d0d', accent: '#00F5FF', bg: '#000' },
+      'neural-scam-shield': { primary: '#3b82f6', panel: '#121a2e', accent: '#a855f7', bg: '#0b1020' },
+      'capricorn-ai': { primary: '#a8a29e', panel: '#1c1917', accent: '#fbbf24', bg: '#0c0a09' },
+      'grokschitt': { primary: '#fafafa', panel: '#141414', accent: '#a3e635', bg: '#0c0c0c' }
+    };
+
+    let agents = DEFAULT_AGENTS;
+    let active = agents[0];
+
+    function log(m) {
+      const el = document.getElementById('log');
+      const t = new Date().toLocaleTimeString();
+      el.textContent += `[${t}] ${m}\n`;
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function applySkin(chamberId) {
+      const s = SKINS[chamberId] || SKINS['hive-cockpit'];
+      const r = document.documentElement.style;
+      r.setProperty('--primary', s.primary);
+      r.setProperty('--panel', s.panel);
+      r.setProperty('--accent', s.accent);
+      r.setProperty('--bg', s.bg);
+      document.body.style.background = s.bg;
+    }
+
+    function selectAgent(a) {
+      active = a;
+      applySkin(a.chamber);
+      document.getElementById('activeTitle').textContent = a.label;
+      document.getElementById('activeMeta').textContent =
+        `role=${a.role} · chamber=${a.chamber} · skills=${(a.skills || []).join(', ')} · autonomous learn+continue`;
+      log(`Chamber active: ${a.label} (individual face preserved)`);
+    }
+
+    function render() {
+      const g = document.getElementById('grid');
+      g.innerHTML = '';
+      agents.forEach(a => {
+        const skin = SKINS[a.chamber] || SKINS['hive-cockpit'];
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.borderColor = skin.primary;
+        card.innerHTML = `
+          <h2 style="color:${skin.primary}">${a.label}</h2>
+          <div class="role">${a.role}</div>
+          <p>100% individual chamber. Combined force on demand. Learns when unknown.</p>
+          <button type="button">ENTER CHAMBER</button>`;
+        card.querySelector('button').onclick = () => selectAgent(a);
+        g.appendChild(card);
+      });
+    }
+
+    document.getElementById('btnSolo').onclick = () => {
+      const p = document.getElementById('prompt').value.trim();
+      log(`SOLO → ${active.label}: ${p.slice(0, 120)}`);
+      log(`(On HIVE OS: agents.py ${active.id} runs local brain; learns + continues if gap)`);
+    };
+    document.getElementById('btnSwarm').onclick = () => {
+      log('COMBINED FORCE — all chambers notified as one swarm');
+      agents.forEach(a => log(`  · ${a.label} online`));
+    };
+    document.getElementById('btnCockpit').onclick = () => {
+      window.open('http://127.0.0.1:8787/', '_blank');
+    };
+
+    render();
+    selectAgent(active);
+    log('Chambers ready. Skin fidelity law active. Dock + this UI = full AI surface.');
+  </script>
+</body>
+</html>

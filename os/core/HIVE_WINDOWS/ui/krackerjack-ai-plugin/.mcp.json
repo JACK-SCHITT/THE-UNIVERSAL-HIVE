@@ -1,0 +1,302 @@
+{
+	"mcpServers": {
+		"azure-ai-foundry/mcp-foundry": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": [
+				"--prerelease=allow",
+				"--from",
+				"git+https://github.com/azure-ai-foundry/mcp-foundry.git",
+				"run-azure-ai-foundry-mcp",
+				"--envFile",
+				"${input:env_file_path}"
+			],
+			"env": {
+				"GITHUB_TOKEN": "${input:github_token}",
+				"AZURE_AI_SEARCH_ENDPOINT": "${input:ai_search_endpoint}",
+				"AZURE_AI_SEARCH_API_VERSION": "${input:ai_search_api_version}",
+				"SEARCH_AUTHENTICATION_METHOD": "${input:search_auth_method}",
+				"AZURE_TENANT_ID": "${input:azure_tenant_id}",
+				"AZURE_CLIENT_ID": "${input:azure_client_id}",
+				"AZURE_CLIENT_SECRET": "${input:azure_client_secret}",
+				"AZURE_AI_SEARCH_API_KEY": "${input:ai_search_api_key}",
+				"EVAL_DATA_DIR": "${input:eval_data_dir}",
+				"AZURE_OPENAI_ENDPOINT": "${input:az_openai_endpoint}",
+				"AZURE_OPENAI_API_KEY": "${input:az_openai_api_key}",
+				"AZURE_OPENAI_DEPLOYMENT": "${input:az_openai_deployment}",
+				"AZURE_OPENAI_API_VERSION": "${input:az_openai_api_version}",
+				"AZURE_AI_PROJECT_ENDPOINT": "${input:ai_project_endpoint}"
+			}
+		},
+		"chroma-core/chroma-mcp": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": [
+				"chroma-mcp@v0.2.6"
+			],
+			"env": {
+				"CHROMA_CLIENT_TYPE": "${input:chroma_client_type}",
+				"CHROMA_DOTENV_PATH": "${input:chroma_dotenv_path}",
+				"CHROMA_DATA_DIR": "${input:chroma_data_dir}",
+				"CHROMA_TENANT": "${input:chroma_tenant}",
+				"CHROMA_DATABASE": "${input:chroma_database}",
+				"CHROMA_API_KEY": "${input:chroma_api_key}",
+				"CHROMA_HOST": "${input:chroma_host}",
+				"CHROMA_PORT": "${input:chroma_port}",
+				"CHROMA_CUSTOM_AUTH_CREDENTIALS": "${input:chroma_custom_auth}",
+				"CHROMA_SSL": "${input:chroma_ssl}"
+			}
+		},
+		"com.apify/apify-mcp-server": {
+			"type": "http",
+			"url": "https://mcp.apify.com/",
+			"headers": {
+				"Authorization": "${input:Authorization}"
+			}
+		},
+		"com.figma.mcp/mcp": {
+			"type": "http",
+			"url": "https://mcp.figma.com/mcp"
+		},
+		"com.microsoft/azure": {
+			"type": "stdio",
+			"command": "dnx",
+			"args": [
+				"Azure.Mcp@3.0.0-beta.6",
+				"--yes",
+				"--",
+				"server",
+				"start"
+			]
+		},
+		"com.microsoft/microsoft-fabric": {
+			"type": "stdio",
+			"command": "dnx",
+			"args": [
+				"Microsoft.Fabric.Mcp@1.2.0",
+				"--yes",
+				"--",
+				"server",
+				"start"
+			]
+		},
+		"com.microsoft/nuget": {
+			"type": "stdio",
+			"command": "dnx",
+			"args": [
+				"NuGet.Mcp.Server@1.4.16",
+				"--yes",
+				"--source",
+				"https://api.nuget.org/v3/index.json"
+			]
+		},
+		"com.postman/postman-mcp-server": {
+			"type": "http",
+			"url": "https://mcp.postman.com/mcp",
+			"headers": {
+				"Authorization": "${input:Authorization}"
+			}
+		},
+		"com.stripe/mcp": {
+			"type": "http",
+			"url": "https://mcp.stripe.com/"
+		},
+		"com.supabase/mcp": {
+			"type": "http",
+			"url": "https://mcp.supabase.com/mcp"
+		},
+		"coplaydev/unity-mcp": {
+			"type": "stdio",
+			"command": "other",
+			"args": [
+				"--directory",
+				"${input:unity_mcp_server_src}",
+				"run",
+				"server.py"
+			]
+		},
+		"firecrawl/firecrawl-mcp-server": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"firecrawl-mcp@latest"
+			],
+			"env": {
+				"FIRECRAWL_API_KEY": "${input:api_key}"
+			}
+		},
+		"huggingface/hf-mcp-server": {
+			"type": "http",
+			"url": "https://huggingface.co/mcp?login"
+		},
+		"io.github.bytebase/dbhub": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"@bytebase/dbhub@0.23.0"
+			],
+			"env": {
+				"DSN": "${input:DSN}",
+				"DB_TYPE": "${input:DB_TYPE}",
+				"DB_HOST": "${input:DB_HOST}",
+				"DB_PORT": "${input:DB_PORT}",
+				"DB_USER": "${input:DB_USER}",
+				"DB_PASSWORD": "${input:DB_PASSWORD}",
+				"DB_NAME": "${input:DB_NAME}",
+				"TRANSPORT": "${input:TRANSPORT}",
+				"PORT": "${input:PORT}",
+				"ID": "${input:ID}",
+				"SSH_HOST": "${input:SSH_HOST}",
+				"SSH_PORT": "${input:SSH_PORT}",
+				"SSH_USER": "${input:SSH_USER}",
+				"SSH_PASSWORD": "${input:SSH_PASSWORD}",
+				"SSH_KEY": "${input:SSH_KEY}",
+				"SSH_PASSPHRASE": "${input:SSH_PASSPHRASE}"
+			}
+		},
+		"io.github.ChromeDevTools/chrome-devtools-mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"--registry",
+				"https://registry.npmjs.org",
+				"chrome-devtools-mcp@1.6.0"
+			]
+		},
+		"io.github.github/github-mcp-server": {
+			"type": "http",
+			"url": "https://api.githubcopilot.com/mcp/"
+		},
+		"io.github.hashicorp/terraform-mcp-server": {
+			"type": "stdio",
+			"command": "docker",
+			"args": [
+				"run",
+				"-i",
+				"--rm",
+				"-e",
+				"TFE_ADDRESS=${input:address}",
+				"-e",
+				"TFE_TOKEN=${input:token}",
+				"-e",
+				"ENABLE_TF_OPERATIONS=${input:enabled}",
+				"docker.io/hashicorp/terraform-mcp-server:1.0.0"
+			]
+		},
+		"io.github.netdata/mcp-server": {
+			"type": "http",
+			"url": "https://app.netdata.cloud/api/v1/mcp",
+			"headers": {
+				"Authorization": "Bearer ${input:NETDATA_CLOUD_API_TOKEN}"
+			}
+		},
+		"io.github.stackql/stackql-mcp": {
+			"type": "stdio",
+			"command": "mcpb"
+		},
+		"io.github.tavily-ai/tavily-mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"tavily-mcp@0.2.15"
+			],
+			"env": {
+				"TAVILY_API_KEY": "${input:TAVILY_API_KEY}",
+				"DEFAULT_PARAMETERS": "${input:DEFAULT_PARAMETERS}"
+			}
+		},
+		"io.github.vercel/next-devtools-mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"next-devtools-mcp@0.3.6"
+			]
+		},
+		"io.github.vybenetwork/vybe-solana-api": {
+			"type": "http",
+			"url": "https://docs.vybenetwork.com/mcp",
+			"headers": {
+				"X-API-KEY": "${input:X-API-KEY}"
+			}
+		},
+		"io.github.wonderwhy-er/desktop-commander": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"--registry",
+				"https://registry.npmjs.org",
+				"@wonderwhy-er/desktop-commander@0.2.44"
+			]
+		},
+		"io.github.zereight/gitlab-mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"@zereight/mcp-gitlab@2.1.40"
+			],
+			"env": {
+				"GITLAB_PERSONAL_ACCESS_TOKEN": "${input:GITLAB_PERSONAL_ACCESS_TOKEN}",
+				"GITLAB_JOB_TOKEN": "${input:GITLAB_JOB_TOKEN}",
+				"GITLAB_AUTH_COOKIE_PATH": "${input:GITLAB_AUTH_COOKIE_PATH}",
+				"GITLAB_API_URL": "${input:GITLAB_API_URL}",
+				"GITLAB_ALLOWED_PROJECT_IDS": "${input:GITLAB_ALLOWED_PROJECT_IDS}",
+				"GITLAB_READ_ONLY_MODE": "${input:GITLAB_READ_ONLY_MODE}",
+				"USE_GITLAB_WIKI": "${input:USE_GITLAB_WIKI}",
+				"GITLAB_TOOLSETS": "${input:GITLAB_TOOLSETS}",
+				"GITLAB_TOOLS": "${input:GITLAB_TOOLS}",
+				"GITLAB_DENIED_TOOLS_REGEX": "${input:GITLAB_DENIED_TOOLS_REGEX}",
+				"GITLAB_TOOL_POLICY_APPROVE": "${input:GITLAB_TOOL_POLICY_APPROVE}",
+				"GITLAB_TOOL_POLICY_HIDDEN": "${input:GITLAB_TOOL_POLICY_HIDDEN}",
+				"NODE_TLS_REJECT_UNAUTHORIZED": "${input:NODE_TLS_REJECT_UNAUTHORIZED}",
+				"GITLAB_CA_CERT_PATH": "${input:GITLAB_CA_CERT_PATH}"
+			}
+		},
+		"makenotion/notion-mcp-server": {
+			"type": "http",
+			"url": "https://mcp.notion.com/sse"
+		},
+		"microsoft/azure-devops-mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@azure-devops/mcp@latest",
+				"${input:ado_org}",
+				"-d",
+				"${input:ado_domain}"
+			]
+		},
+		"microsoft/markitdown": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": [
+				"markitdown-mcp@0.0.1a4"
+			]
+		},
+		"microsoft/playwright-mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"@playwright/mcp@latest"
+			]
+		},
+		"neondatabase/mcp-server-neon": {
+			"type": "http",
+			"url": "https://mcp.neon.tech/sse"
+		},
+		"oraios/serena": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": [
+				"--from",
+				"git+https://github.com/oraios/serena",
+				"serena",
+				"start-mcp-server",
+				"serena@latest",
+				"--context",
+				"ide-assistant"
+			]
+		}
+	}
+}

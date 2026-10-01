@@ -1,0 +1,45 @@
+#!/bin/bash
+# HIVE-OS AEGIS PROTOCOL — PHYSICAL SECURITY LAYER
+# Deploy to: /etc/local.d/aegis_harden.start
+# Permissions: chmod 700 ; chown root:root
+# Enable: rc-update add local default
+#
+# Truthful scope: best-effort software seal. Not a substitute for
+# full-disk encryption, measured boot, or physical custody.
+
+echo "[+] INITIALIZING AEGIS HARDENING..."
+
+# 1. USB GUARDIAN — deauthorize devices (best effort)
+if [[ -d /sys/bus/usb/devices ]]; then
+  for port in /sys/bus/usb/devices/*/authorized; do
+    [[ -w "$port" ]] && echo 0 > "$port" 2>/dev/null || true
+  done
+  echo "[!] USB PORTS LOCKED (best effort): new auth may be ignored."
+else
+  echo "[-] USB sysfs not present; skip USB guardian."
+fi
+
+# 2. SENSOR NEUTRALIZATION
+modprobe -r uvcvideo 2>/dev/null || true
+modprobe -r snd_hda_intel 2>/dev/null || true
+mkdir -p /etc/modprobe.d
+cat > /etc/modprobe.d/hive-amnesty.conf <<'EOF'
+# HIVE-OS Aegis — sensor blacklist
+blacklist uvcvideo
+blacklist snd_hda_intel
+# Optional: blacklist bluetooth modules if present
+# blacklist btusb
+EOF
+echo "[!] SENSORS DEACTIVATED: webcam/mic drivers blacklisted (if loaded as modules)."
+
+# 3. DMA note — IOMMU must be enabled in kernel + firmware
+# Cannot force IOMMU groups safely via one-liner on all hardware.
+echo "[!] DMA PROTECTION: ensure IOMMU/VT-d/AMD-Vi enabled in firmware + kernel."
+
+# 4. NETWORK SHADOWING
+sysctl -w net.ipv6.conf.all.disable_ipv6=1 2>/dev/null || true
+sysctl -w net.ipv6.conf.default.disable_ipv6=1 2>/dev/null || true
+sysctl -w net.ipv4.icmp_echo_ignore_all=1 2>/dev/null || true
+echo "[!] NETWORK SHADOWING ACTIVE: IPv6 off / ICMP echo ignored (if sysctl allowed)."
+
+echo "[HIVE-OS] AEGIS HARDENING COMPLETE. THE ARCHITECT IS SECURE."

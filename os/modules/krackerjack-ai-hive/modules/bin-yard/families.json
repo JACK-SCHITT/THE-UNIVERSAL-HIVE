@@ -1,0 +1,54 @@
+{
+  "module": "bin-yard",
+  "version": 1,
+  "families": [
+    {
+      "id": "bt-hid",
+      "name": "Bluetooth keyboard or mouse",
+      "verdict": "sell-now",
+      "recovery": "Pair in OS Bluetooth settings. No extra receiver."
+    },
+    {
+      "id": "logi-unifying",
+      "name": "Logitech Unifying",
+      "verdict": "buy-official",
+      "recovery": "Genuine Unifying receiver (C-U0007 / C-U0008) + official pairing software."
+    },
+    {
+      "id": "logi-bolt",
+      "name": "Logitech Bolt",
+      "verdict": "buy-official",
+      "recovery": "Genuine Bolt receiver + Logi Options+. Unifying sticks will not work."
+    },
+    {
+      "id": "ms-desktop",
+      "name": "Microsoft 2.4 GHz desktop",
+      "verdict": "buy-official",
+      "recovery": "Official replacement receiver for the exact model printed under the unit."
+    },
+    {
+      "id": "apple-magic",
+      "name": "Apple Magic / wireless",
+      "verdict": "sell-now",
+      "recovery": "Charge and pair over Bluetooth."
+    },
+    {
+      "id": "generic-nano",
+      "name": "No-name 2.4 GHz nano set",
+      "verdict": "parts-only",
+      "recovery": "Factory-paired to one stick. Empty slot is parts, not a software problem."
+    },
+    {
+      "id": "ir-legacy",
+      "name": "Infrared wireless",
+      "verdict": "parts-only",
+      "recovery": "Needs the original IR brick. Not a 2.4 GHz dongle."
+    },
+    {
+      "id": "wired-usb",
+      "name": "Wired USB mis-sorted",
+      "verdict": "sell-now",
+      "recovery": "Plug in and list if it types."
+    }
+  ]
+}

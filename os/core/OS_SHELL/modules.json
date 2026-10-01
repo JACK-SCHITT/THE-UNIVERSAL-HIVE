@@ -1,0 +1,100 @@
+{
+  "product": "HIVE AI OS",
+  "principle": "The apps ARE the OS. Pieces reunite as one desktop shell.",
+  "look": {
+    "font": "Press Start 2P",
+    "colors": {
+      "black": "#000000",
+      "gold": "#c5a059",
+      "neon": "#00ff41",
+      "red": "#ff0044",
+      "cyan": "#00f2ff",
+      "panel": "#141414"
+    },
+    "source_aesthetic": ["GENESIS/hive-cockpit.html", "OpenClawPrime", "AssimilateOrDie", "KrackerjackAI"]
+  },
+  "pillars": [
+    {
+      "id": "openclaw",
+      "name": "OpenClaw Prime",
+      "role": "Hunter / vault / terminal / ZORG",
+      "path": "D:/HIVE_BOOTLAB/Apps/Source/OpenClawPrime",
+      "screens": ["architect", "chat", "terminal", "zorg", "settings", "hunter", "vault", "wizard", "agent"],
+      "dock": true,
+      "os_surface": "hunter"
+    },
+    {
+      "id": "assimilate",
+      "name": "AssimilateOrDie",
+      "role": "Hive build / progress / submit / profile",
+      "path": "D:/HIVE_BOOTLAB/Apps/Source/AssimilateOrDie",
+      "screens": ["hive", "build", "chat", "progress", "submit", "profile", "architect", "prime-directive", "login"],
+      "dock": true,
+      "os_surface": "foundry"
+    },
+    {
+      "id": "krackerjack",
+      "name": "KRACKERJACK AI",
+      "role": "Core identity / chat / analytics",
+      "path": "D:/HIVE_BOOTLAB/Apps/Source/KrackerjackAI",
+      "screens": ["chat", "foundry", "dna", "analytics", "search", "config"],
+      "dock": true,
+      "os_surface": "chat"
+    },
+    {
+      "id": "grokschitt",
+      "name": "GROKSCHITT",
+      "role": "Web surface / shadcn hive UI",
+      "path": "D:/HIVE_BOOTLAB/Apps/Source/GROKSCHITT",
+      "screens": ["home", "dashboard"],
+      "dock": true,
+      "os_surface": "dna"
+    },
+    {
+      "id": "onspace",
+      "name": "OnSpace",
+      "role": "Deploy / mobile bridge",
+      "path": "D:/HIVE_BOOTLAB/Apps/Source/OnSpace",
+      "screens": ["builder", "deploy"],
+      "dock": true,
+      "os_surface": "analytics"
+    },
+    {
+      "id": "moviemaker",
+      "name": "Movie Maker",
+      "role": "Story / characters / library",
+      "path": "D:/HIVE_BOOTLAB/Apps/Source/MovieMaker",
+      "screens": ["library", "characters", "create-story", "create-character", "import-book"],
+      "dock": true,
+      "os_surface": "media"
+    },
+    {
+      "id": "genesis",
+      "name": "GENESIS Cockpit",
+      "role": "OS kernel UI — ask / eyes / ZORG / refinery",
+      "path": "C:/Users/ARCHITECT/THE_HIVE/GENESIS",
+      "screens": ["ask", "eyes", "zorg", "refinery", "claude", "status"],
+      "dock": true,
+      "os_surface": "cockpit"
+    },
+    {
+      "id": "local_ai",
+      "name": "Local KRACKERJACK Install AI",
+      "role": "First-boot + always-on local Ollama brain",
+      "path": "C:/Users/ARCHITECT/THE_HIVE/LOCAL_OS/firstboot",
+      "screens": ["install_assistant"],
+      "dock": true,
+      "os_surface": "assist"
+    }
+  ],
+  "bottom_bar_original": ["FOUNDRY", "HUNTER", "CHAT", "DNA", "ANALYTICS", "SEARCH", "TERMINAL", "CONFIG"],
+  "os_must_include": [
+    "Every app look (black/gold/neon Press Start aesthetic)",
+    "Every major screen as an OS window or tab",
+    "Every primary button/action from GENESIS cockpit",
+    "OpenClaw tabs: Architect Chat Terminal ZORG Settings Hunter Vault",
+    "Assimilate tabs: Hive Build Chat Progress Submit Profile",
+    "Movie Maker: Library Characters Stories",
+    "Local AI only for assist brain"
+  ]
+}

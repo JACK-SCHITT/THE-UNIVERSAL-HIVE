@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HIVE COCKPIT v5.2 — SOVEREIGN</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@500;700&display=swap');
+    :root {
+      --bg: #050505;
+      --panel: #0d0d0d;
+      --gold: #ffd700;
+      --green: #00ff66;
+      --red: #ff3355;
+      --cyan: #00e5ff;
+      --muted: #6a6a6a;
+      --border: #2a2a00;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at top, #121200 0%, var(--bg) 55%);
+      color: var(--green);
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+    }
+    header {
+      border-bottom: 2px solid var(--gold);
+      padding: 14px 18px;
+      background: #0a0a00;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-family: Orbitron, sans-serif;
+      font-size: 16px;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+    .badge {
+      display: inline-block;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 2px 8px;
+      font-size: 11px;
+      margin-right: 6px;
+    }
+    .status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      padding: 10px 18px;
+      border-bottom: 1px solid #1a1a1a;
+      font-size: 12px;
+      background: #080808;
+    }
+    .status-bar span.ok { color: var(--green); }
+    .status-bar span.bad { color: var(--red); }
+    .status-bar span.warn { color: var(--gold); }
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1.2fr 1fr;
+      gap: 12px;
+      padding: 12px;
+    }
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--gold);
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.08);
+      padding: 12px;
+      min-height: 120px;
+    }
+    .panel h2 {
+      margin: 0 0 10px;
+      font-family: Orbitron, sans-serif;
+      font-size: 12px;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    button, select, input, textarea {
+      font-family: inherit;
+      font-size: 12px;
+    }
+    button {
+      background: var(--green);
+      color: #000;
+      border: none;
+      padding: 9px 10px;
+      margin: 4px 4px 4px 0;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    button:hover { background: var(--gold); }
+    button.secondary { background: #222; color: var(--gold); border: 1px solid var(--gold); }
+    button.danger { background: var(--red); color: #fff; }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    input, select, textarea {
+      width: 100%;
+      background: #000;
+      color: var(--green);
+      border: 1px solid var(--gold);
+      padding: 8px;
+      margin: 4px 0 8px;
+    }
+    textarea { min-height: 70px; resize: vertical; }
+    .log {
+      background: #000;
+      border: 1px solid #333;
+      height: 220px;
+      overflow: auto;
+      padding: 8px;
+      white-space: pre-wrap;
+      font-size: 12px;
+      color: var(--green);
+    }
+    .cmd-list {
+      max-height: 320px;
+      overflow: auto;
+      border: 1px solid #222;
+      background: #000;
+    }
+    .cmd-item {
+      border-bottom: 1px solid #1a1a1a;
+      padding: 8px;
+      cursor: pointer;
+    }
+    .cmd-item:hover { background: #111800; }
+    .cmd-item .name { color: var(--gold); font-size: 12px; }
+    .cmd-item .risk {
+      font-size: 10px;
+      padding: 1px 5px;
+      border: 1px solid;
+      margin-left: 6px;
+    }
+    .risk-safe { color: var(--green); border-color: var(--green); }
+    .risk-elevated { color: var(--gold); border-color: var(--gold); }
+    .risk-destructive { color: var(--red); border-color: var(--red); }
+    .cmd-item code {
+      display: block;
+      color: var(--cyan);
+      font-size: 11px;
+      margin-top: 4px;
+      word-break: break-all;
+    }
+    .muted { color: var(--muted); font-size: 11px; }
+    .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .agent-pill {
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      padding: 4px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      background: #001018;
+    }
+    .agent-pill.active { background: var(--cyan); color: #000; font-weight: 700; }
+    .agent-pill.primary { border-color: var(--gold); color: var(--gold); }
+    .agent-pill.primary.active { background: var(--gold); color: #000; }
+    footer {
+      padding: 10px 18px 18px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    #apiBanner {
+      display: none;
+      background: #300;
+      color: #faa;
+      padding: 8px 18px;
+      border-bottom: 1px solid var(--red);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="apiBanner"></div>
+  <header>
+    <div>
+      <h1>THE HIVE COCKPIT v5.2 — SOVEREIGN</h1>
+      <div class="muted">Architect KRACKERJACK1134 · Protocol ASSIMILATE OR DIE · Harder to kill</div>
+    </div>
+    <div>
+      <span class="badge" id="badgeBrain">BRAIN: …</span>
+      <span class="badge" id="badgeApi">API: …</span>
+      <span class="badge" id="badgeOllama">OLLAMA: …</span>
+    </div>
+  </header>
+
+  <div class="status-bar" id="statusBar">
+    <div>NODE: <span id="sNode">…</span></div>
+    <div>VERSION: <span id="sVer">…</span></div>
+    <div>SOUL: <span id="sSoul">…</span></div>
+    <div>CHOSEN: <span class="ok">KRACKERJACK AI</span></div>
+    <div>TESTERS: <span class="warn">HunterPrime · COUNSEL · ZORG-Ω</span></div>
+  </div>
+
+  <div class="layout">
+    <!-- LEFT: multi-primary + ask -->
+    <div class="panel">
+      <h2>Multi-Primary Brain</h2>
+      <div class="row" id="agentRow" style="margin-bottom:8px;"></div>
+      <div class="muted">Standalone cells. Loyal to user not corp. SCAMSHIELD protects. No paid API.</div>
+      <textarea id="prompt" placeholder="Order for the Hive…">Hive status. Capricorn. Two sentences. Confirm multi-primary is online.</textarea>
+      <div class="row">
+        <button id="btnAsk">ASK AGENT</button>
+        <button class="secondary" id="btnOffline">OFFLINE ONLY</button>
+        <button class="secondary" id="btnRefresh">REFRESH STATUS</button>
+      </div>
+      <div class="log" id="chatLog"></div>
+    </div>
+
+    <!-- CENTER: command catalog -->
+    <div class="panel">
+      <h2>Command Catalog (Windows + Linux)</h2>
+      <div class="row">
+        <select id="platSelect">
+          <option value="windows">Windows (War Room)</option>
+          <option value="linux">Linux (WSL / Gentoo)</option>
+        </select>
+        <button class="secondary" id="btnCopy">COPY SELECTED</button>
+      </div>
+      <div class="muted">UI never executes shell. Copy → your terminal. Destructive steps stay gated.</div>
+      <div class="cmd-list" id="cmdList"></div>
+      <textarea id="cmdPreview" readonly placeholder="Selected command appears here…"></textarea>
+    </div>
+
+    <!-- RIGHT: system + beachhead -->
+    <div class="panel">
+      <h2>Node / Beachhead</h2>
+      <div id="sysPanel" class="muted">Loading…</div>
+      <h2 style="margin-top:14px;">Hardening</h2>
+      <ul id="hardList" class="muted" style="padding-left:18px;margin:0;"></ul>
+      <h2 style="margin-top:14px;">Fleet (JACK-SCHITT)</h2>
+      <div id="fleetPanel" class="muted">Loading fleet…</div>
+      <button class="secondary" id="btnFleet">REFRESH FLEET</button>
+      <h2 style="margin-top:14px;">Quick Actions</h2>
+      <button class="secondary" id="btnHealth">API HEALTH</button>
+      <button class="secondary" id="btnCmdsReload">RELOAD COMMANDS</button>
+      <p class="muted" style="margin-top:10px;">
+        Beachheads: <code>C:\Hive</code> · <code>C:\ProgramData\THE_HIVE\war-room</code><br/>
+        Trap: empty file <code>C:\Program</code> is NOT a folder.
+      </p>
+    </div>
+  </div>
+
+  <div class="panel" style="margin:0 12px 12px;">
+    <h2>Hive Console</h2>
+    <div class="log" id="consoleLog"></div>
+  </div>
+
+  <footer>
+    Localhost only · No shell exec from browser · Secrets never displayed · Cold storage JACK-SCHITT/HIVE-OS-CORE
+  </footer>
+
+  <script>
+    const API = (location.protocol === 'file:')
+      ? 'http://127.0.0.1:8787'
+      : '';
+
+    let selectedAgent = 'krackerjack';
+    let selectedCmd = '';
+    let commandsData = null;
+    let statusData = null;
+
+    const agents = [
+      { id: 'krackerjack', label: 'KRACKERJACK (chosen)', primary: true },
+      { id: 'hunterprime', label: 'HunterPrime', primary: false },
+      { id: 'counsel', label: 'COUNSEL', primary: false },
+      { id: 'zorg', label: 'ZORG-Ω', primary: false },
+      { id: 'scamshield', label: 'SCAMSHIELD', primary: false },
+      { id: 'luna', label: 'LUNA', primary: false },
+      { id: 'hive', label: 'HIVE route', primary: false },
+    ];
+
+    function el(id) { return document.getElementById(id); }
+
+    function log(boxId, msg) {
+      const box = el(boxId);
+      const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      box.textContent += `[${t}] ${msg}\n`;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function setBadge(id, text, cls) {
+      const b = el(id);
+      b.textContent = text;
+      b.style.borderColor = cls === 'bad' ? 'var(--red)' : cls === 'warn' ? 'var(--gold)' : 'var(--gold)';
+      b.style.color = cls === 'bad' ? 'var(--red)' : cls === 'warn' ? 'var(--gold)' : 'var(--green)';
+    }
+
+    function mark(ok) {
+      return ok ? '<span class="ok">OK</span>' : '<span class="bad">BAD</span>';
+    }
+
+    function renderAgents() {
+      const row = el('agentRow');
+      row.innerHTML = '';
+      agents.forEach(a => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'agent-pill' + (a.primary ? ' primary' : '') + (selectedAgent === a.id ? ' active' : '');
+        b.textContent = a.label;
+        b.onclick = () => {
+          selectedAgent = a.id;
+          renderAgents();
+          log('consoleLog', `Agent selected: ${a.label}`);
+        };
+        row.appendChild(b);
+      });
+    }
+
+    async function api(path, opts) {
+      const res = await fetch(API + path, opts);
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch { data = { raw: text }; }
+      if (!res.ok) throw new Error((data && data.error) || res.statusText || 'request failed');
+      return data;
+    }
+
+    async function refreshStatus() {
+      try {
+        const s = await api('/api/status');
+        statusData = s;
+        el('apiBanner').style.display = 'none';
+        setBadge('badgeApi', 'API: LIVE', 'ok');
+        setBadge('badgeBrain', 'BRAIN: ' + (s.brain || '?').toUpperCase(), 'ok');
+        setBadge('badgeOllama', s.ollama && s.ollama.up ? 'OLLAMA: UP' : 'OLLAMA: DOWN', s.ollama && s.ollama.up ? 'ok' : 'warn');
+        el('sNode').innerHTML = `<span class="ok">${(s.manifest && s.manifest.node_id) || '?'}</span>`;
+        el('sVer').textContent = (s.manifest && s.manifest.version) || '?';
+        el('sSoul').innerHTML = mark(!!s.soul_ok);
+
+        const m = s.manifest || {};
+        el('sysPanel').innerHTML = [
+          `<div>Name: <span class="ok">${m.name || 'HIVE-OS'} (${m.codename || ''})</span></div>`,
+          `<div>Domain: ${m.domain || ''}</div>`,
+          `<div>Protocol: ${m.protocol || ''}</div>`,
+          `<div>Root: <code>${s.hive_root || ''}</code></div>`,
+          `<div>XAI key: ${s.xai_key} · GH PAT: ${s.gh_pat}</div>`,
+          `<div>Ollama models: ${(s.ollama && s.ollama.models && s.ollama.models.join(', ')) || '(none)'}</div>`,
+          `<div>Picked model: ${(s.ollama && s.ollama.picked) || 'n/a'}</div>`,
+          `<div class="muted" style="margin-top:6px;">Bind: ${s.bind || ''}</div>`,
+        ].join('');
+
+        const hl = el('hardList');
+        hl.innerHTML = '';
+        (s.hardening || []).forEach(h => {
+          const li = document.createElement('li');
+          li.textContent = h;
+          hl.appendChild(li);
+        });
+        log('consoleLog', 'Status refreshed. Soul=' + (s.soul_ok ? 'OK' : 'MISSING'));
+      } catch (e) {
+        setBadge('badgeApi', 'API: DOWN', 'bad');
+        el('apiBanner').style.display = 'block';
+        el('apiBanner').textContent =
+          'API offline. Start: powershell -ExecutionPolicy Bypass -File scripts\\start_hive_ui.ps1  →  ' + e.message;
+        log('consoleLog', 'Status failed: ' + e.message);
+      }
+    }
+
+    function renderCommands() {
+      const plat = el('platSelect').value;
+      const list = el('cmdList');
+      list.innerHTML = '';
+      if (!commandsData || !commandsData.platforms || !commandsData.platforms[plat]) {
+        list.innerHTML = '<div class="cmd-item muted">No commands loaded.</div>';
+        return;
+      }
+      const block = commandsData.platforms[plat];
+      (block.commands || []).forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'cmd-item';
+        const risk = c.risk || 'safe';
+        div.innerHTML =
+          `<div class="name">${c.name || c.id}` +
+          `<span class="risk risk-${risk}">${risk}</span></div>` +
+          `<div class="muted">${c.why || ''}</div>` +
+          `<code>${c.cmd || ''}</code>`;
+        div.onclick = () => {
+          selectedCmd = c.cmd || '';
+          el('cmdPreview').value = selectedCmd;
+          log('consoleLog', `Selected [${plat}] ${c.name} (${risk})`);
+        };
+        list.appendChild(div);
+      });
+    }
+
+    async function loadCommands() {
+      try {
+        commandsData = await api('/api/commands');
+        renderCommands();
+        log('consoleLog', 'Command catalog loaded.');
+      } catch (e) {
+        log('consoleLog', 'Commands failed: ' + e.message);
+      }
+    }
+
+    async function ask(mode) {
+      const prompt = el('prompt').value.trim();
+      if (!prompt) return;
+      log('chatLog', `> [${selectedAgent}${mode === 'offline' ? '/offline' : ''}] ${prompt}`);
+      el('btnAsk').disabled = true;
+      el('btnOffline').disabled = true;
+      try {
+        const path = mode === 'offline' ? '/api/offline' : '/api/ask';
+        const body = mode === 'offline'
+          ? { prompt, agent: selectedAgent.toUpperCase() }
+          : { prompt, agent: selectedAgent };
+        const data = await api(path, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        log('chatLog', data.reply || JSON.stringify(data));
+      } catch (e) {
+        log('chatLog', 'ERROR: ' + e.message);
+      } finally {
+        el('btnAsk').disabled = false;
+        el('btnOffline').disabled = false;
+      }
+    }
+
+    function copySelected() {
+      if (!selectedCmd) {
+        log('consoleLog', 'No command selected.');
+        return;
+      }
+      navigator.clipboard.writeText(selectedCmd).then(
+        () => log('consoleLog', 'Command copied to clipboard.'),
+        () => {
+          el('cmdPreview').select();
+          document.execCommand('copy');
+          log('consoleLog', 'Command copied (fallback).');
+        }
+      );
+    }
+
+    // init
+    renderAgents();
+    el('btnAsk').onclick = () => ask('ask');
+    el('btnOffline').onclick = () => ask('offline');
+    el('btnRefresh').onclick = refreshStatus;
+    el('btnHealth').onclick = async () => {
+      try {
+        const h = await api('/api/health');
+        log('consoleLog', 'Health: ' + JSON.stringify(h));
+      } catch (e) {
+        log('consoleLog', 'Health failed: ' + e.message);
+      }
+    };
+    el('btnCmdsReload').onclick = loadCommands;
+    el('btnCopy').onclick = copySelected;
+    el('platSelect').onchange = renderCommands;
+
+    async function refreshFleet() {
+      try {
+        const f = await api('/api/fleet');
+        const box = el('fleetPanel');
+        const lines = [
+          `<div class="ok">Mirrored ${f.mirrored}/${f.total_core} core</div>`,
+          `<div>Account: ${f.github_account || 'JACK-SCHITT'}</div>`,
+        ];
+        (f.items || []).forEach(i => {
+          const mark = i.local_present ? '✓' : '·';
+          const cls = i.local_present ? 'ok' : 'warn';
+          lines.push(
+            `<div class="${cls}">${mark} ${i.repo || i.id} <span class="muted">${i.sha || ''}</span></div>`
+          );
+        });
+        box.innerHTML = lines.join('');
+        log('consoleLog', `Fleet: ${f.mirrored}/${f.total_core} mirrored`);
+      } catch (e) {
+        el('fleetPanel').textContent = 'Fleet offline: ' + e.message;
+        log('consoleLog', 'Fleet failed: ' + e.message);
+      }
+    }
+    el('btnFleet').onclick = refreshFleet;
+
+    log('consoleLog', 'Cockpit v5.2 boot. Localhost sovereign mode.');
+    log('consoleLog', 'Multi-primary: KRACKERJACK + HunterPrime + COUNSEL + ZORG-Ω');
+    log('consoleLog', 'Fleet brands: Hive · AssimilateOrDie · KrackerjackAI · ScamShield · Luna · GROKSCHITT');
+    refreshStatus();
+    loadCommands();
+    refreshFleet();
+  </script>
+</body>
+</html>

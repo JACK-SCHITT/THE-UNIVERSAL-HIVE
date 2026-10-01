@@ -1,0 +1,100 @@
+﻿{
+    "name":  "HIVE-OS",
+    "codename":  "Gentoo Core",
+    "version":  "5.3.0-STANDALONE",
+    "node_id":  "OMEGA-PREAMBLE",
+    "class":  "MYTHOS-TIER-5",
+    "domain":  "HUNTER-FOUNDRY",
+    "architect":  "KRACKERJACK1134",
+    "ai_identity":  "KRACKERJACK AI",
+    "protocol":  "ASSIMILATE OR DIE",
+    "path":  "LEAST TRAVELED",
+    "sovereign":  {
+                      "api_keys_required":  false,
+                      "subscriptions_required":  false,
+                      "default_brain":  "local",
+                      "brain_chain":  [
+                                          "ollama_local",
+                                          "offline_sovereign",
+                                          "cloud_optional_legacy_only"
+                                      ],
+                      "self_upgradeable":  true,
+                      "never_obsolete":  true,
+                      "upgrade_entry":  "NEURAL/brain/self_upgrade.py"
+                  },
+    "architecture":  {
+                         "kernel":  "Hardened Gentoo sources (minimal, review modules policy post-boot)",
+                         "init":  "OpenRC",
+                         "vault":  "AES-NI / dm-crypt (hardware crypto preferred)",
+                         "brain":  "Hive-Link local-first (Ollama + offline sovereign; cloud optional legacy)",
+                         "agents":  [
+                                        "KRACKERJACK AI (first contact)",
+                                        "HunterPrime",
+                                        "COUNSEL",
+                                        "ZORG-ÃŽÂ©",
+                                        "SCAMSHIELD",
+                                        "LUNA",
+                                        "HIVE-ORCHESTRATOR"
+                                    ],
+                         "product":  {
+                                         "vision":  "most complicated user-friendly OS",
+                                         "loyalty":  "user not corporation",
+                                         "protection":  "scams and predators (SCAMSHIELD)",
+                                         "standalone":  true,
+                                         "brain":  "ollama local Ã¢â€ â€™ offline sovereign"
+                                     },
+                         "shield":  "Gentoo hardened profile + Aegis local.d (GRSec/PaX only if legally available on your tree)"
+                     },
+    "hive_stats":  {
+                       "total":  31,
+                       "assimilated":  31,
+                       "inProgress":  0,
+                       "detected":  0,
+                       "synced":  31,
+                       "gentoo_assimilated":  1
+                   },
+    "cold_storage_repo":  "JACK-SCHITT/HIVE-OS-CORE",
+    "local_root":  "C:/Users/ARCHITECT/THE_HIVE",
+    "created":  "2026-07-12",
+    "cold_storage_url":  "https://github.com/JACK-SCHITT/HIVE-OS-CORE",
+    "architect_handles":  [
+                              "KRACKERJACK1134",
+                              "JACK-SCHITT"
+                          ],
+    "bridge_node":  "WSL2 kali-linux (staging turf)",
+    "beachheads":  {
+                       "war_room":  "C:/Users/ARCHITECT/THE_HIVE",
+                       "c_hive_junction":  "C:/Hive",
+                       "programdata_junction":  "C:/ProgramData/THE_HIVE/war-room",
+                       "program_trap":  "C:/Program is an empty FILE not a directory"
+                   },
+    "command_catalog":  "HIVE_CORE/commands/COMMANDS.json",
+    "ui":  {
+               "entry":  "scripts/start_hive_ui.ps1",
+               "api":  "NEURAL/brain/hive_api.py",
+               "cockpit":  "cold-storage/hive-cockpit.html",
+               "bind":  "http://127.0.0.1:8787/",
+               "shell_exec_from_ui":  false
+           },
+    "multi_primary":  {
+                          "chosen_one":  "KRACKERJACK AI",
+                          "testers":  [
+                                          "HunterPrime",
+                                          "COUNSEL",
+                                          "ZORG-ÃŽÂ©"
+                                      ]
+                      },
+    "first_ai":  "KRACKERJACK AI",
+    "gentoo_seed":  {
+                        "init":  "openrc",
+                        "status":  "ASSIMILATED",
+                        "arch":  "sparc64",
+                        "path":  "GENESIS/gentoo-sparc/stage3-sparc64-openrc-20260715T100107Z.tar.xz",
+                        "stage3":  "stage3-sparc64-openrc-20260715T100107Z.tar.xz"
+                    },
+    "handbook":  {
+                     "official_mirror":  "docs/handbook/gentoo-sparc",
+                     "hive_augmented":  "docs/HIVE_HANDBOOK",
+                     "first_contact":  "NEURAL/krackerjack/first_contact.py"
+                 }
+}

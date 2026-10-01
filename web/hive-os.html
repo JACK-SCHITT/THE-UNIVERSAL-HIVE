@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="KRACKERJACK HIVE OS local planner. Browser only. No server, account, or scan.">
+<title>KRACKERJACK HIVE OS</title>
+<style>
+  :root {
+    --bg: #050505;
+    --panel: #0e0e0e;
+    --ink: #f3e6c4;
+    --muted: #8d8d8d;
+    --gold: #c5a059;
+    --gold-2: #e4c98a;
+    --neon: #00ff41;
+    --red: #ff3355;
+    --cyan: #5ee7ff;
+    --line: #2a2418;
+    --danger-bg: #2a0c12;
+    --ok-bg: #062412;
+    --tap: 44px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body {
+    min-height: 100dvh;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  h1, h2, h3, p { margin: 0; }
+  .wrap {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+    padding: 12px 12px calc(78px + env(safe-area-inset-bottom));
+  }
+  header.top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gold);
+  }
+  .mark {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    color: var(--red);
+    font-weight: 700;
+  }
+  h1 {
+    margin-top: 4px;
+    font-size: clamp(20px, 5vw, 28px);
+    letter-spacing: 0.04em;
+    color: var(--gold-2);
+  }
+  .sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .status {
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    padding: 8px 12px;
+    min-height: var(--tap);
+    display: inline-flex;
+    align-items: center;
+    letter-spacing: 0.04em;
+    background: #03140a;
+  }
+  .banner {
+    margin-top: 12px;
+    border: 1px solid var(--line);
+    background: #101008;
+    color: var(--gold-2);
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  nav.tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: linear-gradient(#050505 70%, transparent);
+    z-index: 2;
+  }
+  nav.tabs button, .tabbar button, .choice, .pkg, .action {
+    min-height: var(--tap);
+    border: 1px solid #3a3326;
+    background: #111;
+    color: var(--gold-2);
+  }
+  nav.tabs button {
+    flex: 0 0 auto;
+    padding: 0 14px;
+  }
+  nav.tabs button[aria-selected="true"],
+  .choice[aria-pressed="true"],
+  .pkg[aria-pressed="true"],
+  .tabbar button[aria-current="page"] {
+    background: var(--gold);
+    color: #140f06;
+    border-color: var(--gold);
+    font-weight: 700;
+  }
+  .page { display: none; }
+  .page.on { display: block; }
+  .grid {
+    display: grid;
+    gap: 12px;
+  }
+  @media (min-width: 880px) {
+    .grid.two { grid-template-columns: 1.15fr 0.85fr; align-items: start; }
+    .tabbar { display: none; }
+  }
+  @media (max-width: 879px) {
+    nav.tabs { display: none; }
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--gold);
+    padding: 12px;
+  }
+  .panel h2 {
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .hint { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+  .choices, .pkgs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .choice, .pkg, .action {
+    padding: 10px 12px;
+  }
+  .action {
+    background: var(--gold);
+    color: #140f06;
+    font-weight: 700;
+    border-color: var(--gold);
+  }
+  .action.alt {
+    background: transparent;
+    color: var(--cyan);
+    border-color: var(--cyan);
+  }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .identity {
+    margin-top: 12px;
+    border: 1px dashed var(--line);
+    padding: 10px;
+    min-height: 72px;
+  }
+  .identity strong { color: var(--neon); letter-spacing: 0.08em; }
+  .plan {
+    white-space: pre-wrap;
+    background: #070707;
+    border: 1px solid #243024;
+    color: var(--neon);
+    min-height: 220px;
+    padding: 12px;
+    margin: 0;
+  }
+  .plan.bad {
+    color: #ffd0d8;
+    background: var(--danger-bg);
+    border-color: var(--red);
+  }
+  .plan.ok { background: var(--ok-bg); }
+  .stack { display: grid; gap: 12px; }
+  .card {
+    border: 1px solid var(--line);
+    padding: 12px;
+    background: #0a0a0a;
+  }
+  .card h3 { color: var(--cyan); font-size: 14px; margin-bottom: 6px; }
+  .meter {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    border-bottom: 1px solid #1c1c1c;
+    padding: 8px 0;
+    font-size: 14px;
+  }
+  .meter b { color: var(--gold-2); font-weight: 700; }
+  textarea.copybin {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    width: 1px;
+    height: 1px;
+  }
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    background: #090909;
+    border-top: 2px solid var(--gold);
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 5;
+  }
+  .tabbar button {
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    font-size: 11px;
+    padding: 6px 2px;
+  }
+  footer.note {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  :focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="mark">KRACKERJACK</div>
+      <h1>HIVE OS</h1>
+      <p class="sub">Local planner · one file · iPhone Safari</p>
+    </div>
+    <div class="status" id="serverStatus" role="status">Local Mode · Ready</div>
+  </header>
+  <p class="banner">This page only edits a plan in the browser. It does not run system commands, installations, privileged operations, or real security scans.</p>
+
+  <nav class="tabs" aria-label="Sections">
+    <button type="button" data-go="builder" aria-selected="true">Builder</button>
+    <button type="button" data-go="security">Security review</button>
+    <button type="button" data-go="teaching">Teaching</button>
+    <button type="button" data-go="claude">Claude</button>
+    <button type="button" data-go="cockpit">Cockpit</button>
+    <button type="button" data-go="help">Help</button>
+  </nav>
+
+  <section class="page on" id="page-builder" data-page="builder">
+    <div class="grid two">
+      <div class="stack">
+        <div class="panel">
+          <h2>Base</h2>
+          <p class="hint">Pick one planning base. A label only — this file will not install it.</p>
+          <div class="choices" id="bases"></div>
+        </div>
+        <div class="panel">
+          <h2>Role</h2>
+          <p class="hint">Pick one role for this plan.</p>
+          <div class="choices" id="roles"></div>
+        </div>
+        <div class="panel">
+          <h2>Packages</h2>
+          <p class="hint">Select one or more plan packages. They are document sections, not software to install.</p>
+          <div class="pkgs" id="packages"></div>
+        </div>
+        <div class="panel">
+          <h2>Identity</h2>
+          <p class="hint">Generate a local callsign. It is not an account, key, or credential.</p>
+          <div class="row">
+            <button class="action" type="button" id="genId">Generate identity</button>
+            <button class="action alt" type="button" id="clearId">Clear identity</button>
+          </div>
+          <div class="identity" id="identityBox">No identity yet.</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Deployment plan</h2>
+        <p class="hint">Validate writes the result here. Export copies the whole plan at once.</p>
+        <div class="row">
+          <button class="action" type="button" id="validateBtn">Validate Configuration</button>
+          <button class="action alt" type="button" id="exportBtn">Export Plan</button>
+        </div>
+        <p class="hint" id="exportNote" style="margin-top:10px"></p>
+        <pre class="plan" id="plan">Plan not validated yet. Choose a base, a role, and at least one package, then press Validate Configuration.</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="page-security" data-page="security">
+    <div class="panel">
+      <h2>Security review</h2>
+      <p class="hint">Harmless and browser-only. It reads the selections on this page. It does not contact a network, open ports, read your phone, or pretend a server answered.</p>
+      <div class="row">
+        <button class="action" type="button" id="reviewBtn">Review this plan</button>
+      </div>
+      <pre class="plan" id="reviewOut" style="margin-top:12px">No review yet.</pre>
+    </div>
+  </section>
+
+  <section class="page" id="page-teaching" data-page="teaching">
+    <div class="stack">
+      <article class="card">
+        <h3>1. Local mode</h3>
+        <p>The file is the whole app. There is no Node process, no Express app, no account, and no database. The status line stays Local Mode · Ready because nothing is waiting on a server.</p>
+      </article>
+      <article class="card">
+        <h3>2. The three checks</h3>
+        <p>Validate Configuration passes only when a base is selected, a role is selected, and at least one package is selected. Anything missing is named in the deployment plan.</p>
+      </article>
+      <article class="card">
+        <h3>3. A plan is text</h3>
+        <p>Export Plan downloads a text file and tries to copy it. If the copy does not stick, long-press inside the plan, choose Select All, then Copy. The text is a checklist you can keep. It is not a script, and this page will not run it.</p>
+      </article>
+      <article class="card">
+        <h3>4. Identity</h3>
+        <p>Generate identity makes a callsign from random bytes in the browser. Regenerating replaces it. Clearing removes it. Validation does not require it.</p>
+      </article>
+      <article class="card">
+        <h3>5. What security review is</h3>
+        <p>It repeats the same local checks and states, in writing, that no scan ran. If a field is missing, it says which one. It never invents open ports or a machine report.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="page" id="page-claude" data-page="claude">
+    <div class="panel">
+      <h2>Claude page</h2>
+      <p class="hint">Claude is not connected. There is no API key and this file does not send your plan anywhere. The box below is a draft you can copy and paste yourself.</p>
+      <div class="row">
+        <button class="action" type="button" id="copyBrief">Copy Claude brief</button>
+      </div>
+      <p class="hint" id="briefNote" style="margin-top:10px"></p>
+      <pre class="plan" id="briefOut"></pre>
+    </div>
+  </section>
+
+  <section class="page" id="page-cockpit" data-page="cockpit">
+    <div class="grid two">
+      <div class="panel">
+        <h2>Cockpit</h2>
+        <p class="hint">Readings come from this page only.</p>
+        <div id="meters"></div>
+      </div>
+      <div class="stack" id="chambers"></div>
+    </div>
+  </section>
+
+  <section class="page" id="page-help" data-page="help">
+    <div class="stack">
+      <article class="card">
+        <h3>Save the file</h3>
+        <p>The name must end in .html, for example hive-os.html or index.html. If it ends in .txt, Safari shows the code instead of the app. Download the file. Do not paste it into Notes, Mail, or Messages — those apps often add .txt or strip the script.</p>
+      </article>
+      <article class="card">
+        <h3>Open it on a Mac</h3>
+        <p>Control-click hive-os.html, then choose Open With and Safari. Do not open it in TextEdit. The status line should read Local Mode · Ready. If you only see the source code, the file name is wrong or the editor saved a text copy.</p>
+      </article>
+      <article class="card">
+        <h3>Open it on an iPhone or iPad</h3>
+        <p>Open this address in Safari: https://krackerjack-hive-os.vercel.app/ The buttons run there. A Files preview is not Safari. Only if that address is down: save hive-os.html in Files, tap it, tap Share, then choose Safari if it is listed.</p>
+      </article>
+      <article class="card">
+        <h3>Open this page</h3>
+        <p>The live address is https://krackerjack-hive-os.vercel.app/ Open that in Safari. GitHub Pages is not on, so jack-schitt.github.io/hive-os is not the app. No build step, no account, and no secret. The page never leaves the browser.</p>
+      </article>
+      <article class="card">
+        <h3>Use the plan</h3>
+        <p>Pick a base, a role, and at least one package. Validate Configuration writes pass or the missing items in the deployment plan. Export Plan downloads krackerjack-hive-plan.txt and tries to copy the same text. The plan box is not selected for you. If the copy does not stick, long-press inside the plan, choose Select All, then Copy.</p>
+      </article>
+      <article class="card">
+        <h3>Menus</h3>
+        <p>Builder, Security review, Teaching, Claude, Cockpit, and Help are all in this file. On a phone they sit in the bottom bar. On a wider screen they sit under the title.</p>
+      </article>
+    </div>
+  </section>
+
+  <footer class="note">KRACKERJACK HIVE OS · local mode · no server responses · plan text only</footer>
+</div>
+
+<nav class="tabbar" aria-label="Sections">
+  <button type="button" data-go="builder" aria-current="page">Build</button>
+  <button type="button" data-go="security">Review</button>
+  <button type="button" data-go="teaching">Teach</button>
+  <button type="button" data-go="claude">Claude</button>
+  <button type="button" data-go="cockpit">Cockpit</button>
+  <button type="button" data-go="help">Help</button>
+</nav>
+<textarea class="copybin" id="copybin" aria-hidden="true" tabindex="-1"></textarea>
+
+<script>
+(function () {
+  var BASES = ["Phone notes", "Gentoo notes", "Debian notes", "Windows notes", "macOS notes", "Termux notes"];
+  var ROLES = ["Architect", "Teacher", "Builder", "Cockpit watch", "Claude scribe", "Help steward"];
+  var PACKAGES = [
+    "Field notes",
+    "Identity card",
+    "Teaching pack",
+    "Cockpit layout",
+    "Claude brief",
+    "Security checklist",
+    "Help card",
+    "Deployment outline"
+  ];
+  var KEY = "krackerjack-hive-os";
+  var state = {
+    base: "",
+    role: "",
+    packages: [],
+    identity: null,
+    validation: null
+  };
+
+  function $(id) { return document.getElementById(id); }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      if (typeof data.base === "string" && BASES.indexOf(data.base) !== -1) state.base = data.base;
+      if (typeof data.role === "string" && ROLES.indexOf(data.role) !== -1) state.role = data.role;
+      if (Array.isArray(data.packages)) {
+        state.packages = data.packages.filter(function (name) { return PACKAGES.indexOf(name) !== -1; });
+      }
+      if (data.identity && typeof data.identity.callsign === "string") state.identity = data.identity;
+    } catch (err) {
+      state.base = "";
+    }
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        base: state.base,
+        role: state.role,
+        packages: state.packages,
+        identity: state.identity
+      }));
+    } catch (err) {
+      /* private mode can block storage; the plan still works in memory */
+    }
+  }
+
+  function chip(label, pressed, onClick) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = label;
+    btn.setAttribute("aria-pressed", pressed ? "true" : "false");
+    btn.addEventListener("click", onClick);
+    return btn;
+  }
+
+  function renderChoices() {
+    var bases = $("bases");
+    var roles = $("roles");
+    var packages = $("packages");
+    bases.replaceChildren();
+    roles.replaceChildren();
+    packages.replaceChildren();
+    BASES.forEach(function (name) {
+      var btn = chip(name, state.base === name, function () {
+        state.base = name;
+        state.validation = null;
+        save();
+        renderChoices();
+        renderIdentity();
+        showDraft();
+        renderCockpit();
+        renderBrief();
+      });
+      btn.className = "choice";
+      bases.appendChild(btn);
+    });
+    ROLES.forEach(function (name) {
+      var btn = chip(name, state.role === name, function () {
+        state.role = name;
+        state.validation = null;
+        save();
+        renderChoices();
+        showDraft();
+        renderCockpit();
+        renderBrief();
+      });
+      btn.className = "choice";
+      roles.appendChild(btn);
+    });
+    PACKAGES.forEach(function (name) {
+      var on = state.packages.indexOf(name) !== -1;
+      var btn = chip(name, on, function () {
+        if (on) state.packages = state.packages.filter(function (item) { return item !== name; });
+        else state.packages = state.packages.concat([name]);
+        state.validation = null;
+        save();
+        renderChoices();
+        showDraft();
+        renderCockpit();
+        renderBrief();
+      });
+      btn.className = "pkg";
+      packages.appendChild(btn);
+    });
+  }
+
+  function renderIdentity() {
+    var box = $("identityBox");
+    box.replaceChildren();
+    if (!state.identity) {
+      box.textContent = "No identity yet.";
+      return;
+    }
+    var strong = document.createElement("strong");
+    strong.textContent = state.identity.callsign;
+    box.appendChild(strong);
+    box.appendChild(document.createElement("br"));
+    var stamp = document.createElement("span");
+    stamp.textContent = "Local label · " + state.identity.stamp;
+    box.appendChild(stamp);
+  }
+
+  function missing() {
+    var gaps = [];
+    if (!state.base) gaps.push("Select a base.");
+    if (!state.role) gaps.push("Select a role.");
+    if (!state.packages.length) gaps.push("Select at least one package.");
+    return gaps;
+  }
+
+  function planBody() {
+    var lines = [];
+    lines.push("KRACKERJACK HIVE OS");
+    lines.push("Local deployment plan");
+    lines.push("Status: Local Mode · Ready");
+    lines.push("");
+    lines.push("Base: " + (state.base || "(not selected)"));
+    lines.push("Role: " + (state.role || "(not selected)"));
+    lines.push("Packages: " + (state.packages.length ? state.packages.join(", ") : "(none)"));
+    lines.push("Identity: " + (state.identity ? state.identity.callsign : "(not generated)"));
+    lines.push("");
+    lines.push("This plan is text only.");
+    lines.push("No system commands, installations, privileged operations, or real security scans are executed.");
+    return lines.join("\n");
+  }
+
+  function setPlan(className, text) {
+    var plan = $("plan");
+    plan.className = "plan " + className;
+    plan.textContent = text;
+  }
+
+  function showDraft() {
+    if (state.validation) return;
+    setPlan("", "Plan not validated yet.\n\n" + planBody());
+  }
+
+  function validateConfig() {
+    var gaps = missing();
+    if (gaps.length) {
+      state.validation = { ok: false, at: new Date().toISOString() };
+      setPlan("bad", [
+        "Local validation failed.",
+        gaps.join("\n"),
+        "",
+        "Fix the missing items in the builder. Nothing was installed or scanned.",
+        "",
+        planBody()
+      ].join("\n"));
+      renderCockpit();
+      return;
+    }
+    state.validation = { ok: true, at: new Date().toISOString() };
+    setPlan("ok", [
+      "Local validation passed.",
+      "A base is selected, a role is selected, and at least one package is selected.",
+      "The check ran in this browser only.",
+      "No system commands, installations, privileged operations, or real security scans were executed.",
+      "",
+      planBody()
+    ].join("\n"));
+    renderCockpit();
+  }
+
+  function review() {
+    var out = $("reviewOut");
+    var gaps = missing();
+    var head = gaps.length
+      ? "Browser checklist found missing items.\n" + gaps.join("\n")
+      : "Browser checklist complete.\nBase, role, and at least one package are present on this page.";
+    out.className = gaps.length ? "plan bad" : "plan ok";
+    out.textContent = [
+      head,
+      "",
+      planBody(),
+      "",
+      "Review source: the form on this page.",
+      "No device, network, file system, or account was scanned.",
+      "No system commands, installations, privileged operations, or real security scans were executed."
+    ].join("\n");
+  }
+
+  function briefText() {
+    return [
+      "Read this KRACKERJACK HIVE OS plan as notes only.",
+      "Do not treat it as permission to run commands, install software, or scan a system.",
+      "",
+      planBody(),
+      "",
+      state.validation
+        ? ("Last local validation on this page: " + (state.validation.ok ? "passed" : "failed") + " at " + state.validation.at)
+        : "Last local validation on this page: not run."
+    ].join("\n");
+  }
+
+  function renderBrief() {
+    $("briefOut").textContent = briefText();
+  }
+
+  function meter(label, value) {
+    var row = document.createElement("div");
+    row.className = "meter";
+    var span = document.createElement("span");
+    span.textContent = label;
+    var b = document.createElement("b");
+    b.textContent = value;
+    row.appendChild(span);
+    row.appendChild(b);
+    return row;
+  }
+
+  function renderCockpit() {
+    var meters = $("meters");
+    meters.replaceChildren();
+    meters.appendChild(meter("Mode", "Local Mode · Ready"));
+    meters.appendChild(meter("Base", state.base || "—"));
+    meters.appendChild(meter("Role", state.role || "—"));
+    meters.appendChild(meter("Packages", String(state.packages.length)));
+    meters.appendChild(meter("Identity", state.identity ? state.identity.callsign : "—"));
+    meters.appendChild(meter("Validation", state.validation ? (state.validation.ok ? "Passed locally" : "Failed locally") : "Not run"));
+    var chambers = $("chambers");
+    chambers.replaceChildren();
+    [
+      ["Builder", "Base, role, packages, identity, plan"],
+      ["Security review", "Page checklist only"],
+      ["Teaching", "How local mode works"],
+      ["Claude", "Copy-out brief, not a connection"],
+      ["Help", "iPhone open notes"]
+    ].forEach(function (item) {
+      var card = document.createElement("article");
+      card.className = "card";
+      var h = document.createElement("h3");
+      h.textContent = item[0];
+      var p = document.createElement("p");
+      p.textContent = item[1] + " · local · not connected";
+      card.appendChild(h);
+      card.appendChild(p);
+      chambers.appendChild(card);
+    });
+  }
+
+  function copyText(text) {
+    var area = $("copybin");
+    area.value = text;
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return "copied"; }, function () {
+        return legacyCopy(area);
+      });
+    }
+    return Promise.resolve(legacyCopy(area));
+  }
+
+  function legacyCopy(area) {
+    area.focus();
+    area.select();
+    try {
+      return document.execCommand("copy") ? "copied" : "shown";
+    } catch (err) {
+      return "shown";
+    }
+  }
+
+  function downloadText(filename, text) {
+    var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.rel = "noopener";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+  }
+
+  function exportPlan() {
+    var text = planBody();
+    if (state.validation) {
+      text = (state.validation.ok ? "Local validation passed.\n" : "Local validation failed.\n") + text;
+    } else {
+      text = "Local validation has not been run.\n" + text;
+    }
+    downloadText("krackerjack-hive-plan.txt", text);
+    copyText(text).then(function (how) {
+      var note = $("exportNote");
+      if (how === "copied") {
+        note.textContent = "Export started. The full plan was also copied. On iPhone, check the download sheet or paste from the clipboard.";
+      } else {
+        note.textContent = "Export started. If the copy did not stick, long-press inside the plan, choose Select All, then Copy. The plan is not selected for you.";
+      }
+    });
+  }
+
+  function show(name) {
+    document.querySelectorAll(".page").forEach(function (page) {
+      page.classList.toggle("on", page.getAttribute("data-page") === name);
+    });
+    document.querySelectorAll("[data-go]").forEach(function (btn) {
+      var on = btn.getAttribute("data-go") === name;
+      if (btn.closest(".tabs")) btn.setAttribute("aria-selected", on ? "true" : "false");
+      if (btn.closest(".tabbar")) {
+        if (on) btn.setAttribute("aria-current", "page");
+        else btn.removeAttribute("aria-current");
+      }
+    });
+    if (location.hash !== "#" + name) {
+      history.replaceState(null, "", "#" + name);
+    }
+    renderBrief();
+    renderCockpit();
+  }
+
+  function hex(bytes) {
+    return Array.prototype.map.call(bytes, function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("").toUpperCase();
+  }
+
+  $("genId").addEventListener("click", function () {
+    var bytes = new Uint8Array(4);
+    crypto.getRandomValues(bytes);
+    state.identity = {
+      callsign: "KJ-" + hex(bytes),
+      stamp: new Date().toISOString()
+    };
+    save();
+    renderIdentity();
+    showDraft();
+    renderCockpit();
+    renderBrief();
+  });
+
+  $("clearId").addEventListener("click", function () {
+    state.identity = null;
+    save();
+    renderIdentity();
+    showDraft();
+    renderCockpit();
+    renderBrief();
+  });
+
+  $("validateBtn").addEventListener("click", validateConfig);
+  $("exportBtn").addEventListener("click", exportPlan);
+  $("reviewBtn").addEventListener("click", review);
+  $("copyBrief").addEventListener("click", function () {
+    copyText(briefText()).then(function (how) {
+      $("briefNote").textContent = how === "copied"
+        ? "Brief copied. Paste it yourself if you want. This page did not contact Claude."
+        : "Could not copy automatically. Select the brief below and copy it. Claude was not contacted.";
+    });
+  });
+
+  document.querySelectorAll("[data-go]").forEach(function (btn) {
+    btn.addEventListener("click", function () { show(btn.getAttribute("data-go")); });
+  });
+
+  var start = (location.hash || "#builder").slice(1);
+  if (["builder", "security", "teaching", "claude", "cockpit", "help"].indexOf(start) === -1) start = "builder";
+  load();
+  renderChoices();
+  renderIdentity();
+  showDraft();
+  renderBrief();
+  renderCockpit();
+  show(start);
+  $("serverStatus").textContent = "Local Mode · Ready";
+})();
+</script>
+</body>
+</html>

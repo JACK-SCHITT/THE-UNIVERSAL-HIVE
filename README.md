@@ -43,3 +43,16 @@ Open `http://<that-machine>:8787` from any device on the same Wi-Fi.
 - New agents and sub-agents load BASE only until an operator save exists.
 - Flood / lasso / second-master / rewrite-directive strings are vetoed before generate.
 - No live account passwords in this repo.
+
+## Consolidated OS
+
+One hive. Leftover OS repos are absorbed here:
+
+- `os/planner/hive-os.html` — the one-file planner (also `web/hive-os.html`)
+- `os/core` — HIVE-OS-CORE Gentoo/genesis tree
+- `os/modules/krackerjack-ai-hive` — bin-yard playbooks
+- `os/lineage/world-changer-v0.2` — THE-AI-JACK-BUILT seed line
+- `os/radix` — Radix Nova hive shell
+- `os/modules/MCGILLICUDDY.md` — receiver note, not a second app
+
+Prime Directive stays frozen.
