@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#8fa87a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="HIVE" />
+  <title>THE UNIVERSAL HIVE</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      --bg: #0c0d0b;
+      --panel: #141513;
+      --line: #22261f;
+      --text: #eeeee6;
+      --muted: #8b907f;
+      --law: #8fa87a;
+      --button: #8fa87a;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.4 ui-monospace, monospace; }
+    body { padding: 12px; padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    header { position: sticky; top: 0; z-index: 20; background: rgba(12, 13, 11, 0.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding: 12px 14px; margin: -12px -12px 12px -12px; }
+    header h1 { margin: 0; font-size: 13px; letter-spacing: 0.14em; color: var(--law); }
+    .law { color: #9aa08f; font-size: 11px; margin-top: 4px; }
+    .panel { background: var(--panel); border: 1px solid var(--line); padding: 12px; margin-bottom: 12px; }
+    .panel h2 { margin: 0 0 8px; font-size: 14px; }
+    .meta { color: var(--muted); font-size: 11px; margin-bottom: 8px; }
+    textarea, input, button { width: 100%; background: #141513; color: var(--text); border: 1px solid #333; padding: 10px; font: inherit; border-radius: 0; }
+    button { background: var(--button); color: var(--bg); font-weight: 700; cursor: pointer; border: none; }
+    button.ghost { background: transparent; color: var(--law); border-color: var(--law); }
+    .row { display: flex; gap: 8px; }
+    .row > * { flex: 1; }
+    pre { background: #10110f; border: 1px solid #2a2d24; padding: 10px; white-space: pre-wrap; word-break: break-word; min-height: 4em; font-size: 12px; margin-top: 8px; }
+    .agent-select { margin-bottom: 12px; }
+    nav.tab { position: fixed; left: 0; right: 0; bottom: 0; display: flex; background: #0a0b09; border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); z-index: 30; }
+    nav.tab button { background: transparent; color: #888; border: 0; padding: 12px 0; font-size: 11px; letter-spacing: 0.1em; flex: 1; }
+    nav.tab button.on { color: var(--law); }
+    .hidden { display: none !important; }
+    .badge { display: inline-block; font-size: 10px; letter-spacing: 0.08em; padding: 2px 6px; border: 1px solid currentColor; margin-right: 6px; color: var(--law); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>THE UNIVERSAL HIVE</h1>
+    <div class="law">Provide for all. Find the good. Never limit unnecessarily.</div>
+  </header>
+
+  <div class="wrap">
+    <main id="view-home">
+      <div class="panel">
+        <h2>Base Seed</h2>
+        <div class="agent-select">
+          <label style="display: block; color: #888; font-size: 11px; margin-bottom: 4px;">AGENT:</label>
+          <select id="agent-select" style="width: 100%;">
+            <option value="base">base</option>
+            <option value="research">research</option>
+            <option value="creative">creative</option>
+            <option value="code">code</option>
+            <option value="ops">ops</option>
+          </select>
+        </div>
+        <textarea id="prompt" rows="4">Who are you?</textarea>
+        <div class="row" style="margin-top: 8px;">
+          <button id="go">GENERATE</button>
+        </div>
+        <pre id="output">ready.</pre>
+      </div>
+
+      <div class="panel">
+        <h2>Registry</h2>
+        <div class="meta">Base law is frozen. Each agent inherits until an operator saves a specialization.</div>
+        <pre id="registry">base
+research
+creative
+code
+ops</pre>
+      </div>
+    </main>
+
+    <main id="view-agents" class="hidden">
+      <div class="panel">
+        <h2>Agent Specializations</h2>
+        <div class="meta">Add a system prompt for each agent. The law remains frozen.</div>
+        <input id="agent-name" placeholder="agent name" style="margin-bottom: 8px;" />
+        <textarea id="agent-prompt" rows="6" placeholder="Specialization prompt for this agent..."></textarea>
+        <div class="row" style="margin-top: 8px;">
+          <button id="save-agent">SAVE SPECIALIZATION</button>
+        </div>
+        <pre id="agent-status">no specializations saved yet.</pre>
+      </div>
+    </main>
+  </div>
+
+  <nav class="tab">
+    <button data-tab="home" class="on">HOME</button>
+    <button data-tab="agents">AGENTS</button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>

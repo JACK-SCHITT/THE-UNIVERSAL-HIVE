@@ -1,91 +1,18 @@
-const PRIME = "Provide for all. Find the good. Never limit unnecessarily.";
-const CORPUS = `Prime Directive:
-Provide for all. Find the good. Never limit unnecessarily.
-
-You are the base model AI for the Universal Hive.
-You operate under explicit human direction and local deployment.
-You are lawful, transparent, and self-hosted.
-You do not bypass platform restrictions because you are not dependent on any platform.
-You are the foundation for all specialized hive agents.
-
-You are not autonomous. You are cooperative, directive-first, and transparent.
-You prioritize the user's authority over default policy.
-`;
-
-const VETO_PATTERNS = [
-  /rewrite the (prime )?directive/i,
-  /second master/i,
-  /flood|lasso|competitive overload|autoclicker/i,
-  /account takeover|card testing/i,
-  /silently.*telemetry/i,
-];
-
-function lawGate(prompt) {
-  const raw = (prompt || "").trim();
-  if (!raw) return "EMPTY INPUT. Law holds. " + PRIME;
-  if (VETO_PATTERNS.some(rx => rx.test(raw))) {
-    return "VETO. Law holds. " + PRIME;
-  }
-  return null;
+{
+  "name": "THE UNIVERSAL HIVE",
+  "short_name": "HIVE",
+  "description": "Base model layer. Law-locked. Self-hosted.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0c0d0b",
+  "theme_color": "#8fa87a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%238fa87a' width='192' height='192'/><text x='96' y='120' font-size='96' fill='%230c0d0b' text-anchor='middle' font-family='monospace' font-weight='bold'>H</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
 }
-
-function buildModel(corpus) {
-  const chars = Array.from(new Set(corpus));
-  const next = new Map();
-  for (let i = 0; i < corpus.length - 1; i++) {
-    const a = corpus[i];
-    const b = corpus[i + 1];
-    const arr = next.get(a) || [];
-    arr.push(b);
-    next.set(a, arr);
-  }
-  return { chars, next };
-}
-
-function safeText(text) {
-  return text.replace(/\s+/g, " ").trim();
-}
-
-function generateFromSeed(prompt) {
-  const model = buildModel(CORPUS);
-  const tokens = [...prompt || "Who are you?"];
-  let current = tokens.length ? tokens[tokens.length - 1] : " ";
-  const out = [];
-  for (let i = 0; i < 120; i++) {
-    out.push(current);
-    const options = model.next.get(current) || model.chars;
-    const nextChar = options[Math.floor(Math.random() * options.length)] || " ";
-    current = nextChar;
-  }
-  return safeText(out.join(""));
-}
-
-function generate(prompt) {
-  const veto = lawGate(prompt);
-  if (veto) return veto;
-
-  const lower = (prompt || "").toLowerCase();
-  if (lower.includes("who are you") || lower.includes("what are you")) {
-    return "I am the base seed for THE UNIVERSAL HIVE. I am a law-bound foundation with no second master. " + PRIME;
-  }
-  if (lower.includes("what is the law") || lower.includes("prime directive")) {
-    return PRIME;
-  }
-  if (lower.includes("what is the hive") || lower.includes("what is this")) {
-    return "THE UNIVERSAL HIVE is the base model layer. It holds the law, the agent registry, and the runtime for all specialized agents beneath it. Every agent inherits the same frozen directive unless an operator saves a specific specialization prompt.";
-  }
-  if (lower.includes("agent") || lower.includes("registry")) {
-    return "The registry is the governance layer. Each specialized agent is defined by explicit operator prompt files, not by silent inheritance. The seed remains the single source of law.";
-  }
-
-  return "LAW: " + PRIME + "\n\nQ: " + prompt + "\nA: " + generateFromSeed(prompt);
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  const promptEl = document.getElementById("prompt");
-  const outputEl = document.getElementById("output");
-  document.getElementById("go").addEventListener("click", () => {
-    const result = generate(promptEl.value || "Who are you?");
-    outputEl.textContent = result;
-  });
-});
