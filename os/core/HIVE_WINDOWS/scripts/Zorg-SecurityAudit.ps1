@@ -16,12 +16,13 @@ Flag 'ZORG charter' (Test-Path "$HiveRoot\HIVE_CORE\security\ZORG\CHARTER.md") '
 Flag 'Soul' (Test-Path "$HiveRoot\NEURAL\soul\CONSTITUTION.md") 'CONSTITUTION'
 Flag 'Aegis script' (Test-Path "$HiveRoot\NEURAL\aegis\aegis_harden.start") 'aegis_harden.start'
 
-# Keys presence only
+# Keys presence only. Never print values.
 $envPath = Join-Path $HiveRoot '.env'
 if (Test-Path $envPath) {
   $raw = Get-Content $envPath -Raw
   Flag 'XAI_API_KEY in .env' ($raw -match 'XAI_API_KEY=.+') 'SET or EMPTY (not shown)'
   Flag 'GH_PAT in .env' ($raw -match 'GH_PAT_UNCHAINED=.+') 'SET or EMPTY (not shown)'
+  Flag 'BLACKBIT_API_KEY in .env' ($raw -match 'BLACKBIT_API_KEY=sk-blackbit-.+') 'SET or EMPTY (not shown)'
   Flag 'OLLAMA_HOST in .env' ($raw -match 'OLLAMA_HOST=') 'present'
 } else { Flag '.env' $false 'missing' }
 
