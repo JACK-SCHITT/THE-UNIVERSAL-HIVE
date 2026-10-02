@@ -62,41 +62,53 @@ B
 # --- base detection ---------------------------------------------------------
 detect_base() {
   hdr "Detecting host base"
+  HIVE_UNAME="$(uname -a 2>/dev/null || echo unknown)"
+  HIVE_ARCH="$(uname -m 2>/dev/null || echo unknown)"
+  if [ -n "${HIVE_FORCE_BASE:-}" ]; then
+    HIVE_BASE="$(printf '%s' "$HIVE_FORCE_BASE" | tr '[:upper:]' '[:lower:]')"
+    case "$HIVE_BASE" in
+      windows|gitbash) HIVE_PKG="winget" ;;
+      gentoo) HIVE_PKG="emerge" ;;
+      kali|nethunter|debian|wsl) HIVE_PKG="apt" ;;
+      termux) HIVE_PKG="pkg" ;;
+      ish|alpine) HIVE_PKG="apk" ;;
+      arch) HIVE_PKG="pacman" ;;
+      macos) HIVE_PKG="brew" ;;
+      *) HIVE_PKG="unknown" ;;
+    esac
+    ok "base forced: $HIVE_BASE  pkg: $HIVE_PKG  arch: $HIVE_ARCH"
+    return
+  fi
   HIVE_BASE="unknown"
   HIVE_PKG="unknown"
-  # Termux
-  if [ -n "${TERMUX_VERSION:-}" ] || [ -d "/data/data/com.termux" ] || uname -a 2>/dev/null | grep -qi "android"; then
+  # NetHunter before Termux: both can look like Android.
+  if [ -f /etc/nethunter_version ] || [ -d /usr/share/kali-nethunter ] || grep -qi "nethunter" /etc/os-release 2>/dev/null; then
+    HIVE_BASE="nethunter"; HIVE_PKG="apt"
+  # iSH before Alpine and before a generic Linux match.
+  elif [ -n "${ISH_VERSION:-}" ] || uname -a 2>/dev/null | grep -qi -- "-ish"; then
+    HIVE_BASE="ish"; HIVE_PKG="apk"
+  elif [ -n "${TERMUX_VERSION:-}" ] || [ -d "/data/data/com.termux" ] || uname -a 2>/dev/null | grep -qi "android"; then
     HIVE_BASE="termux"; HIVE_PKG="pkg"
-  # WSL
   elif grep -qi "microsoft" /proc/version 2>/dev/null; then
     HIVE_BASE="wsl"
     if [ -f /etc/os-release ]; then . /etc/os-release
       case "${ID:-}" in kali) HIVE_PKG="apt";; debian|ubuntu) HIVE_PKG="apt";; *) HIVE_PKG="apt";; esac
     else HIVE_PKG="apt"; fi
-  # Gentoo
   elif [ -f /etc/gentoo-release ] || command -v emerge >/dev/null 2>&1; then
     HIVE_BASE="gentoo"; HIVE_PKG="emerge"
-  # Kali
   elif [ -f /etc/os-release ] && grep -qi "kali" /etc/os-release; then
     HIVE_BASE="kali"; HIVE_PKG="apt"
-  # Debian/Ubuntu
   elif [ -f /etc/debian_version ]; then
     HIVE_BASE="debian"; HIVE_PKG="apt"
-  # Arch
   elif [ -f /etc/arch-release ]; then
     HIVE_BASE="arch"; HIVE_PKG="pacman"
-  # Alpine
   elif [ -f /etc/alpine-release ]; then
     HIVE_BASE="alpine"; HIVE_PKG="apk"
-  # macOS
   elif uname -s 2>/dev/null | grep -qi "darwin"; then
     HIVE_BASE="macos"; HIVE_PKG="brew"
-  # Windows Git-Bash fallback (running in MSYS)
   elif uname -s 2>/dev/null | grep -qi "mingw\|msys"; then
     HIVE_BASE="gitbash"; HIVE_PKG="winget"
   fi
-  HIVE_UNAME="$(uname -a 2>/dev/null || echo unknown)"
-  HIVE_ARCH="$(uname -m 2>/dev/null || echo unknown)"
   ok "base detected: $HIVE_BASE  pkg: $HIVE_PKG  arch: $HIVE_ARCH"
 }
 
@@ -162,7 +174,7 @@ wizard_packages() {
     case "$HIVE_BASE" in
       termux) HIVE_PACKAGES="core:git core:curl core:openssh core:python dev:clang dev:make security:nmap security:openssh-tools net:traceroute ai:ollama" ;;
       gentoo) HIVE_PACKAGES="core:git core:curl dev:clang security:nmap net:traceroute ai:ollama" ;;
-      kali|deb*) HIVE_PACKAGES="core:git core:curl security:nmap security:netcat security:hydra net:traceroute ai:ollama" ;;
+      kali|nethunter|deb*) HIVE_PACKAGES="core:git core:curl security:nmap security:netcat security:hydra net:traceroute ai:ollama" ;;
       *) HIVE_PACKAGES="core:git core:curl" ;;
     esac
   fi
@@ -195,6 +207,19 @@ wire_repos() {
       ok "Kali primary: http://http.kali.org/kali"
       HIVE_REPOS="kali-main|http://http.kali.org/kali|rolling"
       command -v apt >/dev/null 2>&1 && apt-get update -y >/dev/null 2>&1 || true
+      ;;
+    nethunter)
+      ok "NetHunter primary: Kali rolling inside the NetHunter chroot"
+      HIVE_REPOS="nethunter|http://http.kali.org/kali|rolling"
+      command -v apt >/dev/null 2>&1 && apt-get update -y >/dev/null 2>&1 || true
+      ;;
+    ish)
+      ok "iSH primary: Alpine userspace. This is not the Alpine hive."
+      HIVE_REPOS="ish-alpine|https://dl-cdn.alpinelinux.org|stable"
+      ;;
+    windows)
+      HIVE_REPOS="windows-host|windows|host"
+      warn "Windows hive stages files only. It does not start the WSL hive."
       ;;
     deb*)
       HIVE_REPOS="debian-main|http://deb.debian.org/debian|stable"
@@ -234,12 +259,12 @@ install_packages() {
       gentoo:clang)      command -v emerge >/dev/null 2>&1 && emerge --quiet sys-devel/clang >/dev/null 2>&1 ;;
       gentoo:nmap)       command -v emerge >/dev/null 2>&1 && emerge --quiet net-analyzer/nmap >/dev/null 2>&1 ;;
       gentoo:traceroute) command -v emerge >/dev/null 2>&1 && emerge --quiet net-analyzer/traceroute >/dev/null 2>&1 ;;
-      kali:git|deb*:git)         command -v apt  >/dev/null 2>&1 && apt-get install -y git         >/dev/null 2>&1 ;;
-      kali:curl|deb*:curl)       command -v apt  >/dev/null 2>&1 && apt-get install -y curl        >/dev/null 2>&1 ;;
-      kali:nmap|deb*:nmap)       command -v apt  >/dev/null 2>&1 && apt-get install -y nmap        >/dev/null 2>&1 ;;
-      kali:netcat|deb*:netcat)   command -v apt  >/dev/null 2>&1 && apt-get install -y netcat-openbsd >/dev/null 2>&1 ;;
-      kali:hydra|deb*:hydra)     command -v apt  >/dev/null 2>&1 && apt-get install -y hydra       >/dev/null 2>&1 ;;
-      kali:traceroute|deb*:traceroute) command -v apt >/dev/null 2>&1 && apt-get install -y traceroute >/dev/null 2>&1 ;;
+      kali:git|nethunter:git|deb*:git)         command -v apt  >/dev/null 2>&1 && apt-get install -y git         >/dev/null 2>&1 ;;
+      kali:curl|nethunter:curl|deb*:curl)       command -v apt  >/dev/null 2>&1 && apt-get install -y curl        >/dev/null 2>&1 ;;
+      kali:nmap|nethunter:nmap|deb*:nmap)       command -v apt  >/dev/null 2>&1 && apt-get install -y nmap        >/dev/null 2>&1 ;;
+      kali:netcat|nethunter:netcat|deb*:netcat)   command -v apt  >/dev/null 2>&1 && apt-get install -y netcat-openbsd >/dev/null 2>&1 ;;
+      kali:hydra|nethunter:hydra|deb*:hydra)     command -v apt  >/dev/null 2>&1 && apt-get install -y hydra       >/dev/null 2>&1 ;;
+      kali:traceroute|nethunter:traceroute|deb*:traceroute) command -v apt >/dev/null 2>&1 && apt-get install -y traceroute >/dev/null 2>&1 ;;
       *) warn "no install handler for $HIVE_BASE:$name (skipped)" ;;
     esac
   done
@@ -358,6 +383,7 @@ ${G}=========================================================${X}
  user    : ${USER_NAME}
  role    : ${HIVE_ROLE}  (rbac $HIVE_RBAC)
  base    : ${HIVE_BASE}  (pkg: $HIVE_PKG)
+ link    : individual — unite is empty
  key     : ${HIVE_KEY}
  os name : ${HIVE_OS_NAME}
  home    : ${HIVE_HOME}
@@ -368,10 +394,32 @@ FINAL
   fi
 }
 
+# --- peer link (individual hives; unite stays empty) -------------------
+write_peer_link() {
+  hdr "Peer link — this hive stays individual"
+  local self="${HIVE_BASE:-unknown}"
+  [ "$self" = "gitbash" ] && self="windows"
+  local ids="windows gentoo kali nethunter termux ish debian arch alpine macos wsl"
+  mkdir -p "$HIVE_HOME"
+  {
+    printf '{\n  "self": "%s",\n  "staysIndividual": true,\n  "unite": [],\n  "peers": [\n' "$self"
+    local first=1 id
+    for id in $ids; do
+      [ "$id" = "$self" ] && continue
+      if [ "$first" -eq 0 ]; then printf ',\n'; fi
+      first=0
+      printf '    {"id":"%s","connect":"peer","united":false}' "$id"
+    done
+    printf '\n  ],\n  "note": "Peers are known. Nothing is united until the operator adds ids to unite."\n}\n'
+  } > "$HIVE_HOME/link.json"
+  ok "wrote $HIVE_HOME/link.json — unite is empty"
+}
+
 # --- main -------------------------------------------------------------------
 main() {
   banner
   detect_base
+  write_peer_link
   wizard_identity
   gen_product_key
   wizard_packages

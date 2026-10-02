@@ -155,4 +155,42 @@ window.addEventListener('DOMContentLoaded', () => {
     agentStatusEl.textContent = saved || 'no specializations saved yet.';
   };
   updateAgentStatus();
+
+  const osList = document.getElementById('os-list');
+  if (osList) {
+    fetch('./os/fleet.json')
+      .then((res) => res.json())
+      .then((fleet) => {
+        osList.textContent = '';
+        (fleet.hives || []).forEach((hive) => {
+          const card = document.createElement('article');
+          card.className = 'os-card';
+          const title = document.createElement('h3');
+          title.textContent = hive.name + ' — individual';
+          const meta = document.createElement('div');
+          meta.className = 'meta';
+          meta.textContent = hive.host + '. ' + hive.blurb + ' Peers: ' + (hive.peers || []).join(', ') + '. Unite: none.';
+          const links = document.createElement('div');
+          const install = document.createElement('a');
+          install.href = hive.download;
+          install.textContent = 'Download install';
+          const files = document.createElement('a');
+          files.href = hive.files;
+          files.textContent = hive.filesLabel || 'Hive files';
+          files.style.marginLeft = '12px';
+          const peer = document.createElement('a');
+          peer.href = hive.link;
+          peer.textContent = 'Peer link';
+          peer.style.marginLeft = '12px';
+          links.append(install, files, peer);
+          const cmd = document.createElement('code');
+          cmd.textContent = hive.command;
+          card.append(title, meta, links, cmd);
+          osList.appendChild(card);
+        });
+      })
+      .catch(() => {
+        osList.textContent = 'Hive list failed to load. Open docs/os/fleet.json from the repo.';
+      });
+  }
 });

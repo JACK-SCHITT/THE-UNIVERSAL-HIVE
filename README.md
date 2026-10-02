@@ -43,6 +43,15 @@ Open `http://<that-machine>:8787` from any device on the same Wi-Fi.
 2. Add to Home Screen (iOS: Share → Add to Home Screen. Android: menu → Install app).
 3. That is the installable phone app. No store required.
 
+
+## Individual OS hives
+
+Windows, Gentoo, Kali, NetHunter, Termux, iSH, Debian, Arch, Alpine, macOS, and WSL each have their own install under `docs/os/<id>/`.
+
+Each install writes a peer link that names every other hive. `unite` stays empty. Joining any of them is a later choice, and the ones you do not choose stay individual.
+
+No OS ISO or Gentoo stage3 is in these downloads. The Windows install does not start the WSL hive.
+
 ## Law
 
 - Only the operator edits `seed/BASE_SEED.txt`.
@@ -52,7 +61,7 @@ Open `http://<that-machine>:8787` from any device on the same Wi-Fi.
 
 ## Consolidated OS
 
-One hive. Leftover OS repos are absorbed here:
+Leftover OS repos are absorbed into this git tree. The installable hives above stay separate runtimes:
 
 - `os/planner/hive-os.html` — the one-file planner (also `web/hive-os.html`)
 - `os/core` — HIVE-OS-CORE Gentoo/genesis tree

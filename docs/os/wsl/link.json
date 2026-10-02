@@ -1,0 +1,69 @@
+{
+  "self": "wsl",
+  "name": "WSL Hive",
+  "staysIndividual": true,
+  "unite": [],
+  "peers": [
+    {
+      "id": "windows",
+      "name": "Windows Hive",
+      "connect": "peer",
+      "united": false
+    },
+    {
+      "id": "gentoo",
+      "name": "Gentoo Hive",
+      "connect": "peer",
+      "united": false
+    },
+    {
+      "id": "kali",
+      "name": "Kali Hive",
+      "connect": "peer",
+      "united": false
+    },
+    {
+      "id": "nethunter",
+      "name": "NetHunter Hive",
+      "connect": "peer",
+      "united": false
+    },
+    {
+      "id": "termux",
+      "name": "Termux Hive",
+      "connect": "peer",
+      "united": false
+    },
+    {
+      "id": "ish",
+      "name": "iSH Hive",
+      "connect": "peer",
+      "united": false
+    },
+    {
+      "id": "debian",
+      "name": "Debian Hive",
+      "connect": "peer",
+      "united": false
+    },
+    {
+      "id": "arch",
+      "name": "Arch Hive",
+      "connect": "peer",
+      "united": false
+    },
+    {
+      "id": "alpine",
+      "name": "Alpine Hive",
+      "connect": "peer",
+      "united": false
+    },
+    {
+      "id": "macos",
+      "name": "macOS Hive",
+      "connect": "peer",
+      "united": false
+    }
+  ],
+  "note": "Peers are known so these hives can work in unison later. Nothing is united until you add ids to unite."
+}

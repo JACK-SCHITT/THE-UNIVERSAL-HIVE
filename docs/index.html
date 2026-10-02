@@ -41,6 +41,10 @@
     nav.tab button.on { color: var(--law); }
     .hidden { display: none !important; }
     .badge { display: inline-block; font-size: 10px; letter-spacing: 0.08em; padding: 2px 6px; border: 1px solid currentColor; margin-right: 6px; color: var(--law); }
+    .os-card { border: 1px solid var(--line); padding: 10px; margin: 0 0 8px; }
+    .os-card h3 { margin: 0 0 4px; font-size: 13px; color: var(--text); }
+    .os-card a { color: var(--law); }
+    .os-card code { display: block; white-space: pre-wrap; word-break: break-word; color: var(--muted); font-size: 11px; margin-top: 6px; }
   </style>
 </head>
 <body>
@@ -81,6 +85,14 @@ ops</pre>
       </div>
     </main>
 
+
+    <main id="view-os" class="hidden">
+      <div class="panel">
+        <h2>Individual Hive OS</h2>
+        <div class="meta">Each hive installs alone. Every other hive is a peer. unite stays empty until you choose which ones to join.</div>
+        <div id="os-list">loading hives…</div>
+      </div>
+    </main>
     <main id="view-agents" class="hidden">
       <div class="panel">
         <h2>Agent Specializations</h2>
@@ -97,6 +109,7 @@ ops</pre>
 
   <nav class="tab">
     <button data-tab="home" class="on">HOME</button>
+    <button data-tab="os">OS</button>
     <button data-tab="agents">AGENTS</button>
   </nav>
 
