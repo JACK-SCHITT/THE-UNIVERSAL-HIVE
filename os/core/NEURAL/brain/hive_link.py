@@ -81,6 +81,20 @@ def cloud_key() -> str | None:
     return os.getenv("XAI_API_KEY") or os.getenv("GROK_API_KEY") or None
 
 
+BLACKBIT_BASE = "https://void.blackbit.sh/v1"
+DEFAULT_BLACKBIT_MODEL = "deepseek_v4_pro"
+
+
+def blackbit_key() -> str | None:
+    """Optional BlackBit VOID key for HIVE SECURITY. Never required. Never logged."""
+    key = (os.getenv("BLACKBIT_API_KEY") or "").strip()
+    return key or None
+
+
+def blackbit_model() -> str:
+    return (os.getenv("BLACKBIT_MODEL") or DEFAULT_BLACKBIT_MODEL).strip()
+
+
 def ollama_host() -> str:
     return (os.getenv("OLLAMA_HOST") or DEFAULT_OLLAMA_HOST).rstrip("/")
 
@@ -100,6 +114,8 @@ def preferred_brain() -> str:
         return "local"
     if raw == "grok":
         return "cloud"
+    if raw in ("blackbit", "void"):
+        return "blackbit"
     return raw
 
 
@@ -252,6 +268,37 @@ def call_ollama(prompt: str) -> str:
         raise RuntimeError(f"Ollama failed model={model}: {e}") from e
 
 
+def call_blackbit(prompt: str) -> str:
+    """Optional HIVE SECURITY brain. Raises if BLACKBIT_API_KEY is unset."""
+    key = blackbit_key()
+    if not key:
+        raise RuntimeError("BLACKBIT_API_KEY is not set in .env")
+    body = {
+        "model": blackbit_model(),
+        "messages": [
+            {"role": "system", "content": _system_message()},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.5,
+    }
+    req = urllib.request.Request(
+        f"{BLACKBIT_BASE}/chat/completions",
+        data=json.dumps(body).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {key}",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        return data["choices"][0]["message"]["content"]
+    except urllib.error.HTTPError as e:
+        detail = e.read().decode("utf-8", errors="replace")[:500]
+        raise RuntimeError(f"BlackBit HTTP {e.code}: {detail}") from e
+
+
 def call_cloud(prompt: str) -> str:
     """OPTIONAL LEGACY only. Raises if no key."""
     key = cloud_key()
@@ -303,6 +350,13 @@ def ask_text(prompt: str, force: str | None = None, agent: str = "KRACKERJACK") 
         mode = "local"
 
     errors: list[str] = []
+
+    if mode == "blackbit":
+        try:
+            return call_blackbit(prompt)
+        except Exception as e:
+            errors.append(f"blackbit: {e}")
+            mode = "local"
 
     if mode in ("cloud", "grok"):
         try:
@@ -365,6 +419,7 @@ def status() -> None:
     print(f"Brain:    {preferred_brain()}  (default local — zero keys required)")
     print(f"API keys: NOT REQUIRED for Hive cognition")
     print(f"CloudKey: {'present (optional legacy)' if cloud_key() else 'none (good — free path)'}")
+    print(f"BlackBit: {'SET (not shown)' if blackbit_key() else 'EMPTY'}  model={blackbit_model()}  {BLACKBIT_BASE}")
     print(f"Ollama:   {'UP' if ollama_reachable() else 'DOWN'} @ {ollama_host()}")
     print(f"OllModel: want={ollama_model()}  using={picked or 'none'}")
     if models:
@@ -413,6 +468,7 @@ def main(argv: list[str]) -> None:
         print("  OLLAMA_HOST=http://127.0.0.1:11434")
         print("  OLLAMA_MODEL=llama3.2:3b")
         print("  API keys are NOT required. Cloud is optional legacy only.")
+        print("  HIVE SECURITY BlackBit: HIVE_BRAIN=blackbit  BLACKBIT_API_KEY in .env")
         return
     cmd = argv[1].lower()
     if cmd == "status":
@@ -424,7 +480,7 @@ def main(argv: list[str]) -> None:
     elif cmd == "agents":
         print("Local agents (no API keys):")
         print("  python NEURAL/brain/agents.py krackerjack|hunterprime|counsel|zorg <prompt>")
-    elif cmd in ("ask", "ollama", "offline", "local", "grok", "cloud", "auto"):
+    elif cmd in ("ask", "ollama", "offline", "local", "grok", "cloud", "auto", "blackbit", "void"):
         if len(argv) < 3:
             print(f"Usage: hive_link.py {cmd} <prompt...>")
             sys.exit(1)
@@ -437,6 +493,8 @@ def main(argv: list[str]) -> None:
             "ask": None,
             "grok": None,  # grok() handles policy
             "cloud": "cloud",
+            "blackbit": "blackbit",
+            "void": "blackbit",
         }
         if cmd == "grok":
             grok(prompt)
