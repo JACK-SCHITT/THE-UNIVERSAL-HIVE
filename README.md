@@ -5,7 +5,13 @@ Provide for all. Find the good. Never limit unnecessarily.
 
 Cross-device JACKSCHITT base. One seed. Sub-agents start on the seed only. Specialized prompts are added by the operator and saved — they are never inherited automatically.
 
-Repo: https://github.com/JACK-SCHITT/THE-UNIVERSAL-HIVE
+## Where it runs
+
+- GitHub repo: source control for the Hive app. https://github.com/JACK-SCHITT/THE-UNIVERSAL-HIVE
+- GitHub Pages: static deployment. https://JACK-SCHITT.github.io/THE-UNIVERSAL-HIVE/
+- Wix: iframe embed of that GitHub Pages URL. https://jackschitt1134.wixsite.com/the-universal-hive
+
+The SecureDetect Express server is not part of this app. The Pages site is static. The law and agent registry run in the browser.
 
 ## What this actually is
 
@@ -13,7 +19,7 @@ Repo: https://github.com/JACK-SCHITT/THE-UNIVERSAL-HIVE
 |---|---|---|
 | Base seed | Frozen system prompt + veto filter | Not a 7B LLM |
 | Agent registry | Base-first load, operator-owned specializations | Not auto-rewrite of law |
-| Web PWA | Installable on phone/desktop browsers | Not a native store binary |
+| Web PWA | Installable in phone and desktop browsers | Not a native store binary |
 | Local Python | Train/serve seed on Termux, Linux, Windows, macOS | Not iSH official torch |
 | Link layer | Same-LAN HTTP, QR tap, WebUSB/Web Bluetooth hooks | Not AirDrop, not NFC payment, not silent background radio |
 
@@ -33,7 +39,7 @@ Open `http://<that-machine>:8787` from any device on the same Wi-Fi.
 
 ## Install — any phone (web app)
 
-1. Open the cockpit URL in Safari / Chrome / Edge / Firefox.
+1. Open https://JACK-SCHITT.github.io/THE-UNIVERSAL-HIVE/ in Safari / Chrome / Edge / Firefox.
 2. Add to Home Screen (iOS: Share → Add to Home Screen. Android: menu → Install app).
 3. That is the installable phone app. No store required.
 
