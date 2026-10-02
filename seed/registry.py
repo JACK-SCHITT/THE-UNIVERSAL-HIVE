@@ -55,7 +55,7 @@ def spawn_subagent(parent: str, child: str) -> str:
 
 
 def save_specialization(name: str, text: str, operator: str) -> None:
-    if operator not in ("KRACKERJACK1134", "operator"):
+    if operator not in ("KRACKERJACK1134", "operator", "JACK-SCHITT"):
         raise PermissionError("only operator writes specializations")
     fname = f"agent_{name}.txt"
     path = os.path.join(HERE, fname)

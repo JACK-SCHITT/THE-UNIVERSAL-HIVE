@@ -1,11 +1,34 @@
 {
-  "version": "0.1.0",
-  "law": "Provide for all. Find the good. Never limit unnecessarily.",
-  "operator_only_edit": true,
   "agents": {
     "base": {
+      "name": "base",
+      "description": "Universal Hive base model",
       "prompt_file": null,
-      "notes": "Always Base Seed. Default for new and sub-agents."
+      "notes": "frozen prime directive"
+    },
+    "research": {
+      "name": "research",
+      "description": "structured reasoning",
+      "prompt_file": null,
+      "notes": "sub-agent. no inherited specialization."
+    },
+    "creative": {
+      "name": "creative",
+      "description": "ideation and brainstorming",
+      "prompt_file": null,
+      "notes": "sub-agent. no inherited specialization."
+    },
+    "code": {
+      "name": "code",
+      "description": "software architecture",
+      "prompt_file": null,
+      "notes": "sub-agent. no inherited specialization."
+    },
+    "ops": {
+      "name": "ops",
+      "description": "operations support",
+      "prompt_file": null,
+      "notes": "sub-agent. no inherited specialization."
     }
   }
 }

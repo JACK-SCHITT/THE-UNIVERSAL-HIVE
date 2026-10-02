@@ -12,7 +12,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 WEB = os.path.join(ROOT, "web")
 
-from base_seed import NumpySeed, load_corpus, PRIME  # noqa: E402
+from base_seed import NumpySeed, load_corpus, PRIME, filt  # noqa: E402
 from registry import load_agent, spawn_subagent  # noqa: E402
 
 MODEL = NumpySeed(load_corpus())
@@ -21,6 +21,9 @@ MODEL = NumpySeed(load_corpus())
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *a, **k):
         super().__init__(*a, directory=WEB, **k)
+
+    def log_message(self, format, *args):
+        pass
 
     def _json(self, code: int, obj: dict):
         raw = json.dumps(obj).encode("utf-8")
@@ -51,9 +54,15 @@ class Handler(SimpleHTTPRequestHandler):
         if path == "/api/generate":
             agent = body.get("agent") or "base"
             prompt = body.get("prompt") or ""
-            prefix = load_agent(agent)
-            out = MODEL.generate(prompt)
-            return self._json(200, {"agent": agent, "law": PRIME, "prefix_chars": len(prefix), "text": out})
+            agent_prompt = load_agent(agent)
+            
+            v = filt(prompt)
+            if v != "PASS":
+                return self._json(200, {"agent": agent, "law": PRIME, "veto": v, "text": f"[{v}] {PRIME}"})
+            
+            full_prompt = agent_prompt + "\n\nUser: " + prompt + "\n\nAssistant:"
+            out = MODEL.generate(full_prompt)
+            return self._json(200, {"agent": agent, "law": PRIME, "prefix_chars": len(agent_prompt), "text": out})
         if path == "/api/spawn":
             child = body.get("child") or "sub"
             parent = body.get("parent") or "base"
