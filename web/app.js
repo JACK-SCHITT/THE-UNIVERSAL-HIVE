@@ -9,6 +9,7 @@ const SEED = {
 const APPS = [
   { id:"hive", name:"THE UNIVERSAL HIVE", lane:"core", vis:"public", web:"https://the-universal-hive.vercel.app", repo:"https://github.com/JACK-SCHITT/THE-UNIVERSAL-HIVE", webOk:true, run:"seed", blurb:"One hive. OS core, planner, radix shell, bin-yard, world-changer lineage absorbed." },
   { id:"hiveos", name:"Hive OS planner", lane:"os", vis:"public", web:"./hive-os.html", repo:"https://github.com/JACK-SCHITT/THE-UNIVERSAL-HIVE/tree/main/os/planner", webOk:true, run:"hiveos", blurb:"Former hive-os repo. Real one-file planner, now inside the hive." },
+  { id:"copilot", name:"Copilot Hive", lane:"agents", vis:"public", web:"", repo:"https://github.com/JACK-SCHITT/COPILOT-HIVE", webOk:false, run:"copilot", blurb:"GitHub Copilot extension. Hive law, agents, planner, and the GitHub desk. Editor peer. Unite stays empty." },
   { id:"dragonfly", name:"dragonfly", lane:"field", vis:"public", web:"https://dragonfly-delta-tan.vercel.app", repo:"https://github.com/JACK-SCHITT/dragonfly", webOk:true, run:"dragonfly", blurb:"Follow-me ground station. Distinct product." },
   { id:"assim", name:"AssimilateOrDie", lane:"foundry", vis:"private", web:"", repo:"https://github.com/JACK-SCHITT/AssimilateOrDie", webOk:false, run:"foundry", blurb:"Base foundry. 9bhyln projects/chat/onboarding and HunterPrime stub folded in." },
   { id:"scam", name:"Scam-Shield", lane:"shield", vis:"private", web:"", repo:"https://github.com/JACK-SCHITT/Scam-Shield", webOk:false, run:"scam", blurb:"Base shield plus combined Knightmare scanner. One repo." },
@@ -127,6 +128,7 @@ function renderRun(id) {
   const modules = {
     seed: `<div class="card"><h3>Base seed</h3><textarea id="r-p" rows="3">Who are you?</textarea><button id="r-go">GENERATE</button><pre class="out" id="r-o">law locked</pre></div>`,
     hiveos: lsBox("hiveos","Hive OS planner","task / job / scrap pull"),
+    copilot: `<div class="card"><h3>Copilot Hive</h3><p class="meta">Editor peer. Law stays frozen. GitHub writes confirm inside the editor. This page does not hold a token.</p><pre class="out">@hive /seed Who are you?\n@hive /github me\nhttps://github.com/JACK-SCHITT/COPILOT-HIVE</pre></div>`,
     dragonfly: `<div class="card"><h3>Dragonfly beacon</h3><p class="meta">Live site works. Phone GPS beacon also runs here.</p><button id="df-fix">FIX POSITION</button><pre class="out" id="df-o">waiting on geolocation</pre></div>`,
     scam: `<div class="card"><h3>Scam Shield triage</h3><p class="meta">Heuristic only. Flags bait language. Not a takedown tool.</p><textarea id="sc-in" rows="4" placeholder="paste text or URL"></textarea><button id="sc-go">SCORE</button><pre class="out" id="sc-o">ready</pre></div>`,
     neural: `<div class="card"><h3>NeuralShield checksum</h3><textarea id="ne-in" rows="3" placeholder="paste payload"></textarea><button id="ne-go">HASH + VERDICT</button><pre class="out" id="ne-o">ready</pre></div>`,

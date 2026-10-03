@@ -71,3 +71,11 @@ Leftover OS repos are absorbed into this git tree. The installable hives above s
 - `os/modules/MCGILLICUDDY.md` — receiver note, not a second app
 
 Prime Directive stays frozen.
+
+## Editor peer
+
+Copilot Hive is a separate repo. It is not united with the OS hives.
+
+- https://github.com/JACK-SCHITT/COPILOT-HIVE — GitHub Copilot extension. Same frozen Prime Directive, agent registry, and planner, plus the GitHub account desk inside the editor.
+
+Prime Directive stays frozen. Unite stays empty.
