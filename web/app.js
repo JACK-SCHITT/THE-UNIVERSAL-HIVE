@@ -223,6 +223,24 @@ function renderRun(id) {
   }
 }
 
+function renderLiveApps() {
+  const el = document.getElementById("live-apps");
+  if (!el) return;
+  const paint = list => {
+    const live = (list || []).filter(a => a.built && a.url);
+    if (!live.length) { el.innerHTML = `<div class="card">no built apps yet. build with seed/build_apps.py, or push to run CI.</div>`; return; }
+    el.innerHTML = live.map(a => `<article class="card">
+      <h3>${a.name || a.id}</h3>
+      <div class="meta"><span class="badge live">LIVE</span><span class="badge">${a.lane}</span><span class="badge">${(a.stack||[]).join("/") || a.source_repo || ""}</span></div>
+      <div class="row"><button data-open="${a.url}">OPEN APP</button></div>
+    </article>`).join("");
+    el.onclick = e => { const b = e.target.closest("[data-open]"); if (b) location.href = b.dataset.open; };
+  };
+  fetch("/api/apps").then(r => r.ok ? r.json() : Promise.reject())
+    .then(d => paint(d.apps))
+    .catch(() => fetch("./apps.json").then(r => r.ok ? r.json() : []).then(paint).catch(() => paint([])));
+}
+
 function boot() {
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js");
   counts();
