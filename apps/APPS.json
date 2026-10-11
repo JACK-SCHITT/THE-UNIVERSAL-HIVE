@@ -1148,7 +1148,9 @@
       "test",
       "lint",
       "format"
-    ]
+    ],
+    "build_status": "install-failed",
+    "serve_dir": null
   },
   {
     "lane": "field",

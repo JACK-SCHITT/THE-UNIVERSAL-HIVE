@@ -65,6 +65,7 @@ done
 
 # cockpit + static index
 cp -a "$ROOT/web/." "$SITE/"
+[ -d "$ROOT/docs" ] && { mkdir -p "$SITE/docs"; cp -a "$ROOT/docs/." "$SITE/docs/"; }
 python3 "$ROOT/seed/ci_site.py" "$APPS" "$SITE" || true
 
 echo "-----------------------------------------"

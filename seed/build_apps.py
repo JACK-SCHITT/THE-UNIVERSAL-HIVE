@@ -74,7 +74,13 @@ def build_app(lane, appid, keep_nm=False):
 
     nm = os.path.join(d, "node_modules")
     if not os.path.isdir(nm):
-        r = sh(["npm", "install", "--no-audit", "--no-fund", "--loglevel=error"], d)
+        for lock in ("package-lock.json", "npm-shrinkwrap.json"):
+            lp = os.path.join(d, lock)
+            if os.path.isfile(lp):
+                os.remove(lp)
+        r = sh(["npm", "install", "--no-audit", "--no-fund", "--loglevel=error",
+                "--registry=https://registry.npmjs.org/",
+                "--fetch-retries=5", "--fetch-timeout=600000"], d)
         if r.returncode != 0:
             result["status"] = "install-failed"
             result["err"] = (r.stderr or r.stdout)[-400:]
