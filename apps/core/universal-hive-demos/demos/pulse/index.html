@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PULSE — demo</title>
+<style>
+  body { margin:0; background:#0c0d0b; color:#eeeee6; font:15px/1.4 ui-monospace,monospace; }
+  main { max-width:720px; margin:0 auto; padding:24px; }
+  .mark { color:#8fa87a; }
+  .row { display:grid; grid-template-columns:repeat(16,1fr); gap:4px; margin:16px 0; }
+  button { background:#161814; color:#eeeee6; border:1px solid #2a2c26; height:42px; }
+  button.on { background:#8fa87a; color:#0c0d0b; }
+  footer { color:#8a8a82; font-size:13px; margin-top:28px; }
+</style>
+</head>
+<body>
+<main>
+  <p class="mark">PULSE · 16-step · demo</p>
+  <h1>Sequencer shell</h1>
+  <p>Click steps. Pattern stays in the page. No MIDI. No device. Not connected.</p>
+  <div class="row" id="steps"></div>
+  <p id="pat">pattern 0000000000000000</p>
+  <footer>Architect: Kracker Jack · copyright 2026 · demo only · no phone-home</footer>
+</main>
+<script src="../gate.js"></script>
+<script>
+const steps = document.getElementById("steps");
+const pat = document.getElementById("pat");
+const on = Array(16).fill(false);
+function draw() {
+  pat.textContent = "pattern " + on.map(v => v ? "1" : "0").join("");
+}
+for (let i = 0; i < 16; i++) {
+  const b = document.createElement("button");
+  b.textContent = String(i + 1);
+  b.onclick = () => { on[i] = !on[i]; b.classList.toggle("on", on[i]); draw(); };
+  steps.appendChild(b);
+}
+</script>
+</body>
+</html>

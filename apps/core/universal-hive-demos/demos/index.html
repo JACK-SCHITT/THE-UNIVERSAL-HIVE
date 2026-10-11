@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UNIVERSAL HIVE — demos</title>
+<style>
+  :root { --bg:#0c0d0b; --ink:#eeeee6; --moss:#8fa87a; --line:#2a2c26; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.45 ui-monospace,monospace; }
+  header, main, footer { max-width:880px; margin:0 auto; padding:24px; }
+  h1 { font-weight:500; letter-spacing:.08em; }
+  .mark { color:var(--moss); }
+  a { color:var(--moss); }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .card { border:1px solid var(--line); padding:16px; }
+  .card p { color:#b7b7ae; }
+  footer { color:#8a8a82; font-size:13px; }
+  @media (max-width:700px) { .grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <p class="mark">UNIVERSAL HIVE · demo drop · not connected</p>
+  <h1>Everything so far. Shells only.</h1>
+  <p>Open a card. Nothing here calls home, keys a radio, flies a drone, or touches an account.</p>
+</header>
+<main class="grid">
+  <a class="card" href="pulse/index.html"><strong>PULSE</strong><p>16-step sequencer. Local pattern. No audio device lock.</p></a>
+  <a class="card" href="dragonfly/index.html"><strong>DRAGONFLY</strong><p>Ground-station glass. Plan view. No flight link.</p></a>
+  <a class="card" href="bonsai2/index.html"><strong>Bonsai 2</strong><p>27B ternary brand shell. No weights.</p></a>
+  <a class="card" href="jackschitt/index.html"><strong>JACKSCHITT</strong><p>World-Changer card. Simulated decision. No rails.</p></a>
+  <a class="card" href="scamshield/index.html"><strong>ScamShield</strong><p>Explain shell. No live intercept.</p></a>
+  <a class="card" href="krackerjack/index.html"><strong>KRACKERJACK</strong><p>Hybrid shell card. Chat stays on this page.</p></a>
+  <a class="card" href="license/index.html"><strong>License gate</strong><p>Key you issued. Duplicate refused. No GPS. Not connected.</p></a>
+</main>
+<footer>Architect: Kracker Jack · JACK-SCHITT/universal-hive · copyright 2026 · demo only · no phone-home</footer>
+<script src="gate.js"></script>
+<script>
+if (sessionStorage.getItem("hive_key") !== "HIVE-DEMO-001") {
+  document.querySelectorAll("main a").forEach(function (a) {
+    if (a.getAttribute("href").indexOf("license/") === 0) return;
+    a.addEventListener("click", function (e) { e.preventDefault(); });
+    a.style.opacity = "0.35";
+  });
+}
+</script>
+</body>
+</html>

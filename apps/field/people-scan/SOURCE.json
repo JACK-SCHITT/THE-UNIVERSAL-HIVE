@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/PeopleScan",
+  "language": "TypeScript",
+  "private": true,
+  "last_updated": "2026-04-19",
+  "lane": "field",
+  "absorbed_into": "apps/field/people-scan"
+}

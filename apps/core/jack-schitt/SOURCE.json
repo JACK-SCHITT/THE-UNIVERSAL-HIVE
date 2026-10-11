@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/JACK-SCHITT",
+  "language": "",
+  "private": true,
+  "last_updated": "2026-06-30",
+  "lane": "core",
+  "absorbed_into": "apps/core/jack-schitt"
+}

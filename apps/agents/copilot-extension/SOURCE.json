@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/CopilotExtension",
+  "language": "C#",
+  "private": true,
+  "last_updated": "2026-01-27",
+  "lane": "agents",
+  "absorbed_into": "apps/agents/copilot-extension"
+}

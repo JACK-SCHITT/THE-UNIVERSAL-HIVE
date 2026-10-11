@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KRACKERJACK — demo</title>
+<style>
+  body { margin:0; background:#0c0d0b; color:#eeeee6; font:15px/1.45 ui-monospace,monospace; }
+  main { max-width:720px; margin:0 auto; padding:24px; }
+  .mark { color:#8fa87a; }
+  #log { border:1px solid #2a2c26; min-height:120px; padding:12px; white-space:pre-wrap; }
+  input, button { background:#161814; color:#eeeee6; border:1px solid #2a2c26; padding:8px; }
+  footer { color:#8a8a82; font-size:13px; margin-top:28px; }
+</style>
+</head>
+<body>
+<main>
+  <p class="mark">KRACKERJACK · hybrid shell · demo</p>
+  <h1>Local echo. No model.</h1>
+  <div id="log">shell ready. type stays on this page.</div>
+  <p><input id="line" placeholder="say something" /> <button id="go">send</button></p>
+  <footer>Architect: Kracker Jack · copyright 2026 · demo only · no phone-home</footer>
+</main>
+<script src="../gate.js"></script>
+<script>
+const log = document.getElementById("log");
+const line = document.getElementById("line");
+document.getElementById("go").onclick = () => {
+  const t = line.value.trim();
+  if (!t) return;
+  log.textContent += "\n> " + t + "\n< echo. hive route would be KRACKERJACK. not connected.";
+  line.value = "";
+};
+</script>
+</body>
+</html>

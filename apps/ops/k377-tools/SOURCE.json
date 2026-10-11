@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/GROK-SAVAGE-ARMY-K377-TOOLS",
+  "language": "",
+  "private": true,
+  "last_updated": "2026-10-06",
+  "lane": "ops",
+  "absorbed_into": "apps/ops/k377-tools"
+}

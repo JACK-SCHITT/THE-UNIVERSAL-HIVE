@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/jack-schitt-agent",
+  "language": "",
+  "private": false,
+  "last_updated": "2026-08-17",
+  "lane": "agents",
+  "absorbed_into": "apps/agents/jack-schitt-agent"
+}

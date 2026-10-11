@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <OutputType>Library</OutputType>
+    <RootNamespace>CopilotExtension</RootNamespace>
+    <AssemblyName>CopilotExtension</AssemblyName>
+    <SignAssembly>false</SignAssembly>
+    <IncludeAssemblyReferences>true</IncludeAssemblyReferences>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="CopilotPackage.cs" />
+    <Compile Include="Services\*.cs" />
+    <Compile Include="ToolWindow\*.cs" />
+    <EmbeddedResource Include="ToolWindow\*.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.31912.203" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.31912.203" />
+  </ItemGroup>
+</Project>

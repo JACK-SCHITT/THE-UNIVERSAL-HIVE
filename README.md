@@ -72,6 +72,18 @@ Leftover OS repos are absorbed into this git tree. The installable hives above s
 
 Prime Directive stays frozen.
 
+## Consolidated apps
+
+Every JACKSCHITT repo is absorbed here under `apps/<lane>/<id>/`, one copy per app,
+each keeping its own build stack and carrying a `SOURCE.json` that names its origin.
+Lanes: `core`, `agents`, `foundry`, `shield`, `field`, `ops`.
+
+- Index: [`apps/README.md`](apps/README.md)
+- Machine manifest: [`apps/APPS.json`](apps/APPS.json)
+
+This is a consolidation pass. The apps still run on their original stacks and services;
+wiring them to run from the Hive is the next phase.
+
 ## Editor peer
 
 Copilot Hive is a separate repo. It is not united with the OS hives.

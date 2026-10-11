@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/COPILOT-HIVE",
+  "language": "JavaScript",
+  "private": false,
+  "last_updated": "2026-10-06",
+  "lane": "agents",
+  "absorbed_into": "apps/agents/copilot-hive"
+}

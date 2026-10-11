@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/ScammersKnightmare",
+  "language": "TypeScript",
+  "private": true,
+  "last_updated": "2026-10-06",
+  "lane": "shield",
+  "absorbed_into": "apps/shield/scammers-knightmare"
+}

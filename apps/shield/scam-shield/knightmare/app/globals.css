@@ -1,0 +1,54 @@
+@import "tailwindcss";
+@import "tailwindcss/theme" layer(theme);
+
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(0 0% 5%);
+  --color-foreground: hsl(0 0% 85%);
+  --color-card: hsl(0 0% 8%);
+  --color-card-foreground: hsl(0 0% 85%);
+  --color-popover: hsl(0 0% 8%);
+  --color-popover-foreground: hsl(0 0% 85%);
+  --color-primary: hsl(0 100% 27%);
+  --color-primary-foreground: hsl(0 0% 95%);
+  --color-secondary: hsl(0 0% 12%);
+  --color-secondary-foreground: hsl(0 0% 85%);
+  --color-muted: hsl(0 0% 14%);
+  --color-muted-foreground: hsl(0 0% 55%);
+  --color-accent: hsl(0 70% 35%);
+  --color-accent-foreground: hsl(0 0% 95%);
+  --color-destructive: hsl(0 85% 40%);
+  --color-destructive-foreground: hsl(0 0% 95%);
+  --color-border: hsl(0 30% 18%);
+  --color-input: hsl(0 20% 15%);
+  --color-ring: hsl(0 100% 27%);
+  --radius: 0.5rem;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-cinzel), ui-serif, Georgia, serif;
+
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 5px hsl(0 100% 27% / 0.3); }
+    50% { box-shadow: 0 0 20px hsl(0 100% 27% / 0.6); }
+  }
+
+  @keyframes fade-in {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

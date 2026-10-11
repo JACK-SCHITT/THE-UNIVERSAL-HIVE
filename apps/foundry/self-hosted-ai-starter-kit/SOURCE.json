@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/self-hosted-ai-starter-kit",
+  "language": "",
+  "private": false,
+  "last_updated": "2026-03-15",
+  "lane": "foundry",
+  "absorbed_into": "apps/foundry/self-hosted-ai-starter-kit"
+}

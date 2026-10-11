@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/kingshot-companion",
+  "language": "",
+  "private": true,
+  "last_updated": "2026-06-30",
+  "lane": "ops",
+  "absorbed_into": "apps/ops/kingshot-companion"
+}

@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/KrackerjackFoundry",
+  "language": "TypeScript",
+  "private": true,
+  "last_updated": "2026-07-30",
+  "lane": "agents",
+  "absorbed_into": "apps/agents/krackerjack-foundry"
+}

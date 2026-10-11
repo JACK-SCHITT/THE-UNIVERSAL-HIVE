@@ -1,0 +1,18 @@
+{
+  "name": "universal-hive",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Universal Hive demo drop. Shells only. Not connected.",
+  "architect": "Kracker Jack",
+  "demos": [
+    "pulse",
+    "dragonfly",
+    "bonsai2",
+    "jackschitt",
+    "scamshield",
+    "krackerjack",
+    "radio"
+  ],
+  "connected": false,
+  "phoneHome": false
+}

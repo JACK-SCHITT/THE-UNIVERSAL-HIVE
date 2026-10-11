@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/onspace-9b5tbh-10560",
+  "language": "TypeScript",
+  "private": true,
+  "last_updated": "2026-10-06",
+  "lane": "field",
+  "absorbed_into": "apps/field/rf-sensing-suite"
+}

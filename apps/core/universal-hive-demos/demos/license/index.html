@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>License gate — demo</title>
+<style>
+  body { margin:0; background:#0c0d0b; color:#eeeee6; font:15px/1.45 ui-monospace,monospace; }
+  main { max-width:720px; margin:0 auto; padding:24px; }
+  .mark { color:#8fa87a; }
+  input, button { background:#161814; color:#eeeee6; border:1px solid #2a2c26; padding:8px; }
+  #out { border:1px solid #2a2c26; padding:12px; min-height:72px; }
+  footer { color:#8a8a82; font-size:13px; margin-top:28px; }
+</style>
+</head>
+<body>
+<main>
+  <p class="mark">LICENSE GATE · demo · not connected</p>
+  <h1>Key check. No location.</h1>
+  <p>A real gate calls your server with a key you issued. This page only pretends. Duplicate demo key is refused. Nothing leaves the browser.</p>
+  <p><input id="key" placeholder="license key" /> <button id="go">check</button></p>
+  <div id="out">waiting.</div>
+  <footer>Architect: Kracker Jack · copyright 2026 · demo only · no phone-home · no GPS</footer>
+</main>
+<script>
+const ISSUED = new Set(["HIVE-DEMO-001"]);
+const SEEN = new Set();
+document.getElementById("go").onclick = () => {
+  const key = document.getElementById("key").value.trim();
+  const out = document.getElementById("out");
+  if (!ISSUED.has(key)) { out.textContent = "refused. unknown key. access blocked."; return; }
+  if (SEEN.has(key)) { out.textContent = "refused. duplicate key. access blocked."; return; }
+  SEEN.add(key);
+  sessionStorage.setItem("hive_key", key);
+  sessionStorage.setItem("hive_key_at", String(Date.now()));
+  out.textContent = "valid for this session. shells unlock. no server. no report. no delete.";
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/RF-Analyzer",
+  "language": "",
+  "private": false,
+  "last_updated": "2026-06-23",
+  "lane": "field",
+  "absorbed_into": "apps/field/rf-analyzer"
+}

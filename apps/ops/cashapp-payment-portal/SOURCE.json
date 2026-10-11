@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/CashAppPaymentPortal",
+  "language": "TypeScript",
+  "private": true,
+  "last_updated": "2026-10-06",
+  "lane": "ops",
+  "absorbed_into": "apps/ops/cashapp-payment-portal"
+}

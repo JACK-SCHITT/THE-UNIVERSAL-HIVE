@@ -1,0 +1,3 @@
+# CopilotExtension
+
+// ...existing documentation...

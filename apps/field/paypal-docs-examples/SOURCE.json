@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/docs-examples",
+  "language": "JavaScript",
+  "private": false,
+  "last_updated": "2026-10-06",
+  "lane": "field",
+  "absorbed_into": "apps/field/paypal-docs-examples"
+}

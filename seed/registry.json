@@ -29,6 +29,12 @@
       "description": "operations support",
       "prompt_file": null,
       "notes": "sub-agent. no inherited specialization."
+    },
+    "opencode": {
+      "name": "opencode",
+      "description": "operating agent that builds and maintains the Hive",
+      "prompt_file": null,
+      "notes": "Born on Base Seed. Loads BASE only. Specializations are operator-saved, never inherited."
     }
   }
 }

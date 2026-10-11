@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/GROKSCHITT",
+  "language": "TypeScript",
+  "private": true,
+  "last_updated": "2026-10-06",
+  "lane": "agents",
+  "absorbed_into": "apps/agents/grokschitt"
+}

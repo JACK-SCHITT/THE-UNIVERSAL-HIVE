@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "JACK-SCHITT/universal-hive",
+  "language": "JavaScript",
+  "private": true,
+  "last_updated": "2026-10-07",
+  "lane": "core",
+  "absorbed_into": "apps/core/universal-hive-demos"
+}

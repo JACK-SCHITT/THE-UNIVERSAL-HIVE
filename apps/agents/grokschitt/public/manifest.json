@@ -1,0 +1,26 @@
+{
+  "name": "GROKSCHITT v18 Complete Edition",
+  "short_name": "GROKSCHITT",
+  "description": "Uncensored AI platform with fraud detection, image/video generation, and unlimited capabilities",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#8b5cf6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities", "finance"],
+  "screenshots": []
+}

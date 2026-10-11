@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: #0a0a0a;
+  color: #00ff9f;
+  font-family: 'Courier New', monospace;
+}
+
+.terminal {
+  background: #111111;
+  border: 1px solid #00ff9f;
+  box-shadow: 0 0 30px rgba(0, 255, 159, 0.4);
+}

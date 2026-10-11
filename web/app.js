@@ -226,6 +226,7 @@ function renderRun(id) {
 function boot() {
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js");
   counts();
+  renderLiveApps();
   const filters = document.getElementById("filters");
   filters.innerHTML = FILTERS.map(f => `<button data-f="${f}">${f}</button>`).join("");
   filters.querySelector("button").classList.add("on");

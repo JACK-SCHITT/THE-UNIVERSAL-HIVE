@@ -1,0 +1,9 @@
+{
+  "architect": "Kracker Jack",
+  "source_repo": "KINGJACK1134/ASSIMILATE-OR-DIE-AI-APP-FOUNDRY",
+  "language": "TypeScript",
+  "private": false,
+  "last_updated": "2026-10-06",
+  "lane": "foundry",
+  "absorbed_into": "apps/foundry/ai-app-foundry"
+}
