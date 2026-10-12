@@ -58,7 +58,7 @@ export const ZipBrowser = memo(function ZipBrowser({ file, onClose }: ZipBrowser
     return list.filter((e) => {
       if (!currentDir) {
         // Root: entries with no slash or only trailing slash
-        const parts = e.path.replace(/\/$/, '').split('/');
+        const parts = (e.path||"").replace(/\/$/, '').split('/');
         return parts.length === 1;
       }
       const prefix = currentDir.endsWith('/') ? currentDir : currentDir + '/';
