@@ -7,6 +7,7 @@ const SEED = {
 };
 
 const APPS = [
+  {id:"alpha", name:"EMPLOYEE ALPHA AI", lane:"agents", vis:"private", web:"", repo:"https://github.com/KINGJACK1134/THE-UNIVERSAL-HIVE/blob/main/deploy/employee-alpha.json", webOk:false, run:"alpha", blurb:"The hired worker. Every skill, every function, every plugin, excellent memory. Works online, on phone, or downloaded into a work robot."},
   { id:"hive", name:"THE UNIVERSAL HIVE", lane:"core", vis:"public", web:"https://the-universal-hive.vercel.app", repo:"https://github.com/JACK-SCHITT/THE-UNIVERSAL-HIVE", webOk:true, run:"seed", blurb:"One hive. OS core, planner, radix shell, bin-yard, world-changer lineage absorbed." },
   { id:"hiveos", name:"Hive OS planner", lane:"os", vis:"public", web:"./hive-os.html", repo:"https://github.com/JACK-SCHITT/THE-UNIVERSAL-HIVE/tree/main/os/planner", webOk:true, run:"hiveos", blurb:"Former hive-os repo. Real one-file planner, now inside the hive." },
   { id:"copilot", name:"Copilot Hive", lane:"agents", vis:"public", web:"", repo:"https://github.com/JACK-SCHITT/COPILOT-HIVE", webOk:false, run:"copilot", blurb:"GitHub Copilot extension. Hive law, agents, planner, and the GitHub desk. Editor peer. Unite stays empty." },
@@ -126,6 +127,11 @@ function renderRun(id) {
     <div class="row">${app.webOk && app.web ? `<button class="ghost" id="r-web">OPEN LIVE WEB</button>`:""}<button class="ghost" id="r-repo">GITHUB</button></div></div><div class="sheet">`;
 
   const modules = {
+    alpha: `<div class="card"><h3>EMPLOYEE ALPHA AI</h3><p class="meta" id="al-meta">lawful hired worker · loading…</p>
+      <textarea id="al-p" rows="3" placeholder="give the job…">What positions can you work?</textarea>
+      <div class="row"><button id="al-go">GIVE JOB</button><button class="ghost" id="al-learn">REMEMBER</button><button class="ghost" id="al-bundle">DOWNLOAD BUNDLE</button></div>
+      <pre class="out" id="al-o">standing by</pre></div>
+      <div class="card"><h3>SKILLS · PLUGINS · MEMORY</h3><pre class="out" id="al-skills">loading …</pre></div>`,
     seed: `<div class="card"><h3>Base seed</h3><textarea id="r-p" rows="3">Who are you?</textarea><button id="r-go">GENERATE</button><pre class="out" id="r-o">law locked</pre></div>`,
     hiveos: lsBox("hiveos","Hive OS planner","task / job / scrap pull"),
     copilot: `<div class="card"><h3>Copilot Hive</h3><p class="meta">Editor peer. Law stays frozen. GitHub writes confirm inside the editor. This page does not hold a token.</p><pre class="out">@hive /seed Who are you?\n@hive /github me\nhttps://github.com/JACK-SCHITT/COPILOT-HIVE</pre></div>`,
@@ -220,6 +226,35 @@ function renderRun(id) {
       speechSynthesis.cancel(); speechSynthesis.speak(u);
     };
     document.getElementById("rd-stop").onclick = () => speechSynthesis.cancel();
+  }
+  if (app.run==="alpha") {
+    const meta = document.getElementById("al-meta");
+    const post = (path, body) => fetch(path, {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)}).then(r => r.json());
+    fetch("/api/employee-alpha/status").then(r => r.json()).then(s => {
+      meta.textContent = `${s.skills} skills · ${s.plugins} plugins · ${s.memory_entries} memories · ${s.channels.join(" / ")} · employment ${s.employment}`;
+    }).catch(() => { meta.textContent = "offline cockpit (Pages). Serve on the hive node for live memory + learning."; });
+    Promise.all([
+      fetch("/api/employee-alpha/skills").then(r => r.json()),
+      fetch("/api/employee-alpha/plugins").then(r => r.json())
+    ]).then(([sk, pl]) => {
+      document.getElementById("al-skills").textContent =
+        (sk.skills || []).map(s => `• ${s.name} [${s.category}] — ${s.desc}`).join("\n") +
+        "\n\nPLUGINS: " + (pl.plugins || []).map(p => p.name).join(", ");
+    }).catch(() => { document.getElementById("al-skills").textContent = "skills load when served by the hive node"; });
+    document.getElementById("al-go").onclick = () => {
+      const p = document.getElementById("al-p").value, o = document.getElementById("al-o");
+      o.textContent = "working…";
+      post("/api/employee-alpha/chat", {prompt:p, session:"cockpit"})
+        .then(d => { o.textContent = (d.veto?`[${d.veto}]\n`:"") + (d.text ?? "") + (d.recalled && d.recalled.length ? `\n\nmemory: ${d.recalled.map(x => x.text).join(" | ")}` : ""); })
+        .catch(() => { const g = generate(p); o.textContent = (g.veto?"[VETO]\n":"") + g.text + "\n\n(offline cockpit — run the hive node for live jobs)"; });
+    };
+    document.getElementById("al-learn").onclick = () => {
+      const t = document.getElementById("al-p").value, o = document.getElementById("al-o");
+      post("/api/employee-alpha/remember", {text:t})
+        .then(d => { o.textContent = "remembered: " + (d.stored ? d.stored.text : d.error); })
+        .catch(() => { const rows = load("alpha-mem", []).concat(t); store("alpha-mem", rows); o.textContent = `stored on device (${rows.length}): ${t}`; });
+    };
+    document.getElementById("al-bundle").onclick = () => location.href = "/api/employee-alpha/export";
   }
 }
 

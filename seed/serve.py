@@ -17,6 +17,8 @@ WEB = os.path.join(ROOT, "web")
 from base_seed import NumpySeed, load_corpus, PRIME, filt  # noqa: E402
 from registry import load_agent, spawn_subagent  # noqa: E402
 import apps as apps_host  # noqa: E402
+import employee_alpha as alpha  # noqa: E402
+import plugins as plugs  # noqa: E402
 
 MODEL = NumpySeed(load_corpus())
 APP_ROUTE = re.compile(r"^/apps/([A-Za-z0-9_-]+)/([A-Za-z0-9._-]+)(/.*)?$")
@@ -86,6 +88,23 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(200, {"ok": True, "law": PRIME, "service": "THE-UNIVERSAL-HIVE"})
         if path == "/api/apps":
             return self._json(200, {"law": PRIME, "apps": apps_host.app_list()})
+        if path == "/api/employee-alpha/status":
+            return self._json(200, alpha.status())
+        if path == "/api/employee-alpha/skills":
+            return self._json(200, {"agent": alpha.AGENT, "name": alpha.NAME, "count": len(alpha.skills()), "skills": alpha.skills()})
+        if path == "/api/employee-alpha/plugins":
+            return self._json(200, {"agent": alpha.AGENT, "plugins": alpha.plugs.list_manifest()})
+        if path == "/api/employee-alpha/export":
+            raw = json.dumps(alpha.export(), indent=2).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Disposition", "attachment; filename=employee-alpha.json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Content-Length", str(len(raw)))
+            self.end_headers()
+            if self.command != "HEAD":
+                self.wfile.write(raw)
+            return
         m = APP_ROUTE.match(path)
         if m:
             return self._serve_app(m.group(1), m.group(2), m.group(3))
@@ -95,9 +114,23 @@ class Handler(SimpleHTTPRequestHandler):
         path = urlparse(self.path).path
         n = int(self.headers.get("Content-Length") or 0)
         body = json.loads(self.rfile.read(n) or b"{}")
+        if path == "/api/employee-alpha/chat":
+            prompt = body.get("prompt") or ""
+            session = body.get("session") or "default"
+            return self._json(200, alpha.chat(MODEL, prompt, session))
+        if path == "/api/employee-alpha/remember":
+            text = body.get("text") or ""
+            session = body.get("session") or "operator-taught"
+            imp = int(body.get("importance") or 3)
+            if not text.strip():
+                return self._json(400, {"error": "empty text"})
+            entry = alpha.mem.remember(alpha.AGENT, session, text, "taught", imp)
+            return self._json(200, {"ok": True, "stored": entry, "stats": alpha.mem.stats(alpha.AGENT)})
         if path == "/api/generate":
             agent = body.get("agent") or "base"
             prompt = body.get("prompt") or ""
+            if agent == alpha.AGENT:
+                return self._json(200, alpha.chat(MODEL, prompt, body.get("session") or "default"))
             agent_prompt = load_agent(agent)
             v = filt(prompt)
             if v != "PASS":

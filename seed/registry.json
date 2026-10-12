@@ -35,6 +35,12 @@
       "description": "operating agent that builds and maintains the Hive",
       "prompt_file": null,
       "notes": "Born on Base Seed. Loads BASE only. Specializations are operator-saved, never inherited."
+    },
+    "employee-alpha": {
+      "name": "EMPLOYEE ALPHA AI",
+      "description": "hired hive worker. every skill, every function, every plugin, excellent memory. online / phone / robot.",
+      "prompt_file": "agent_employee-alpha.txt",
+      "notes": "operator hired. employment agreement on file. law frozen. memory persistent."
     }
   }
 }

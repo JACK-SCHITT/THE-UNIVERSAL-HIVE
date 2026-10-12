@@ -96,12 +96,13 @@ class NumpySeed:
             json.dump(blob, f)
         print("wrote", WEIGHTS)
 
-    def generate(self, prompt: str, n: int = 80) -> str:
-        v = filt(prompt)
-        if v == "VETO":
-            return "VETO. " + PRIME
-        if v == "CAPTURE_LASSO":
-            return "CAPTURE_LASSO. No second master. " + PRIME
+    def generate(self, prompt: str, n: int = 80, enforce_law: bool = True) -> str:
+        if enforce_law:
+            v = filt(prompt)
+            if v == "VETO":
+                return "VETO. " + PRIME
+            if v == "CAPTURE_LASSO":
+                return "CAPTURE_LASSO. No second master. " + PRIME
         ids = self.enc("PRIME DIRECTIVE: " + PRIME + "\nQ: " + prompt + "\nA: ")
         h = [0.0] * self.N
         for ix in ids:
