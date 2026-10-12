@@ -1,7 +1,7 @@
 import { getSupabaseClient } from '@/template';
 
 const supabase = getSupabaseClient();
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
+const SUPABASE_URL = (process.env.EXPO_PUBLIC_SUPABASE_URL || (typeof location!=="undefined"?location.origin:"")) || '';
 
 export interface ChatMessage {
   id: string;

@@ -15,8 +15,8 @@ interface Message {
   streaming?: boolean;
 }
 
-const EDGE_FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/hive-chat`;
-const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const EDGE_FN_URL = `${(import.meta.env.VITE_SUPABASE_URL || (typeof location!=="undefined"?location.origin:""))}/functions/v1/hive-chat`;
+const ANON_KEY = (import.meta.env.VITE_SUPABASE_ANON_KEY || "hive-anon-key");
 
 export function ChatPage() {
   const { grokKey } = useHive();

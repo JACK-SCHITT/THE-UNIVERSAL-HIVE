@@ -26,8 +26,8 @@ class SupabaseManager {
     try {
       console.log(`[Template:Client] Creating Supabase client instance #${this.creationCount}`);
       
-      const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
-      const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+      const supabaseUrl = (process.env.EXPO_PUBLIC_SUPABASE_URL || (typeof location!=="undefined"?location.origin:""));
+      const supabaseAnonKey = (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "hive-anon-key");
       
       if (!supabaseUrl || !supabaseAnonKey) {
         const errorMsg = '[Template:Client] Supabase environment variables missing\n' +

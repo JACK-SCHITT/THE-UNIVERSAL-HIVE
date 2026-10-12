@@ -3,7 +3,7 @@ import { Audio } from 'expo-av';
 import { Platform } from 'react-native';
 import { getSupabaseClient } from '@/template';
 
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
+const SUPABASE_URL = (process.env.EXPO_PUBLIC_SUPABASE_URL || (typeof location!=="undefined"?location.origin:"")) || '';
 
 export function useVoiceInput() {
   const [isRecording, setIsRecording] = useState(false);

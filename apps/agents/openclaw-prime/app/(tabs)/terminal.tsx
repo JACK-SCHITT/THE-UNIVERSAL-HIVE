@@ -24,8 +24,8 @@ import { Colors, Spacing, Typography, Radii } from '@/constants/theme';
 import { deviceMeshService, HiveDevice } from '@/services/deviceMeshService';
 import { useAlert } from '@/template';
 
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
-const ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
+const SUPABASE_URL = (process.env.EXPO_PUBLIC_SUPABASE_URL || (typeof location!=="undefined"?location.origin:"")) || '';
+const ANON_KEY = (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "hive-anon-key") || '';
 const EDGE_URL = `${SUPABASE_URL}/functions/v1/openclaw-ai`;
 
 const KALI_COLOR = '#268BD2';

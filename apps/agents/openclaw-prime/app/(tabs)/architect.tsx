@@ -37,8 +37,8 @@ const INITIAL_HEARTBEAT: HeartbeatState = {
   demotion_candidates: [],
 };
 
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
-const ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
+const SUPABASE_URL = (process.env.EXPO_PUBLIC_SUPABASE_URL || (typeof location!=="undefined"?location.origin:"")) || '';
+const ANON_KEY = (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "hive-anon-key") || '';
 const EDGE_URL = `${SUPABASE_URL}/functions/v1/openclaw-ai`;
 
 interface LogEntry {

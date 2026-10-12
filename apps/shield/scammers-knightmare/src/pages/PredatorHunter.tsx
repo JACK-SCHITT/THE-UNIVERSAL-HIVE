@@ -70,7 +70,7 @@ export function PredatorHunter() {
     abortRef.current = new AbortController();
 
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || (typeof location!=="undefined"?location.origin:""));
       const response = await fetch(
         `${supabaseUrl}/functions/v1/operit-ai`,
         {

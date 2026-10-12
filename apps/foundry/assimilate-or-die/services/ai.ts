@@ -12,8 +12,8 @@ interface StreamCallbacks {
   onError: (error: string) => void;
 }
 
-const EDGE_FUNCTION_URL = process.env.EXPO_PUBLIC_SUPABASE_URL
-  ? `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/openclaw-ai`
+const EDGE_FUNCTION_URL = (process.env.EXPO_PUBLIC_SUPABASE_URL || (typeof location!=="undefined"?location.origin:""))
+  ? `${(process.env.EXPO_PUBLIC_SUPABASE_URL || (typeof location!=="undefined"?location.origin:""))}/functions/v1/openclaw-ai`
   : '';
 
 export async function streamChat(
@@ -33,7 +33,7 @@ export async function streamChat(
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
-          'apikey': process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '',
+          'apikey': (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "hive-anon-key") ?? '',
         },
         body: JSON.stringify({
           messages,
@@ -58,7 +58,7 @@ export async function streamChat(
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
-          'apikey': process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '',
+          'apikey': (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "hive-anon-key") ?? '',
         },
         body: JSON.stringify({
           messages,
