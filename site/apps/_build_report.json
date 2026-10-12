@@ -89,7 +89,7 @@
       "status": "built"
     },
     "field/universal-reader": {
-      "error": "TypeError: Cannot read properties of undefined (reading 'replace') TypeError: Cannot read properties of undefined (reading 'replace') ",
+      "error": "TypeError: Cannot read properties of undefined (reading 'replace') TypeError: Cannot read properties of undefined (reading 'replace')     at pathToRegex (/home/runner/work/THE-UNIVERSAL-HIVE/THE-UNIVERSAL-HIVE/apps/field/universal-reader/no",
       "status": "failed"
     },
     "foundry/ai-app-foundry": {
