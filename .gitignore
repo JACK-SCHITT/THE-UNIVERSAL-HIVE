@@ -1,4 +1,6 @@
 __pycache__/
 *.pyc
 seed/prime_seed_np.json
+seed/hive.db
+seed/hive.db-journal
 .DS_Store

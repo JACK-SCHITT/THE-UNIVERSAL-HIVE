@@ -20,6 +20,8 @@ import apps as apps_host  # noqa: E402
 import employee_alpha as alpha  # noqa: E402
 import plugins as plugs  # noqa: E402
 import prompts as prompt_store  # noqa: E402
+import core_api  # noqa: E402
+import models  # noqa: E402
 
 MODEL = NumpySeed(load_corpus())
 APP_ROUTE = re.compile(r"^/apps/([A-Za-z0-9_-]+)/([A-Za-z0-9._-]+)(/.*)?$")
@@ -39,6 +41,13 @@ class Handler(SimpleHTTPRequestHandler):
 
     def log_message(self, format, *args):
         pass
+
+    def _is_op(self, by: str) -> bool:
+        return (by or "").strip() in prompt_store.OPERATORS
+
+    def _query(self) -> dict:
+        qs = parse_qs(urlparse(self.path).query)
+        return {k: (v[0] if len(v) == 1 else v) for k, v in qs.items()}
 
     def _json(self, code: int, obj):
         raw = json.dumps(obj).encode("utf-8")
@@ -134,6 +143,15 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(200, {"agent": a, "prompt": prompt_store.get_prompt(a),
                                     "task": prompt_store.get_task(a),
                                     "context_chars": len(load_agent(a))})
+        if path == "/api/core":
+            p = self._query()
+            module = p.pop("module", "stats")
+            action = p.pop("action", "list")
+            by = p.pop("operator", self.headers.get("x-operator") or "")
+            code, obj = core_api.dispatch(module, action, p, model=MODEL, operator=self._is_op(by))
+            return self._json(code, obj)
+        if path == "/api/models":
+            return self._json(200, models.status())
         m = APP_ROUTE.match(path)
         if m:
             return self._serve_app(m.group(1), m.group(2), m.group(3))
@@ -172,6 +190,12 @@ class Handler(SimpleHTTPRequestHandler):
             parent = body.get("parent") or "base"
             spawn_subagent(parent, child)
             return self._json(200, {"child": child, "born_on": "BASE_SEED"})
+        if path == "/api/core":
+            module = body.pop("module", "stats")
+            action = body.pop("action", "list")
+            by = body.pop("operator", self.headers.get("x-operator") or "")
+            code, obj = core_api.dispatch(module, action, body, model=MODEL, operator=self._is_op(by))
+            return self._json(code, obj)
         if path == "/api/prompts/request":
             try:
                 out = prompt_store.submit_request(

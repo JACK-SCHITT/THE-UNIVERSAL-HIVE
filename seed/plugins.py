@@ -13,6 +13,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 from base_seed import filt  # noqa: E402
 from memory import recall, remember, verify, chain  # noqa: E402
 import learn as learn_mod  # noqa: E402
+import store as store_mod  # noqa: E402
+import models as models_mod  # noqa: E402
 
 PLUGINS: dict[str, dict] = {}
 _LEARNER = learn_mod.LEARNER
@@ -89,6 +91,22 @@ register("learn.classes", "list labels the agent has learned", "learning",
          lambda: _LEARNER.classes())
 register("learn.stats", "learning memory size and classes", "learning",
          lambda: _LEARNER.stats())
+register("core.stats", "self-contained store size (kv, docs, messages, tasks)", "core",
+         lambda: store_mod.stats())
+register("store.set", "write a key/value into the Hive's own store", "core",
+         lambda scope, key, val, _op="operator": store_mod.kv_set(str(scope), str(key), val))
+register("store.get", "read a value from the Hive store", "core",
+         lambda scope, key, default=None: store_mod.kv_get(str(scope), str(key), default))
+register("channel.post", "post a message to a named Hive channel", "core",
+         lambda name, msg, author="employee-alpha": store_mod.chan_post(str(name), str(author), str(msg)))
+register("channel.read", "read the latest messages from a channel", "core",
+         lambda name, limit=50: store_mod.chan_list(str(name), int(limit)))
+register("task.add", "queue a durable job (kind: note|plugin|agent)", "core",
+         lambda name, kind="note", spec=None: store_mod.task_add(str(name), str(kind), spec))
+register("model.list", "list local and remote model providers", "core",
+         lambda: models_mod.status())
+register("core.stats.pretty", "human-readable Hive-core counters", "core",
+         lambda: {k: v for k, v in store_mod.stats().items()})
 
 
 def _skills_search(q: str) -> str:

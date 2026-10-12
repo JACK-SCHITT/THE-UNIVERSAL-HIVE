@@ -258,6 +258,64 @@ function renderRun(id) {
   }
 }
 
+function renderCore() {
+  const el = document.getElementById("core");
+  const op = load("operator", "");
+  el.innerHTML = `
+    <div class="card"><h3>HIVE CORE — SELF-CONTAINED</h3>
+      <p class="meta">The Hive's own data + model + workflow layer. No outside service required.</p>
+      <input id="co-op" placeholder="operator callsign (for writes)" value="${op}"/>
+      <div class="row"><button id="co-load">REFRESH</button></div>
+      <pre class="out" id="co-stats">not connected</pre>
+    </div>
+    <div class="card"><h3>MODEL PROVIDERS</h3>
+      <p class="meta">Local-first. Remote is blocked unless a key/server is configured.</p>
+      <pre class="out" id="co-models">—</pre>
+    </div>
+    <div class="card"><h3>CHANNEL</h3>
+      <input id="co-chan" placeholder="channel (e.g. general)" value="general"/>
+      <input id="co-author" placeholder="author" value="operator"/>
+      <textarea id="co-msg" rows="2" placeholder="message"></textarea>
+      <button id="co-post">POST</button>
+      <pre class="out" id="co-chan-out">—</pre>
+    </div>
+    <div class="card"><h3>KEY / VALUE</h3>
+      <div class="row"><input id="co-kv-scope" placeholder="scope" value="app"/><input id="co-kv-key" placeholder="key" value="theme"/></div>
+      <input id="co-kv-val" placeholder="value (JSON or text)"/>
+      <button id="co-kv-set">SET (operator)</button>
+      <pre class="out" id="co-kv-out">—</pre>
+    </div>`;
+  const post = (path, body) => fetch(path, {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)}).then(r => r.json());
+  const opv = () => { const v = document.getElementById("co-op").value.trim(); store("operator", v); return v; };
+  const setOut = (id, t) => { const n = document.getElementById(id); if (n) n.textContent = t; };
+  const refresh = () => {
+    fetch("/api/core?module=stats").then(r => r.json()).then(s =>
+      setOut("co-stats", Object.entries(s).map(([k,v]) => k.padEnd(10)+v).join("\n"))
+    ).catch(() => setOut("co-stats", "hive node offline"));
+    fetch("/api/models").then(r => r.json()).then(d =>
+      setOut("co-models", (d.providers||[]).map(p => `${p.kind==="local"?"●":"○"} ${p.name.padEnd(9)} ${p.configured?"ready":"not configured"}  ${p.desc}`).join("\n"))
+    ).catch(() => setOut("co-models", "hive node offline"));
+  };
+  document.getElementById("co-load").onclick = refresh;
+  document.getElementById("co-post").onclick = () => {
+    const name = document.getElementById("co-chan").value.trim() || "general";
+    post("/api/core", {module:"channel", action:"post", name, author:document.getElementById("co-author").value.trim(), msg:document.getElementById("co-msg").value})
+      .then(() => fetch("/api/core?module=channel&name="+encodeURIComponent(name)).then(r => r.json()))
+      .then(d => setOut("co-chan-out", (d.messages||[]).map(m => `[${m.created}] ${m.author}: ${m.msg}`).join("\n")))
+      .catch(() => setOut("co-chan-out", "hive node offline"));
+  };
+  document.getElementById("co-kv-set").onclick = () => {
+    const scope = document.getElementById("co-kv-scope").value.trim() || "app";
+    const key = document.getElementById("co-kv-key").value.trim();
+    let val = document.getElementById("co-kv-val").value;
+    try { val = JSON.parse(val); } catch {}
+    post("/api/core", {module:"kv", action:"set", scope, key, val, operator:opv()})
+      .then(r => setOut("co-kv-out", r.error ? r.error : `saved ${scope}.${key} = ${JSON.stringify(r.val)}`))
+      .catch(() => setOut("co-kv-out", "hive node offline"));
+  };
+  refresh();
+}
+
 function renderPrompts() {
   const el = document.getElementById("prompts");
   const op = load("operator", "");
@@ -417,6 +475,7 @@ function boot() {
   document.querySelectorAll("nav.tab button").forEach(b => b.onclick = () => {
     tab(b.dataset.tab);
     if (b.dataset.tab === "prompts") renderPrompts();
+    if (b.dataset.tab === "core") renderCore();
   });
   document.getElementById("open-wix").onclick = () => location.href = "https://jackschitt1134.wixsite.com/the-universal-hive";
   document.getElementById("install").onclick = () => {
