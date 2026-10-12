@@ -69,9 +69,10 @@ record() {
   local err=""
   if [ -n "$logfile" ] && [ -s "$logfile" ]; then
     # cause usually sits near the top of the build log (vite/esbuild print the
-    # offending module first, then the faiure summary); fall back to last line
-    err="$(head -45 "$logfile" | grep -aE "Error:|Cannot find|error during|error TS|SyntaxError|ReferenceError|Unexpected|✘|Resolution error" 2>/dev/null | head -1)"
-    [ -n "$err" ] || err="$(tail -1 "$logfile" 2>/dev/null)"
+    # offending module first, then the faiure summary); grab the error line and
+    # the line after it, fall back to last line
+    err="$(head -50 "$logfile" | grep -aA1 -m1 -E "error during build|Error:|Cannot find|error TS|SyntaxError|ReferenceError|Unexpected|✘|Resolution error" 2>/dev/null | head -2 | tr '\n' ' ')"
+    [ -n "$err" ] || err="$(tail -2 "$logfile" 2>/dev/null | tr '\n' ' ')"
     [ -n "$err" ] || err="$(grep -aE "Error:|Cannot find|failed" "$logfile" 2>/dev/null | head -1)"
   fi
   printf '%s\t%s\t%s\n' "$id" "$status" "$err" >> "$REPORT.txt"
