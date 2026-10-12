@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -24,6 +24,8 @@ jobs:
           node-version: 20
       - name: Build every absorbed app into site/
         run: bash scripts/ci_build_all.sh
+        env:
+          HIVE_REPORT_BACK: "1"
       - uses: actions/configure-pages@v5
         with:
           enablement: true
