@@ -100,3 +100,18 @@ export const Shadow = {
     elevation: 5,
   },
 };
+
+// absorbed app code references FontSize/FontWeight/BorderRadius; the theme keeps
+// the canonical Typography/Radius/Shadow/Spacing. Aliases keep those names alive.
+export const BorderRadius = { ...Radius, full: 9999 };
+
+const WEIGHTS = ['light', 'regular', 'medium', 'semibold', 'bold', 'black'] as const;
+const SIZES = ['xs', 'sm', 'base', 'md', 'lg', 'xl', 'xxl', 'display'] as const;
+
+export const FontWeight = Object.fromEntries(
+  WEIGHTS.map((k) => [k, Typography[k]]),
+) as Record<(typeof WEIGHTS)[number], string>;
+
+export const FontSize = Object.fromEntries(
+  SIZES.map((k) => [k, Typography[k]]),
+) as Record<(typeof SIZES)[number], number>;

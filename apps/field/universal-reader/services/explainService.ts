@@ -163,7 +163,7 @@ function describeLanguageSpecific(content: string, fileType: string): string {
   }
   if (fileType === 'markdown') {
     const headings = content.match(/^#{1,6}\s+.+/gm) || [];
-    const h = headings.slice(0, 5).map((h) => h.replace(/^#+\s+/, ''));
+    const h = headings.slice(0, 5).map((h) => (h ?? '').replace(/^#+\s+/, ''));
     return headings.length > 0 ? `Documentation with ${headings.length} section${headings.length !== 1 ? 's' : ''}: ${h.map((s) => `"${s}"`).join(', ')}${headings.length > 5 ? '...' : ''}.` : 'Markdown documentation file with formatted text.';
   }
   if (fileType === 'config') {

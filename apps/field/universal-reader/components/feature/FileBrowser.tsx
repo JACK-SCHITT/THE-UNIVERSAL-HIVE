@@ -48,7 +48,8 @@ export const ZipBrowser = memo(function ZipBrowser({ file, onClose }: ZipBrowser
 
   // Get entries in current directory
   const visibleEntries = useMemo(() => {
-    let list = entries;
+    const withPath = (e: ZipEntry) => ({ ...e, path: e.path ?? '' });
+    let list = (entries || []).map(withPath);
     if (search.trim()) {
       const q = search.toLowerCase();
       return list.filter((e) => e.path.toLowerCase().includes(q) || e.name.toLowerCase().includes(q));
