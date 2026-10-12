@@ -3,118 +3,140 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-  <meta name="theme-color" content="#8fa87a"/>
+  <meta name="theme-color" content="#0c0d0b"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <meta name="apple-mobile-web-app-title" content="HIVE"/>
-  <title>THE UNIVERSAL HIVE</title>
+  <title>THE UNIVERSAL HIVE — SHELL</title>
   <link rel="manifest" href="manifest.json"/>
   <link rel="apple-touch-icon" href="icon.svg"/>
   <style>
-    :root { --ink:#0c0d0b; --moss:#8fa87a; --paper:#eeeee6; --line:#22261f; --card:#141513; --warn:#c9a227; --dead:#8a6a4a; --live:#8fa87a; }
+    :root { --ink:#0c0d0b; --moss:#8fa87a; --paper:#eeeee6; --line:#22261f; --card:#141513;
+            --warn:#c9a227; --live:#8fa87a; --muted:#8b907f; --rail:#0a0b09; }
     * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html,body { margin:0; background:var(--ink); color:var(--paper); font:14px/1.4 ui-monospace,Menlo,Consolas,monospace; }
-    body { padding-bottom:calc(72px + env(safe-area-inset-bottom)); }
-    header.app { position:sticky; top:0; z-index:20; background:rgba(12,13,11,.94); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding:12px 14px calc(10px + env(safe-area-inset-top)); padding-top:calc(12px + env(safe-area-inset-top)); }
-    header.app h1 { margin:0; font-size:13px; letter-spacing:.14em; color:var(--moss); }
-    .law { color:#9aa08f; font-size:11px; margin-top:4px; }
-    main { padding:12px; max-width:720px; margin:0 auto; }
-    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
-    .stat { background:var(--card); border:1px solid var(--line); padding:10px; }
-    .stat b { display:block; color:var(--moss); font-size:18px; }
-    .stat span { color:#888; font-size:10px; letter-spacing:.08em; }
-    input,textarea,button,select { width:100%; background:#141513; color:var(--paper); border:1px solid #333; padding:10px; font:inherit; border-radius:0; }
-    button { background:var(--moss); color:var(--ink); font-weight:700; cursor:pointer; }
-    button.ghost { background:transparent; color:var(--moss); border-color:var(--moss); }
-    button.danger { background:#3a2a16; color:#e6c27a; border-color:#5a4020; }
-    .row { display:flex; gap:8px; }
-    .row > * { flex:1; }
-    .filters { display:flex; gap:6px; overflow:auto; padding-bottom:8px; }
-    .filters button { width:auto; white-space:nowrap; padding:7px 10px; background:#1a1c16; color:#ccc; border-color:#333; font-size:11px; letter-spacing:.06em; }
-    .filters button.on { background:var(--moss); color:var(--ink); }
-    .grid { display:grid; gap:8px; }
-    .card { background:var(--card); border:1px solid var(--line); padding:12px; }
-    .card h3 { margin:0 0 4px; font-size:14px; }
-    .meta { color:#8b907f; font-size:11px; margin-bottom:8px; }
-    .badge { display:inline-block; font-size:10px; letter-spacing:.08em; padding:2px 6px; border:1px solid currentColor; margin-right:6px; }
-    .badge.live { color:var(--live); }
-    .badge.app { color:var(--warn); }
-    .badge.priv { color:#888; }
-    .badge.dead { color:var(--dead); }
-    pre.out, .log { white-space:pre-wrap; background:#10110f; border:1px solid #2a2d24; padding:10px; min-height:4em; font-size:12px; }
-    nav.tab { position:fixed; left:0; right:0; bottom:0; display:flex; background:#0a0b09; border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom); z-index:30; }
-    nav.tab button { background:transparent; color:#888; border:0; padding:12px 0; font-size:11px; letter-spacing:.1em; }
-    nav.tab button.on { color:var(--moss); }
-    .hidden { display:none !important; }
-    .hint { color:#777; font-size:11px; margin-top:8px; }
+    html,body { margin:0; height:100%; background:var(--ink); color:var(--paper);
+                font:13px/1.45 ui-monospace,Menlo,Consolas,monospace; }
+    button,input,select,textarea { font:inherit; color:inherit; }
+    button { cursor:pointer; }
     a { color:var(--moss); }
-    .sheet { margin-top:10px; }
+
+    .shell { display:grid; grid-template-columns:212px 1fr; height:100dvh; }
+    .rail { background:var(--rail); border-right:1px solid var(--line); overflow:auto;
+            display:flex; flex-direction:column; }
+    .brand { padding:14px 14px 10px; border-bottom:1px solid var(--line); position:sticky; top:0;
+             background:var(--rail); z-index:2; }
+    .brand h1 { margin:0; font-size:12px; letter-spacing:.16em; color:var(--moss); }
+    .brand .law { color:var(--muted); font-size:10px; margin-top:5px; }
+    .rail nav { padding:8px; display:flex; flex-direction:column; gap:3px; }
+    .rail button { background:transparent; border:1px solid transparent; text-align:left;
+                   padding:10px 11px; border-radius:7px; color:#cfd3c6; display:flex; gap:9px;
+                   align-items:center; font-size:12px; letter-spacing:.03em; }
+    .rail button .ic { width:18px; text-align:center; opacity:.85; }
+    .rail button .n { margin-left:auto; color:var(--muted); font-size:10px; }
+    .rail button:hover { background:#15170f; }
+    .rail button.on { background:#1b2013; color:var(--paper); border-color:#2b3420; }
+    .rail .foot { margin-top:auto; padding:10px 14px; border-top:1px solid var(--line);
+                  color:var(--muted); font-size:10px; }
+
+    .main { display:flex; flex-direction:column; min-width:0; height:100dvh; }
+    .topbar { display:flex; gap:8px; align-items:center; padding:9px 12px; border-bottom:1px solid var(--line);
+              background:rgba(12,13,11,.96); position:sticky; top:0; z-index:5; }
+    .topbar input.cmd { flex:1; background:#10110f; border:1px solid var(--line); border-radius:8px;
+                        padding:9px 11px; }
+    .dot { width:8px; height:8px; border-radius:50%; background:#555; flex:0 0 auto; }
+    .dot.up { background:var(--live); box-shadow:0 0 8px var(--live); }
+    .who { font-size:10px; color:var(--muted); }
+    .place { flex:1; overflow:auto; padding:14px; padding-bottom:80px; }
+    .place h2 { margin:0 0 3px; font-size:15px; }
+    .place .sub { color:var(--muted); font-size:11px; margin-bottom:12px; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:9px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:9px; padding:11px; }
+    .card h3 { margin:0 0 4px; font-size:13px; }
+    .card .meta { color:var(--muted); font-size:10.5px; margin-bottom:8px; }
+    .badge { display:inline-block; font-size:9px; letter-spacing:.07em; padding:1px 6px; border:1px solid currentColor;
+             border-radius:4px; margin-right:5px; color:var(--muted); }
+    .badge.live { color:var(--live); } .badge.app { color:var(--warn); }
+    .row { display:flex; gap:7px; flex-wrap:wrap; }
+    .row > * { flex:1; }
+    button.pri { background:var(--moss); color:var(--ink); border:0; border-radius:7px; padding:8px 11px; font-weight:700; }
+    button.gh { background:transparent; border:1px solid var(--line); border-radius:7px; padding:8px 11px; }
+    button.dn { background:#20130f; border:1px solid #4a2a1e; color:#e6a58a; border-radius:7px; padding:8px 11px; }
+    input,textarea,select { background:#10110f; border:1px solid var(--line); border-radius:7px; padding:8px 10px; width:100%; }
+    textarea { resize:vertical; }
+    pre.out { white-space:pre-wrap; background:#10110f; border:1px solid #2a2d24; border-radius:7px; padding:10px;
+              font-size:11.5px; max-height:52vh; overflow:auto; margin:0; }
+    .stat { display:flex; gap:7px; flex-wrap:wrap; }
+    .stat b { color:var(--moss); }
+
+    .win { position:fixed; inset:0; background:rgba(5,6,4,.72); backdrop-filter:blur(3px);
+           display:none; z-index:40; padding:14px; }
+    .win.open { display:flex; }
+    .win .frame { margin:auto; width:min(960px,100%); height:min(760px,100%); background:var(--ink);
+                  border:1px solid var(--line); border-radius:11px; display:flex; flex-direction:column; overflow:hidden; }
+    .win header { display:flex; align-items:center; gap:9px; padding:10px 12px; border-bottom:1px solid var(--line); }
+    .win header h3 { margin:0; font-size:13px; flex:1; }
+    .win .body { flex:1; overflow:auto; padding:12px; }
+    .win .body.nopad { padding:0; }
+    .win iframe { width:100%; height:100%; border:0; background:#fff; }
+    .pal { position:fixed; inset:0; background:rgba(5,6,4,.7); display:none; z-index:60; padding:14px; }
+    .pal.open { display:block; }
+    .pal .box { margin:8vh auto 0; width:min(620px,100%); background:var(--ink); border:1px solid var(--line);
+                border-radius:11px; overflow:hidden; }
+    .pal input { border:0; border-bottom:1px solid var(--line); border-radius:0; padding:13px; }
+    .pal .res { max-height:52vh; overflow:auto; }
+    .pal .res button { display:block; width:100%; text-align:left; background:transparent; border:0;
+                       border-bottom:1px solid #171a13; padding:10px 13px; }
+    .pal .res button:hover { background:#15170f; }
+    .pal .res .k { color:var(--muted); font-size:10px; }
+    @media (max-width:720px) {
+      .shell { grid-template-columns:1fr; }
+      .rail { flex-direction:row; overflow-x:auto; border-right:0; border-bottom:1px solid var(--line); position:fixed;
+              left:0; right:0; bottom:0; top:auto; z-index:30; padding-bottom:env(safe-area-inset-bottom); }
+      .brand, .rail .foot { display:none; }
+      .rail nav { flex-direction:row; padding:6px; }
+      .rail button { flex-direction:column; gap:3px; font-size:9px; padding:7px 9px; white-space:nowrap; }
+      .rail button .n { display:none; }
+      .place { padding-bottom:96px; }
+    }
   </style>
 </head>
 <body>
-<header class="app">
-  <h1>THE UNIVERSAL HIVE</h1>
-  <div class="law">Provide for all. Find the good. Never limit unnecessarily.</div>
-</header>
-<main id="view-home">
-  <div class="stats">
-    <div class="stat"><b id="n-all">0</b><span>REPOS</span></div>
-    <div class="stat"><b id="n-live">0</b><span>WEB LIVE</span></div>
-    <div class="stat"><b id="n-app">0</b><span>IN-APP</span></div>
-  </div>
-  <div class="card">
-    <h3>Cockpit</h3>
-    <p class="meta">Wix site is a brochure. Dead OnSpace / Pages links run here on-device. Add to Home Screen = the phone app.</p>
-    <div class="row">
-      <button id="install">INSTALL PHONE APP</button>
-      <button class="ghost" id="open-wix">OPEN WIX SITE</button>
+<div class="shell">
+  <aside class="rail">
+    <div class="brand">
+      <h1>THE UNIVERSAL HIVE</h1>
+      <div class="law">Provide for all. Find the good. Never limit unnecessarily.</div>
     </div>
-    <p class="hint" id="install-hint">iPhone: Share → Add to Home Screen. Android: menu → Install app.</p>
+    <nav id="rail"></nav>
+    <div class="foot" id="rail-foot">shell · loading…</div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <span class="dot" id="dot"></span>
+      <input class="cmd" id="cmd" placeholder="search or launch anything — app, agent, tool, service  (press /)"/>
+      <span class="who" id="who"></span>
+    </div>
+    <div class="place" id="place"></div>
   </div>
-  <div class="card" style="margin-top:8px">
-    <h3>Seed generate</h3>
-    <textarea id="prompt" rows="3">Who are you?</textarea>
-    <button id="go">GENERATE (LOCAL SEED)</button>
-    <pre class="out" id="out">ready. no store binary. this PWA is the mobile app.</pre>
+</div>
+
+<div class="pal" id="pal">
+  <div class="box">
+    <input id="pal-in" placeholder="type to search everything…"/>
+    <div class="res" id="pal-res"></div>
   </div>
-</main>
-<main id="view-apps" class="hidden">
-  <div class="card" style="margin-bottom:8px">
-    <h3>HIVE APPS — LIVE</h3>
-    <p class="meta">Absorbed apps served by this Hive node. OPEN runs them right here.</p>
-    <div class="grid" id="live-apps"></div>
+</div>
+
+<div class="win" id="win">
+  <div class="frame">
+    <header><h3 id="win-title">—</h3>
+      <button class="gh" id="win-ext">OPEN IN TAB</button>
+      <button class="gh" id="win-close">CLOSE</button>
+    </header>
+    <div class="body" id="win-body"></div>
   </div>
-  <input id="q" placeholder="filter apps / lanes / repos"/>
-  <div class="filters" id="filters"></div>
-  <div class="grid" id="grid"></div>
-</main>
-<main id="view-run" class="hidden">
-  <div id="runner"></div>
-</main>
-<main id="view-signal" class="hidden">
-  <div class="card">
-    <h3>Signal the Hive</h3>
-    <p class="meta">Stored on this device only. Not a third-party drop.</p>
-    <input id="sig-from" placeholder="callsign"/>
-    <textarea id="sig-body" rows="4" placeholder="note"></textarea>
-    <button id="sig-save">LOCK NOTE</button>
-    <pre class="out" id="sig-log"></pre>
-  </div>
-</main>
-<main id="view-prompts" class="hidden">
-  <div id="prompts"></div>
-</main>
-<main id="view-core" class="hidden">
-  <div id="core"></div>
-</main>
-<nav class="tab">
-  <button data-tab="home" class="on">HOME</button>
-  <button data-tab="apps">APPS</button>
-  <button data-tab="run">RUN</button>
-  <button data-tab="core">CORE</button>
-  <button data-tab="prompts">PROMPTS</button>
-  <button data-tab="signal">SIGNAL</button>
-</nav>
-<script src="app.js"></script>
+</div>
+
+<script src="shell.js"></script>
 </body>
 </html>

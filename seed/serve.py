@@ -22,6 +22,7 @@ import plugins as plugs  # noqa: E402
 import prompts as prompt_store  # noqa: E402
 import core_api  # noqa: E402
 import models  # noqa: E402
+import shell_api  # noqa: E402
 
 MODEL = NumpySeed(load_corpus())
 APP_ROUTE = re.compile(r"^/apps/([A-Za-z0-9_-]+)/([A-Za-z0-9._-]+)(/.*)?$")
@@ -104,6 +105,8 @@ class Handler(SimpleHTTPRequestHandler):
         path = urlparse(self.path).path
         if path == "/api/health":
             return self._json(200, {"ok": True, "law": PRIME, "service": "THE-UNIVERSAL-HIVE"})
+        if path == "/api/shell":
+            return self._json(200, shell_api.build())
         if path == "/api/apps":
             return self._json(200, {"law": PRIME, "apps": apps_host.app_list()})
         if path == "/api/employee-alpha/status":
