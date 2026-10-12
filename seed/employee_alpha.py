@@ -126,6 +126,8 @@ def status() -> dict:
         "plugins": len(plugs.list_manifest()),
         "memory_entries": st["entries"],
         "memory_chars": st["chars"],
+        "memory_chain": mem.verify(AGENT),
+        "learner": plugs._LEARNER.stats(),
         "channels": ["online", "phone", "robot"],
         "employment": "active",
         "operator": "JACKSCHITT1134",
@@ -147,6 +149,7 @@ def export() -> dict:
         "plugins": plugs.list_manifest(),
         "learned": plugs._LEARNER.examples,
         "memory": mem.all_memory(AGENT),
+        "memory_chain": mem.verify(AGENT),
         "channels": ["online", "phone", "robot"],
         "boot": "Restore law and agreement, load skills and plugins, replay memory. Same employee, same law, same memory.",
     }

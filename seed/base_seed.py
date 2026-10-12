@@ -8,6 +8,8 @@ import math
 import os
 import random
 
+from learn import LEARNER as _LEARNER
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 PRIME = "Provide for all. Find the good. Never limit unnecessarily."
 SEED_PATH = os.path.join(HERE, "BASE_SEED.txt")
@@ -46,6 +48,13 @@ class NumpySeed:
         self.Why = [[random.uniform(-0.08, 0.08) for _ in range(self.V)] for _ in range(n)]
         self.bh = [0.0] * n
         self.by = [0.0] * self.V
+        self.learner = _LEARNER
+
+    def learn(self, x, y):
+        return self.learner.add(x, y)
+
+    def classify(self, x):
+        return self.learner.predict(x)
 
     def enc(self, s: str):
         return [self.stoi.get(c, 0) for c in s]

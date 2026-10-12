@@ -11,11 +11,11 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 from base_seed import filt  # noqa: E402
-from memory import recall, remember  # noqa: E402
+from memory import recall, remember, verify, chain  # noqa: E402
 import learn as learn_mod  # noqa: E402
 
 PLUGINS: dict[str, dict] = {}
-_LEARNER = learn_mod.Learner()
+_LEARNER = learn_mod.LEARNER
 
 
 def register(name: str, desc: str, category: str, fn):
@@ -66,6 +66,10 @@ register("memory.recall", "search agent memory for anything previously learned",
          lambda q, k=6, agent="employee-alpha": recall(agent, str(q), int(k)))
 register("memory.learn", "store a fact or instruction permanently into agent memory", "memory",
          lambda text, agent="employee-alpha": remember(agent, "operator-taught", str(text), "taught", 3))
+register("memory.verify", "verify the tamper-evident memory digest chain (forensic)", "memory",
+         lambda agent="employee-alpha": verify(agent))
+register("memory.chain", "return the last N memory entries with digests", "memory",
+         lambda agent="employee-alpha", n=20: chain(agent, int(n)))
 register("skills.search", "find abilities in the agent skill catalog", "knowledge",
          lambda q: _skills_search(str(q)))
 register("math.eval", "run safe arithmetic (+, -, *, /, //, %, **)", "tools",

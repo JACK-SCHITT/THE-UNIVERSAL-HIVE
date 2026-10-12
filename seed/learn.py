@@ -114,3 +114,6 @@ if __name__ == "__main__":
     print("stats  ", L.stats())
     print("[500,15]", L.predict([500, 15]))
     print("[120,3] ", L.predict([120, 3]))
+
+
+LEARNER = Learner()
