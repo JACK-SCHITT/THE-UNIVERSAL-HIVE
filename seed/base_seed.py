@@ -84,18 +84,106 @@ class NumpySeed:
 
     def train(self, steps: int = 80, lr: float = 0.05):
         data = self.enc(self.corpus)
-        print("numpy seed train", steps, "vocab", self.V)
+        if len(data) <= self.SEQ + 2:
+            print("corpus too small")
+            self.save()
+            return
+        V, N, SEQ = self.V, self.N, self.SEQ
         for s in range(steps):
-            i = random.randint(0, max(0, len(data) - self.SEQ - 2))
-            h = [0.0] * self.N
+            i = random.randint(0, len(data) - SEQ - 2)
+            hs = []
+            h = [0.0] * N
+            for t in range(SEQ):
+                x = data[i + t]
+                nh = [0.0] * N
+                Wxh_x = self.Wxh[x]
+                for j in range(N):
+                    nh[j] = self.bh[j] + Wxh_x[j]
+                    for k in range(N):
+                        nh[j] += h[k] * self.Whh[k][j]
+                    nh[j] = self.tanh(nh[j])
+                hs.append((x, h[:], nh[:]))
+                h = nh[:]
+            dWxh = [[0.0] * N for _ in range(V)]
+            dWhh = [[0.0] * N for _ in range(N)]
+            dWhy = [[0.0] * V for _ in range(N)]
+            dbh = [0.0] * N
+            dby = [0.0] * V
             loss = 0.0
-            for t in range(self.SEQ):
-                h, logits = self.step(data[i + t], h)
-                p = self.softmax(logits)
-                tgt = data[i + t + 1]
-                loss += -math.log(max(p[tgt], 1e-8))
+            dh_next = [0.0] * N
+            for t in reversed(range(SEQ)):
+                x, h_prev, h_cur = hs[t]
+                y = data[i + t + 1]
+                # logits
+                logits = [0.0] * V
+                for k in range(N):
+                    hk = h_cur[k]
+                    wr = self.Why[k]
+                    for vj in range(V):
+                        logits[vj] += hk * wr[vj]
+                for vj in range(V):
+                    logits[vj] += self.by[vj]
+                # softmax
+                m = max(logits)
+                e = [math.exp(v - m) for v in logits]
+                es = sum(e) or 1
+                p = [ev / es for ev in e]
+                loss += -math.log(max(p[y], 1e-8))
+                # dy
+                dy = list(p)
+                dy[y] -= 1.0
+                # dWhy, dby
+                for k in range(N):
+                    hk = h_cur[k]
+                    if hk == 0: continue
+                    for vj in range(V):
+                        dWhy[k][vj] += hk * dy[vj]
+                for vj in range(V):
+                    dby[vj] += dy[vj]
+                # dh
+                dh = [dh_next[k] for k in range(N)]
+                for k in range(N):
+                    dh[k] += sum(self.Why[k][vj] * dy[vj] for vj in range(V))
+                # dnh
+                dnh = [0.0] * N
+                for j in range(N):
+                    tj = h_cur[j]
+                    dnh[j] = dh[j] * (1.0 - tj * tj)
+                # dbh
+                for j in range(N):
+                    dbh[j] += dnh[j]
+                # dWxh
+                for j in range(N):
+                    g = dnh[j]
+                    if g == 0: continue
+                    dWxh[x][j] += g
+                # dWhh
+                for k in range(N):
+                    hp = h_prev[k]
+                    if hp == 0: continue
+                    for j in range(N):
+                        dWhh[k][j] += hp * dnh[j]
+                # dh_next
+                dh_next = [0.0] * N
+                for k in range(N):
+                    for j in range(N):
+                        dh_next[k] += self.Whh[k][j] * dnh[j]
+            def clip(a): return max(-5.0, min(5.0, a))
+            for i in range(V):
+                for j in range(N):
+                    self.Wxh[i][j] -= lr * clip(dWxh[i][j])
+            for i in range(N):
+                for j in range(N):
+                    self.Whh[i][j] -= lr * clip(dWhh[i][j])
+            for i in range(N):
+                for j in range(V):
+                    self.Why[i][j] -= lr * clip(dWhy[i][j])
+            for j in range(N):
+                self.bh[j] -= lr * clip(dbh[j])
+            for j in range(V):
+                self.by[j] -= lr * clip(dby[j])
             if s % 20 == 0:
-                print("step", s, "loss", round(loss / self.SEQ, 3))
+                print("step", s, "loss", round(loss / SEQ, 3))
         print("LAW:", PRIME)
         self.save()
 
