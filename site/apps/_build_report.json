@@ -1,8 +1,8 @@
 {
   "apps": {
     "agents/blindman-ai": {
-      "error": "\u001b[31merror during build: \u001b[31m[vite:load-fallback] Could not load /home/runner/work/THE-UNIVERSAL-HIVE/THE-UNIVERSAL-HIVE/apps/agents/blindman-ai/src/components/ui/toaster (imported by src/App.tsx): ENOENT: no such file or directory, open '",
-      "status": "failed"
+      "error": "",
+      "status": "built"
     },
     "agents/copilot-extension": {
       "error": "",
@@ -97,8 +97,8 @@
       "status": "built"
     },
     "foundry/assimilate-or-die": {
-      "error": "  TypeError: Cannot read properties of undefined (reading 'md')     at factory (/home/runner/work/THE-UNIVERSAL-HIVE/THE-UNIVERSAL-HIVE/apps/foundry/assimilate-or-die/components/ui/MessageBubble.tsx:77:32) ",
-      "status": "failed"
+      "error": "",
+      "status": "built"
     },
     "foundry/movie-maker": {
       "error": "",
@@ -150,8 +150,8 @@
     }
   },
   "counts": {
-    "built": 15,
-    "failed": 3,
+    "built": 17,
+    "failed": 1,
     "skipped": 19
   },
   "note": "run 'scripts/ci_build_all.sh' in Actions; HIVE_STRICT_BUILD=1 turns any failed into an exit 1"
