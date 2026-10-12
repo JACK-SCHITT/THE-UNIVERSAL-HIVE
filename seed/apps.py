@@ -9,6 +9,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 APPS_DIR = os.path.join(ROOT, "apps")
 MANIFEST = os.path.join(APPS_DIR, "APPS.json")
+EXTERNAL = os.path.join(APPS_DIR, "EXTERNAL.json")
 
 BUILD_CANDIDATES = ("dist", "out", "build", ".output/public")
 
@@ -17,6 +18,13 @@ def load_manifest() -> list:
     if not os.path.isfile(MANIFEST):
         return []
     with open(MANIFEST, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def load_external() -> list:
+    if not os.path.isfile(EXTERNAL):
+        return []
+    with open(EXTERNAL, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -56,11 +64,29 @@ def app_list() -> list:
             "lane": a["lane"],
             "id": a["id"],
             "name": a.get("name") or a["id"],
+            "kind": "app",
             "stack": a.get("stack", []),
             "source_repo": a.get("source_repo"),
             "built": bool(sd),
             "serve_dir": os.path.relpath(sd, ROOT) if sd else None,
             "url": f"/apps/{a['lane']}/{a['id']}/" if sd else None,
+            "web": None,
+            "embed": False,
+        })
+    for a in load_external():
+        out.append({
+            "lane": a.get("lane", "host"),
+            "id": a["id"],
+            "name": a.get("name") or a["id"],
+            "kind": a.get("kind", "external"),
+            "stack": a.get("stack", []),
+            "source_repo": a.get("source_repo"),
+            "built": bool(a.get("url")),
+            "serve_dir": None,
+            "url": None,
+            "web": a.get("url"),
+            "embed": bool(a.get("embed")),
+            "blurb": a.get("blurb", ""),
         })
     return out
 

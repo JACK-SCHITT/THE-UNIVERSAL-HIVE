@@ -1,0 +1,11 @@
+[
+  {
+    "lane": "host",
+    "id": "wix",
+    "name": "Wix Site",
+    "kind": "external",
+    "url": "https://jackschitt1134.wixsite.com/the-universal-hive",
+    "embed": false,
+    "blurb": "Public Wix presence. Embeds the Hive via web/embed.html; opens the live site here."
+  }
+]

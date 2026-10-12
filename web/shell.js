@@ -64,8 +64,8 @@ function pApps() {
     const list = apps.filter(a => !q || (a.name + a.id + a.lane).toLowerCase().includes(q));
     $("#app-list").innerHTML = list.map(a => `
       <div class="card"><h3>${a.badge || ""}${a.name || a.id}</h3>
-        <p class="meta"><span class="badge ${a.built ? "live" : "app"}">${a.built ? "LIVE" : "BUILD"}</span>${a.lane} · ${a.id}</div>
-      <div class="row"><button class="pri" data-open="${a.id}">OPEN</button>${a.repo ? `<button class="gh" data-repo="${a.repo}">REPO</button>` : ""}</div>
+        <p class="meta"><span class="badge ${a.built ? "live" : "app"}">${a.built ? "LIVE" : "BUILD"}</span>${a.lane} · ${a.id} · ${a.kind || "app"}</div>
+      <div class="row"><button class="pri" data-open="${a.id}">OPEN</button>${a.source_repo ? `<button class="gh" data-repo="${a.source_repo}">REPO</button>` : ""}</div>
       </div>`).join("") || "<div class='card'>no matches</div>";
   };
   $("#app-q").oninput = e => paint(e.target.value.toLowerCase().trim());
@@ -260,13 +260,13 @@ function openWin(title, bodyHTML, { nopad = false } = {}, extURL = null) {
   $("#win-ext").onclick = () => extURL && window.open(extURL, "_blank");
 }
 function openApp(a) {
-  const url = a.url || a.web || null;
-  if (url && a.built) openWin(a.name || a.id, `<iframe src="${url}"></iframe>`, { nopad: true }, url);
-  else openWin(a.name || a.id,
+  if (a.built && a.url) return openWin(a.name || a.id, `<iframe src="${a.url}"></iframe>`, { nopad: true }, a.url);
+  if (a.web && a.embed) return openWin(a.name || a.id, `<iframe src="${a.web}"></iframe>`, { nopad: true }, a.web);
+  openWin(a.name || a.id,
     `<div class="card"><h3>${a.name || a.id}</h3><div class="meta">${a.blurb || ""}</div>
-      <p>${a.built ? "" : "Not built on this node yet. "}${a.web ? `<a href="${a.web}" target="_blank">live web</a> · ` : ""}
-      ${a.repo ? `<a href="${a.repo}" target="_blank">source</a>` : ""}</p></div>`,
-    {}, a.web || a.repo);
+      <p>${a.web ? "External app. " : "Not built on this node yet. "}${a.web ? `<a href="${a.web}" target="_blank">open live site</a> · ` : ""}
+      ${a.source_repo ? `<a href="${a.source_repo}" target="_blank">source</a>` : ""}</p></div>`,
+    {}, a.web || a.source_repo);
 }
 function openAgent(id) {
   const a = MAN.agents.find(x => x.id === id) || { id, name: id };
