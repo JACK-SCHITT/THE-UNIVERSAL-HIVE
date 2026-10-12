@@ -1,7 +1,7 @@
 {
   "apps": {
     "agents/blindman-ai": {
-      "error": "\u001b[31merror during build:",
+      "error": "\u001b[31merror during build: \u001b[31m[vite:load-fallback] Could not load /home/runner/work/THE-UNIVERSAL-HIVE/THE-UNIVERSAL-HIVE/apps/agents/blindman-ai/src/components/ui/toaster (imported by src/App.tsx): ENOENT: no such file or directory, open '",
       "status": "failed"
     },
     "agents/copilot-extension": {
@@ -25,16 +25,16 @@
       "status": "built"
     },
     "agents/krackerjack-foundry": {
-      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
-      "status": "failed"
+      "error": "",
+      "status": "built"
     },
     "agents/luna-companion": {
-      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
-      "status": "failed"
+      "error": "",
+      "status": "built"
     },
     "agents/openclaw-prime": {
-      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
-      "status": "failed"
+      "error": "",
+      "status": "built"
     },
     "agents/team-gemini": {
       "error": "",
@@ -61,8 +61,8 @@
       "status": "skipped"
     },
     "field/freq-board-sleuth": {
-      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
-      "status": "failed"
+      "error": "",
+      "status": "built"
     },
     "field/paypal-docs-examples": {
       "error": "",
@@ -89,7 +89,7 @@
       "status": "built"
     },
     "field/universal-reader": {
-      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
+      "error": "TypeError: Cannot read properties of undefined (reading 'replace') TypeError: Cannot read properties of undefined (reading 'replace') ",
       "status": "failed"
     },
     "foundry/ai-app-foundry": {
@@ -97,12 +97,12 @@
       "status": "built"
     },
     "foundry/assimilate-or-die": {
-      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
+      "error": "  TypeError: Cannot read properties of undefined (reading 'md')     at factory (/home/runner/work/THE-UNIVERSAL-HIVE/THE-UNIVERSAL-HIVE/apps/foundry/assimilate-or-die/components/ui/MessageBubble.tsx:77:32) ",
       "status": "failed"
     },
     "foundry/movie-maker": {
-      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
-      "status": "failed"
+      "error": "",
+      "status": "built"
     },
     "foundry/self-hosted-ai-starter-kit": {
       "error": "",
@@ -113,8 +113,8 @@
       "status": "skipped"
     },
     "ops/cashapp-payment-portal": {
-      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
-      "status": "failed"
+      "error": "",
+      "status": "built"
     },
     "ops/k377-tools": {
       "error": "",
@@ -150,8 +150,8 @@
     }
   },
   "counts": {
-    "built": 9,
-    "failed": 9,
+    "built": 15,
+    "failed": 3,
     "skipped": 19
   },
   "note": "run 'scripts/ci_build_all.sh' in Actions; HIVE_STRICT_BUILD=1 turns any failed into an exit 1"
