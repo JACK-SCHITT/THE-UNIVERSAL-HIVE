@@ -23,9 +23,11 @@ import prompts as prompt_store  # noqa: E402
 import core_api  # noqa: E402
 import models  # noqa: E402
 import shell_api  # noqa: E402
+import hiveapi  # noqa: E402
 
 MODEL = NumpySeed(load_corpus())
 APP_ROUTE = re.compile(r"^/apps/([A-Za-z0-9_-]+)/([A-Za-z0-9._-]+)(/.*)?$")
+GATEWAY = ("/auth/v1", "/rest/v1", "/functions/v1", "/storage/v1", "/realtime/v1")
 REQ_ROUTE = re.compile(r"^/api/prompts/requests/([A-Za-z0-9]+)(?:/(approve|deny))?$")
 AGENT_ROUTE = re.compile(r"^/api/prompts/([A-Za-z0-9_-]+)$")
 
@@ -79,9 +81,48 @@ class Handler(SimpleHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Headers", "content-type")
-        self.send_header("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+        self.send_header("Access-Control-Allow-Headers",
+                         "content-type, authorization, apikey, prefer, x-client-info, x-operator")
+        self.send_header("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,PUT,OPTIONS")
         self.end_headers()
+
+    def _gateway(self, method: str) -> bool:
+        """Route Supabase-protocol paths to the Hive gateway. True if handled."""
+        path = urlparse(self.path).path
+        if not path.startswith(GATEWAY):
+            return False
+        headers = {k.lower(): v for k, v in self.headers.items()}
+        n = int(self.headers.get("Content-Length") or 0)
+        raw = self.rfile.read(n) if n else b""
+        ctype = headers.get("content-type", "")
+        body = None
+        if raw:
+            if "json" in ctype or raw[:1] in (b"{", b"["):
+                try:
+                    body = json.loads(raw)
+                except ValueError:
+                    body = raw
+            else:
+                body = raw
+        code, obj, extra = hiveapi.handle(method, path, self._query(), headers, body, model=MODEL)
+        if isinstance(obj, (bytes, bytearray)):
+            self.send_response(code)
+            self.send_header("Content-Type", (extra or {}).get("content-type") or "application/octet-stream")
+            self.send_header("Content-Length", str(len(obj)))
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            if self.command != "HEAD":
+                self.wfile.write(obj)
+            return True
+        if obj is None:
+            self.send_response(code)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            for k, v in (extra or {}).items():
+                self.send_header(k, v)
+            self.end_headers()
+            return True
+        self._json(code, obj)
+        return True
 
     def _serve_app(self, lane: str, appid: str, rest: str):
         base = apps_host.serve_dir(lane, appid)
@@ -103,6 +144,8 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         path = urlparse(self.path).path
+        if self._gateway("GET"):
+            return
         if path == "/api/health":
             return self._json(200, {"ok": True, "law": PRIME, "service": "THE-UNIVERSAL-HIVE"})
         if path == "/api/shell":
@@ -162,6 +205,8 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         path = urlparse(self.path).path
+        if self._gateway("POST"):
+            return
         n = int(self.headers.get("Content-Length") or 0)
         body = json.loads(self.rfile.read(n) or b"{}")
         if path == "/api/employee-alpha/chat":
@@ -240,6 +285,21 @@ class Handler(SimpleHTTPRequestHandler):
                 return self._json(200, {"agent": a, "ok": True, **out})
             except PermissionError as e:
                 return self._json(403, {"error": str(e)})
+        return self._json(404, {"error": "no"})
+
+    def do_PATCH(self):
+        if self._gateway("PATCH"):
+            return
+        return self._json(404, {"error": "no"})
+
+    def do_PUT(self):
+        if self._gateway("PUT"):
+            return
+        return self._json(404, {"error": "no"})
+
+    def do_DELETE(self):
+        if self._gateway("DELETE"):
+            return
         return self._json(404, {"error": "no"})
 
 
