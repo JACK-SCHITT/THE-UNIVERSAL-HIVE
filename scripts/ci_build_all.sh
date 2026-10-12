@@ -37,55 +37,26 @@ npm_install() {
 
 # blindman-ai ships a tsconfig.json whose "references" point at a
 # tsconfig.node.json that was never committed. Vite's esbuild plugin follows
-# the reference and dies with ENOENT before bundling. We are not allowed to
-# patch the app, so build it through a temp config that pins esbuild's compiler
-# options (and so never reads the broken tsconfig), reusing the app's own SWC
-# plugin and "@" alias from its node_modules.
+# the reference and dies with ENOENT before bundling. Generate the missing file
+# in the work tree (never committed) and build normally.
 build_blindman() {
   local appdir="$1"
-  local cfg
-  cfg="$(mktemp --suffix=.mjs /tmp/hive-vite-XXXXXX)"
-  cat >"$cfg" <<'EOF'
-import { createRequire } from "node:module";
-import path from "node:path";
-
-const appDir = process.env.HIVE_APP_DIR;
-const require = createRequire(path.join(appDir, "package.json"));
-
-let react = null;
-try {
-  const pkg = require("@vitejs/plugin-react-swc");
-  react = pkg.default ?? pkg;
-} catch {
-  react = null;
+  if [ ! -f "$appdir/tsconfig.node.json" ]; then
+    printf '%s\n' '{"compilerOptions":{"composite":false,"skipLibCheck":true,"module":"ESNext","moduleResolution":"Bundler","allowSyntheticDefaultImports":true}}' > "$appdir/tsconfig.node.json"
+  fi
+  ( cd "$appdir" && ./node_modules/.bin/vite build ) >/tmp/build.log 2>&1
 }
 
-export default {
-  root: appDir,
-  plugins: react ? [react()] : [],
-  resolve: { alias: { "@": path.resolve(appDir, "src") } },
-  esbuild: {
-    tsconfigRaw: JSON.stringify({
-      compilerOptions: {
-        jsx: "react-jsx",
-        target: "ES2020",
-        module: "ESNext",
-        moduleResolution: "bundler",
-        useDefineForClassFields: false,
-        allowJs: true,
-        isolatedModules: true,
-        skipLibCheck: true,
-        strict: false,
-      },
-    }),
-  },
-};
-EOF
-  HIVE_APP_DIR="$appdir" \
-    ./node_modules/.bin/vite build --config "$cfg" >/tmp/build.log 2>&1
-  local rc=$?
-  rm -f "$cfg"
-  return $rc
+# Expo SDK apps build to a static site with `expo export`. Prefer the app's own
+# local CLI (version-matched to the app's Expo SDK); only fall back to a global
+# npx fetch if the local bin is missing.
+build_expo() {
+  local appdir="$1"
+  if [ -x "$appdir/node_modules/.bin/expo" ]; then
+    ( cd "$appdir" && ./node_modules/.bin/expo export --platform web --output-dir dist ) >/tmp/build.log 2>&1
+  else
+    ( cd "$appdir" && npx --yes expo export --platform web --output-dir dist ) >/tmp/build.log 2>&1
+  fi
 }
 
 built=0; skipped=0; failed=0
@@ -122,7 +93,7 @@ for appdir in "$APPS"/*/*/; do
         agents/blindman-ai) build_blindman "$appdir" ;;
         *)
           case "$kind" in
-            expo) npx --yes expo export --platform web --output-dir dist >/tmp/build.log 2>&1 ;;
+            expo) build_expo "$appdir" ;;
             next) npm run build >/tmp/build.log 2>&1 ;;
             *)    npm run build >/tmp/build.log 2>&1 ;;
           esac
@@ -133,7 +104,11 @@ for appdir in "$APPS"/*/*/; do
     if copy_out "$appdir" "$dest"; then
       echo "  built -> $lane/$id"; built=$((built+1))
     else
-      echo "  build produced no static output"; tail -5 /tmp/build.log 2>/dev/null; failed=$((failed+1))
+      echo "  FAILED -> $lane/$id"
+      echo "  --- npm.log (last 15) ---"; tail -15 /tmp/npm.log 2>/dev/null | sed 's/^/    /'
+      echo "  --- build.log errors (first 15) ---"; grep -aE "Error|error:|Cannot find|SyntaxError|TypeError|failed|Unexpected" /tmp/build.log 2>/dev/null | head -15 | sed 's/^/    /'
+      echo "  --- build.log (last 12) ---"; tail -12 /tmp/build.log 2>/dev/null | sed 's/^/    /'
+      failed=$((failed+1))
     fi
   elif [ -f "$appdir/index.html" ]; then
     mkdir -p "$dest"; cp -a "$appdir/." "$dest/"
