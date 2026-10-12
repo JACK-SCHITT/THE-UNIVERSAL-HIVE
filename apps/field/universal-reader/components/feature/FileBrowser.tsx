@@ -69,8 +69,9 @@ export const ZipBrowser = memo(function ZipBrowser({ file, onClose }: ZipBrowser
   }, [entries, search, currentDir]);
 
   const handleEntryPress = useCallback((entry: ZipEntry) => {
+    const ep = (entry?.path ?? '') as string;
     if (entry.isDirectory) {
-      const dirPath = entry.path.replace(/\/$/, '');
+      const dirPath = ep.replace(/\/$/, '');
       setCurrentDir(dirPath);
       return;
     }
