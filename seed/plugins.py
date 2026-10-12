@@ -4,9 +4,15 @@
 from __future__ import annotations
 
 import ast
+import base64 as _b64
 import datetime
+import hashlib
 import json
 import os
+import random
+import re
+import statistics
+import uuid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -15,6 +21,7 @@ from memory import recall, remember, verify, chain  # noqa: E402
 import learn as learn_mod  # noqa: E402
 import store as store_mod  # noqa: E402
 import models as models_mod  # noqa: E402
+import shell as shell_mod  # noqa: E402
 
 PLUGINS: dict[str, dict] = {}
 _LEARNER = learn_mod.LEARNER
@@ -107,6 +114,89 @@ register("model.list", "list local and remote model providers", "core",
          lambda: models_mod.status())
 register("core.stats.pretty", "human-readable Hive-core counters", "core",
          lambda: {k: v for k, v in store_mod.stats().items()})
+register("shell.run", "run a local Linux command (allowlist; no shell metachars)", "os",
+         lambda cmd, cwd=None, timeout=30: shell_mod.run(str(cmd), cwd, int(timeout)))
+register("device.info", "facts about the machine the Hive runs on", "os",
+         lambda: shell_mod.device_info())
+
+# --- text ---
+register("text.upper", "uppercase text", "text", lambda text: str(text).upper())
+register("text.lower", "lowercase text", "text", lambda text: str(text).lower())
+register("text.reverse", "reverse a string", "text", lambda text: str(text)[::-1])
+register("text.split", "split text on a separator", "text",
+         lambda text, sep=None: str(text).split(sep))
+register("text.join", "join a list with a separator", "text",
+         lambda items, sep=" ": str(sep).join(str(i) for i in items))
+register("text.replace", "replace substring", "text",
+         lambda text, old, new: str(text).replace(str(old), str(new)))
+register("text.slug", "make a url-safe slug", "text",
+         lambda text: re.sub(r"[^a-z0-9]+", "-", str(text).lower()).strip("-"))
+register("text.regex", "regex search: return matches or 'no match'", "text",
+         lambda text, pattern: (re.findall(str(pattern), str(text)) or "no match"))
+
+# --- hash / encode ---
+register("hash.sha256", "sha256 hex digest", "security",
+         lambda text: hashlib.sha256(str(text).encode()).hexdigest())
+register("hash.md5", "md5 hex digest (checksums only)", "security",
+         lambda text: hashlib.md5(str(text).encode()).hexdigest())
+register("base64.encode", "base64-encode text", "tools",
+         lambda text: _b64.b64encode(str(text).encode()).decode())
+register("base64.decode", "base64-decode text", "tools",
+         lambda text: _b64.b64decode(str(text).encode()).decode(errors="replace"))
+
+# --- data ---
+register("json.get", "read a dotted path from JSON text", "data",
+         lambda text, path: json.loads(text) if not path else _json_path(json.loads(text), str(path)))
+register("json.keys", "top-level keys of JSON text", "data",
+         lambda text: list(json.loads(text).keys()))
+register("url.parse", "split a URL into parts", "data",
+         lambda url: _url_parse(str(url)))
+register("csv.parse", "parse CSV text into rows", "data",
+         lambda text: [r.split(",") for r in str(text).strip().splitlines()])
+
+# --- numeric ---
+register("math.round", "round a number to N places", "tools",
+         lambda value, places=0: round(float(value), int(places)))
+register("math.stats", "mean/min/max/sum of a list of numbers", "tools",
+         lambda values: _math_stats(values))
+register("random.int", "random integer in [lo, hi]", "tools",
+         lambda lo=0, hi=100: random.randint(int(lo), int(hi)))
+register("random.choice", "pick one item from a list", "tools",
+         lambda items: random.choice(list(items)))
+register("uuid.gen", "generate a random uuid4", "tools",
+         lambda: str(uuid.uuid4()))
+
+# --- lists ---
+register("list.unique", "unique items preserving order", "tools",
+         lambda items: list(dict.fromkeys(str(i) for i in items)))
+register("list.sort", "sorted list", "tools",
+         lambda items, reverse=False: sorted(items, reverse=bool(reverse)))
+
+
+def _json_path(obj, path):
+    for part in str(path).split("."):
+        if isinstance(obj, dict):
+            obj = obj.get(part)
+        elif isinstance(obj, list) and part.isdigit():
+            obj = obj[int(part)]
+        else:
+            return None
+    return obj
+
+
+def _url_parse(url: str) -> dict:
+    from urllib.parse import urlparse
+    u = urlparse(url)
+    return {"scheme": u.scheme, "host": u.netloc, "path": u.path,
+            "query": u.query, "fragment": u.fragment}
+
+
+def _math_stats(values) -> dict:
+    vals = [float(v) for v in values]
+    if not vals:
+        return {"count": 0}
+    return {"count": len(vals), "sum": sum(vals), "min": min(vals), "max": max(vals),
+            "mean": sum(vals) / len(vals), "median": statistics.median(vals)}
 
 
 def _skills_search(q: str) -> str:
