@@ -1,7 +1,7 @@
 {
   "apps": {
     "agents/blindman-ai": {
-      "error": "\u001b[31mx\u001b[39m Build failed in 348ms",
+      "error": "\u001b[31merror during build:",
       "status": "failed"
     },
     "agents/copilot-extension": {
