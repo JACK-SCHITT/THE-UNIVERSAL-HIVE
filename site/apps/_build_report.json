@@ -1,0 +1,158 @@
+{
+  "apps": {
+    "agents/blindman-ai": {
+      "error": "\u001b[31mx\u001b[39m Build failed in 348ms",
+      "status": "failed"
+    },
+    "agents/copilot-extension": {
+      "error": "",
+      "status": "skipped"
+    },
+    "agents/copilot-hive": {
+      "error": "",
+      "status": "skipped"
+    },
+    "agents/grokschitt": {
+      "error": "",
+      "status": "built"
+    },
+    "agents/jack-schitt-agent": {
+      "error": "",
+      "status": "skipped"
+    },
+    "agents/krackerjack-ai": {
+      "error": "",
+      "status": "built"
+    },
+    "agents/krackerjack-foundry": {
+      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
+      "status": "failed"
+    },
+    "agents/luna-companion": {
+      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
+      "status": "failed"
+    },
+    "agents/openclaw-prime": {
+      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
+      "status": "failed"
+    },
+    "agents/team-gemini": {
+      "error": "",
+      "status": "built"
+    },
+    "core/jack-schitt": {
+      "error": "",
+      "status": "skipped"
+    },
+    "core/universal-hive-demos": {
+      "error": "",
+      "status": "skipped"
+    },
+    "field/ai-game-assistant": {
+      "error": "",
+      "status": "built"
+    },
+    "field/densepose-from-wifi": {
+      "error": "",
+      "status": "skipped"
+    },
+    "field/dragonfly": {
+      "error": "",
+      "status": "skipped"
+    },
+    "field/freq-board-sleuth": {
+      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
+      "status": "failed"
+    },
+    "field/paypal-docs-examples": {
+      "error": "",
+      "status": "skipped"
+    },
+    "field/paypal-rest-api-specs": {
+      "error": "",
+      "status": "skipped"
+    },
+    "field/people-scan": {
+      "error": "",
+      "status": "built"
+    },
+    "field/rf-analyzer": {
+      "error": "",
+      "status": "skipped"
+    },
+    "field/rf-analyzer-2": {
+      "error": "",
+      "status": "skipped"
+    },
+    "field/rf-sensing-suite": {
+      "error": "",
+      "status": "built"
+    },
+    "field/universal-reader": {
+      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
+      "status": "failed"
+    },
+    "foundry/ai-app-foundry": {
+      "error": "",
+      "status": "built"
+    },
+    "foundry/assimilate-or-die": {
+      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
+      "status": "failed"
+    },
+    "foundry/movie-maker": {
+      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
+      "status": "failed"
+    },
+    "foundry/self-hosted-ai-starter-kit": {
+      "error": "",
+      "status": "skipped"
+    },
+    "ops/beast": {
+      "error": "",
+      "status": "skipped"
+    },
+    "ops/cashapp-payment-portal": {
+      "error": "Error: Cannot find module 'ajv/dist/compile/codegen'",
+      "status": "failed"
+    },
+    "ops/k377-tools": {
+      "error": "",
+      "status": "skipped"
+    },
+    "ops/kingshot-companion": {
+      "error": "",
+      "status": "skipped"
+    },
+    "ops/kingshot-discord-bot": {
+      "error": "",
+      "status": "skipped"
+    },
+    "ops/mcgillicuddy": {
+      "error": "",
+      "status": "skipped"
+    },
+    "ops/mcgillicuddy-4": {
+      "error": "",
+      "status": "skipped"
+    },
+    "shield/neural-shield": {
+      "error": "",
+      "status": "built"
+    },
+    "shield/scam-shield": {
+      "error": "",
+      "status": "skipped"
+    },
+    "shield/scammers-knightmare": {
+      "error": "",
+      "status": "built"
+    }
+  },
+  "counts": {
+    "built": 9,
+    "failed": 9,
+    "skipped": 19
+  },
+  "note": "run 'scripts/ci_build_all.sh' in Actions; HIVE_STRICT_BUILD=1 turns any failed into an exit 1"
+}
