@@ -130,6 +130,7 @@ function renderRun(id) {
     alpha: `<div class="card"><h3>EMPLOYEE ALPHA AI</h3><p class="meta" id="al-meta">lawful hired worker · loading…</p>
       <textarea id="al-p" rows="3" placeholder="give the job…">What positions can you work?</textarea>
       <div class="row"><button id="al-go">GIVE JOB</button><button class="ghost" id="al-learn">REMEMBER</button><button class="ghost" id="al-bundle">DOWNLOAD BUNDLE</button></div>
+      <div class="row"><button class="ghost" id="al-mic">◉ TALK</button><button class="ghost" id="al-speak">♪ SPEAK</button></div>
       <pre class="out" id="al-o">standing by</pre></div>
       <div class="card"><h3>SKILLS · PLUGINS · MEMORY</h3><pre class="out" id="al-skills">loading …</pre></div>`,
     seed: `<div class="card"><h3>Base seed</h3><textarea id="r-p" rows="3">Who are you?</textarea><button id="r-go">GENERATE</button><pre class="out" id="r-o">law locked</pre></div>`,
@@ -255,6 +256,24 @@ function renderRun(id) {
         .catch(() => { const rows = load("alpha-mem", []).concat(t); store("alpha-mem", rows); o.textContent = `stored on device (${rows.length}): ${t}`; });
     };
     document.getElementById("al-bundle").onclick = () => location.href = "/api/employee-alpha/export";
+    const mic = document.getElementById("al-mic"), spk = document.getElementById("al-speak");
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SR) {
+      const rec = new SR();
+      rec.lang = navigator.language || "en-US";
+      rec.interimResults = false;
+      let live = false;
+      rec.onresult = e => { document.getElementById("al-p").value = e.results[0][0].transcript; };
+      rec.onend = () => { live = false; mic.textContent = "◉ TALK"; };
+      rec.onerror = e => { mic.textContent = "◉ TALK"; alert("mic: " + e.error); };
+      mic.onclick = () => { if (live) { rec.stop(); return; } live = true; mic.textContent = "■ LISTENING"; rec.start(); };
+    } else {
+      mic.disabled = true; mic.title = "no speech recognition on this browser";
+    }
+    spk.onclick = () => {
+      const u = new SpeechSynthesisUtterance(document.getElementById("al-o").textContent);
+      speechSynthesis.cancel(); speechSynthesis.speak(u);
+    };
   }
 }
 

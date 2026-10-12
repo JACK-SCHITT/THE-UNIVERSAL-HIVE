@@ -8,6 +8,8 @@ Used by serve.py as a compact API surface:
 """
 from __future__ import annotations
 
+import time
+
 import store
 import models
 
@@ -60,6 +62,8 @@ def dispatch(module: str, action: str, p: dict, model=None, operator: bool = Fal
             return 200, store.task_add(p.get("name", "job"), p.get("kind", "note"), p.get("spec"))
         if a == "run":
             return 200, run_task(p.get("id", ""), model)
+        if a == "tick":
+            return 200, tick(model)
         if a == "history":
             return 200, {"runs": store.run_history(p.get("id"), int(p.get("limit", 50)))}
         return 200, {"tasks": store.task_list()}
@@ -73,6 +77,28 @@ def dispatch(module: str, action: str, p: dict, model=None, operator: bool = Fal
 
     return 400, {"error": f"unknown module '{module}'",
                  "modules": ["stats", "kv", "coll", "channel", "token", "task", "model"]}
+
+
+def tick(model=None):
+    """Run every enabled task whose interval has elapsed. The Hive's job scheduler."""
+    now = time.time()
+    ran = []
+    for t in store.task_list():
+        if not t["enabled"]:
+            continue
+        interval = (t.get("spec") or {}).get("interval_seconds")
+        if not interval:
+            continue
+        last = t.get("last")
+        if last:
+            try:
+                elapsed = now - time.mktime(time.strptime(last, "%Y-%m-%dT%H:%M:%SZ"))
+            except ValueError:
+                elapsed = interval
+            if elapsed < interval:
+                continue
+        ran.append(run_task(t["id"], model))
+    return {"ran": ran, "count": len(ran)}
 
 
 def run_task(tid: str, model=None):
@@ -98,3 +124,14 @@ def run_task(tid: str, model=None):
     except Exception as e:  # noqa: BLE001
         store.run_log(tid, "error", {"error": str(e)})
         return {"task": tid, "name": task["name"], "status": "error", "output": str(e)}
+
+
+if __name__ == "__main__":
+    import json
+    import sys
+
+    if len(sys.argv) > 1 and sys.argv[1] == "tick":
+        from base_seed import NumpySeed, load_corpus
+        print(json.dumps(tick(NumpySeed(load_corpus())), indent=2))
+    else:
+        print(json.dumps(store.stats(), indent=2))
