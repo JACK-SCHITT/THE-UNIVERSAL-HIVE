@@ -5,16 +5,39 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <title>THE UNIVERSAL HIVE — Embed Bridge</title>
   <style>
-    :root { --ink:#0c0d0b; --paper:#eeeee6; }
-    body { margin:0; height:100dvh; background:var(--ink); display:grid; place-items:center; color:var(--paper); font:14px/1.5 ui-monospace,Menlo,Consolas,monospace; }
-    a { color:#8fa87a; }
+    :root { --ink:#0c0d0b; --paper:#eeeee6; --moss:#8fa87a; }
+    body { margin:0; height:100dvh; background:var(--ink); color:var(--paper); font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace; }
+    a { color:var(--moss); }
+    .wrap { height:100dvh; display:grid; grid-template-rows:auto 1fr; }
+    .bar { display:flex; gap:8px; align-items:center; padding:8px 10px; border-bottom:1px solid #22261f; background:rgba(12,13,11,.96); }
+    .dot { width:6px; height:6px; border-radius:50%; background:#555; }
+    .dot.up { background:var(--moss); box-shadow:0 0 6px var(--moss); }
+    .bar .sp { flex:1; }
+    iframe { width:100%; height:100%; border:0; background:#fff; }
   </style>
 </head>
 <body>
-  <div style="text-align:center;padding:1rem;max-width:60ch">
-    <h1>THE UNIVERSAL HIVE</h1>
-    <p>Embed bridge ready. This page is meant to be loaded inside an iframe (e.g. Wix HTML iframe).</p>
-    <p><a href="https://pages.github.com/" target="_parent">GitHub Pages</a> · <a href="https://jackschitt1134.wixsite.com/the-universal-hive" target="_parent">Open original Wix site</a></p>
+  <div class="wrap">
+    <div class="bar">
+      <span class="dot" id="dot"></span>
+      <span id="stat">THE UNIVERSAL HIVE · embed</span>
+      <span class="sp"></span>
+      <a id="open-pages" target="_parent" rel="noopener">OPEN PAGES</a> ·
+      <a id="open-here" href="./index.html" target="_parent" rel="noopener">OPEN SHELL</a>
+    </div>
+    <iframe id="if" allow="clipboard-read; clipboard-write; accelerometer; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
   </div>
+  <script>
+    const P = "https://JACK-SCHITT.github.io/THE-UNIVERSAL-HIVE/";
+    document.getElementById("open-pages").href = P;
+    const ifr = document.getElementById("if");
+    function test(url, cb) {
+      try { const x = new XMLHttpRequest(); x.open("GET", url + "manifest.json?cb=" + Date.now(), true); x.timeout=2500; x.onload=()=>cb(x.status < 400); x.onerror=()=>cb(false); x.send(); } catch { cb(false); }
+    }
+    test(P, ok => {
+      if (ok) { ifr.src = P; document.getElementById("dot").className="dot up"; document.getElementById("stat").textContent="loading: Pages"; }
+      else { ifr.src = "./index.html"; document.getElementById("dot").className="dot up"; document.getElementById("stat").textContent="loading: local shell"; }
+    });
+  </script>
 </body>
 </html>
