@@ -12,6 +12,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 from base_seed import PRIME, filt  # noqa: E402
 import memory as mem  # noqa: E402
 import plugins as plugs  # noqa: E402
+import prompts as prompt_store  # noqa: E402
 from registry import base_prompt  # noqa: E402
 
 AGENT = "employee-alpha"
@@ -61,6 +62,7 @@ def context(prompt: str, session: str) -> str:
     return (
         base_prompt()
         + "\n\n" + agreement()
+        + prompt_store.overlay(AGENT)
         + "\n\nSKILLS YOU CARRY (every skill, every function):\n" + skills_summary()
         + "\n\nPLUGINS YOU CAN CALL:\n" + ", ".join(p["name"] for p in plugs.list_manifest())
         + "\n\nREMEMBERED CONTEXT:\n" + fragment

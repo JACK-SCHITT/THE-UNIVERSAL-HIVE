@@ -8,20 +8,29 @@ import mimetypes
 import os
 import re
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 WEB = os.path.join(ROOT, "web")
 
 from base_seed import NumpySeed, load_corpus, PRIME, filt  # noqa: E402
-from registry import load_agent, spawn_subagent  # noqa: E402
+from registry import load_agent, spawn_subagent, load_registry  # noqa: E402
 import apps as apps_host  # noqa: E402
 import employee_alpha as alpha  # noqa: E402
 import plugins as plugs  # noqa: E402
+import prompts as prompt_store  # noqa: E402
 
 MODEL = NumpySeed(load_corpus())
 APP_ROUTE = re.compile(r"^/apps/([A-Za-z0-9_-]+)/([A-Za-z0-9._-]+)(/.*)?$")
+REQ_ROUTE = re.compile(r"^/api/prompts/requests/([A-Za-z0-9]+)(?:/(approve|deny))?$")
+AGENT_ROUTE = re.compile(r"^/api/prompts/([A-Za-z0-9_-]+)$")
+
+
+def agent_names() -> list:
+    names = set(load_registry().get("agents", {}).keys())
+    names.add(alpha.AGENT)
+    return sorted(names)
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -105,6 +114,26 @@ class Handler(SimpleHTTPRequestHandler):
             if self.command != "HEAD":
                 self.wfile.write(raw)
             return
+        if path == "/api/prompts":
+            return self._json(200, {"law": PRIME, "agents": agent_names(),
+                                    **prompt_store.snapshot(agent_names())})
+        if path == "/api/prompts/requests":
+            qs = parse_qs(urlparse(self.path).query)
+            status = (qs.get("status") or [None])[0]
+            agent = (qs.get("agent") or [None])[0]
+            return self._json(200, {"requests": prompt_store.list_requests(status, agent)})
+        m = REQ_ROUTE.match(path)
+        if m and not m.group(2):
+            req = prompt_store.get_request(m.group(1))
+            if not req:
+                return self._json(404, {"error": "no such request"})
+            return self._json(200, req)
+        m = AGENT_ROUTE.match(path)
+        if m:
+            a = m.group(1)
+            return self._json(200, {"agent": a, "prompt": prompt_store.get_prompt(a),
+                                    "task": prompt_store.get_task(a),
+                                    "context_chars": len(load_agent(a))})
         m = APP_ROUTE.match(path)
         if m:
             return self._serve_app(m.group(1), m.group(2), m.group(3))
@@ -143,6 +172,47 @@ class Handler(SimpleHTTPRequestHandler):
             parent = body.get("parent") or "base"
             spawn_subagent(parent, child)
             return self._json(200, {"child": child, "born_on": "BASE_SEED"})
+        if path == "/api/prompts/request":
+            try:
+                out = prompt_store.submit_request(
+                    body.get("agent") or "",
+                    body.get("text") or "",
+                    body.get("kind") or "prompt",
+                    body.get("requester") or "friend",
+                    body.get("contact") or "",
+                )
+                return self._json(200, out)
+            except (ValueError, KeyError) as e:
+                return self._json(400, {"error": str(e)})
+        m = REQ_ROUTE.match(path)
+        if m and m.group(2):
+            rid, action = m.group(1), m.group(2)
+            by = body.get("operator") or self.headers.get("x-operator") or ""
+            try:
+                if action == "approve":
+                    out = prompt_store.approve(rid, by)
+                else:
+                    out = prompt_store.deny(rid, by, body.get("reason") or "not approved")
+                return self._json(200, out)
+            except PermissionError as e:
+                return self._json(403, {"error": str(e)})
+            except (KeyError, ValueError) as e:
+                return self._json(400, {"error": str(e)})
+        m = AGENT_ROUTE.match(path)
+        if m:
+            a = m.group(1)
+            by = body.get("operator") or self.headers.get("x-operator") or ""
+            try:
+                out = {}
+                if "prompt" in body:
+                    out["prompt"] = prompt_store.set_prompt(a, body.get("prompt") or "", by)
+                if "task" in body:
+                    out["task"] = prompt_store.set_task(a, body.get("task") or "", by)
+                if not out:
+                    return self._json(400, {"error": "provide prompt and/or task"})
+                return self._json(200, {"agent": a, "ok": True, **out})
+            except PermissionError as e:
+                return self._json(403, {"error": str(e)})
         return self._json(404, {"error": "no"})
 
 

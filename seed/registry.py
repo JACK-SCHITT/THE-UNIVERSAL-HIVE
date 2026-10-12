@@ -31,6 +31,8 @@ def base_prompt() -> str:
 
 
 def load_agent(name: str) -> str:
+    import prompts  # local import: avoids any import-order coupling
+
     data = load_registry()
     base = base_prompt()
     agent = data.get("agents", {}).get(name) or data.get("agents", {}).get("base")
@@ -39,6 +41,7 @@ def load_agent(name: str) -> str:
         path = os.path.join(HERE, agent["prompt_file"])
         if os.path.isfile(path):
             extra = "\n\nOPERATOR SPECIALIZATION:\n" + _read(path)
+    extra += prompts.overlay(name)
     return base + extra
 
 

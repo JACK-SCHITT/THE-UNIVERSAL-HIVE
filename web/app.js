@@ -258,6 +258,119 @@ function renderRun(id) {
   }
 }
 
+function renderPrompts() {
+  const el = document.getElementById("prompts");
+  const op = load("operator", "");
+  el.innerHTML = `
+    <div class="card"><h3>AGENT SYSTEM PROMPTS</h3>
+      <p class="meta">Every AI has its own system prompt + live directive. Operator sets directly. Friends submit a request for review.</p>
+      <input id="op-name" placeholder="operator callsign (you)" value="${op}"/>
+      <div class="row"><button id="pr-load">LOAD AGENTS</button></div>
+      <div id="pr-list" class="grid">connect to the hive node to load agents</div>
+    </div>
+    <div class="card"><h3>SET DIRECTLY (operator)</h3>
+      <input id="pr-agent" placeholder="agent id (e.g. research, employee-alpha)"/>
+      <textarea id="pr-prompt" rows="4" placeholder="system prompt for that agent"></textarea>
+      <textarea id="pr-task" rows="2" placeholder="live directive / task (optional)"></textarea>
+      <button id="pr-save">SAVE TO AGENT</button>
+      <pre class="out" id="pr-save-o"></pre>
+    </div>
+    <div class="card"><h3>REQUEST A CHANGE (friend)</h3>
+      <input id="rq-agent" placeholder="agent id"/>
+      <select id="rq-kind"><option value="prompt">system prompt</option><option value="task">directive / task</option></select>
+      <textarea id="rq-text" rows="4" placeholder="your proposed prompt"></textarea>
+      <input id="rq-name" placeholder="your name / callsign"/>
+      <input id="rq-contact" placeholder="contact for the answer (email or handle)"/>
+      <button id="rq-send">SEND TO OPERATOR</button>
+      <pre class="out" id="rq-o"></pre>
+    </div>
+    <div class="card"><h3>PENDING REQUESTS (operator)</h3>
+      <div class="row"><button id="rq-refresh">REFRESH</button></div>
+      <div id="rq-pending" class="grid">—</div>
+    </div>
+    <div class="card"><h3>CHECK MY REQUEST</h3>
+      <input id="rq-id" placeholder="request id"/>
+      <button id="rq-check">CHECK</button>
+      <pre class="out" id="rq-check-o"></pre>
+    </div>`;
+
+  const post = (p, b) => fetch(p, {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(b)}).then(r => r.json());
+  const opv = () => { const v = document.getElementById("op-name").value.trim(); store("operator", v); return v; };
+  const setOut = (id, txt) => { const n = document.getElementById(id); if (n) n.textContent = txt; };
+
+  const paintPending = (reqs, host) => {
+    host.innerHTML = (reqs && reqs.length) ? reqs.map(r => `
+      <div class="card"><h3>${r.agent} · ${r.kind}</h3>
+        <p class="meta">from ${r.requester}${r.contact ? " ("+r.contact+")" : ""} · ${r.created} · id ${r.id}</p>
+        <pre class="out">${r.text.replace(/</g,"&lt;")}</pre>
+        <div class="row"><button data-approve="${r.id}">APPROVE</button>
+        <button class="danger" data-deny="${r.id}">DENY</button></div>
+      </div>`).join("") : "<div class='card'><p class='meta'>no pending requests</p></div>";
+    host.onclick = e => {
+      const a = e.target.closest("[data-approve]"), d = e.target.closest("[data-deny]");
+      if (a) post("/api/prompts/requests/"+a.dataset.approve+"/approve", {operator:opv()})
+        .then(r => { alert(r.error || ("approved " + a.dataset.approve + " → applied to " + (r.applied_to||"agent"))); loadAgents(); })
+        .catch(() => alert("hive node offline"));
+      if (d) post("/api/prompts/requests/"+d.dataset.deny+"/deny", {operator:opv(), reason:"not approved"})
+        .then(() => loadAgents()).catch(() => alert("hive node offline"));
+    };
+  };
+
+  const loadAgents = () => {
+    fetch("/api/prompts").then(r => r.json()).then(d => {
+      const host = document.getElementById("pr-list");
+      host.innerHTML = (d.agents||[]).map(a => `
+        <div class="card"><h3>${a.agent}</h3>
+          <p class="meta">${a.prompt ? "prompt set by "+a.prompt_by : "no prompt (base only)"}${a.task ? " · directive set" : ""}</p>
+          <button class="ghost" data-fill="${a.agent}" data-p="${encodeURIComponent(a.prompt||"")}" data-t="${encodeURIComponent(a.task||"")}">EDIT</button>
+        </div>`).join("");
+      host.onclick = e => {
+        const b = e.target.closest("[data-fill]"); if (!b) return;
+        document.getElementById("pr-agent").value = b.dataset.fill;
+        document.getElementById("pr-prompt").value = decodeURIComponent(b.dataset.p);
+        document.getElementById("pr-task").value = decodeURIComponent(b.dataset.t);
+        window.scrollTo(0,0);
+      };
+      paintPending(d.pending, document.getElementById("rq-pending"));
+    }).catch(() => {
+      document.getElementById("pr-list").textContent = "hive node offline — start it with: python3 seed/serve.py --host 0.0.0.0 --port 8787";
+    });
+  };
+
+  document.getElementById("pr-load").onclick = loadAgents;
+  document.getElementById("pr-save").onclick = () => {
+    const agent = document.getElementById("pr-agent").value.trim();
+    if (!agent) return setOut("pr-save-o", "agent id required");
+    const body = {operator: opv()};
+    const p = document.getElementById("pr-prompt").value, t = document.getElementById("pr-task").value;
+    if (p.trim()) body.prompt = p;
+    if (t.trim()) body.task = t;
+    post("/api/prompts/"+encodeURIComponent(agent), body)
+      .then(r => setOut("pr-save-o", r.error || ("saved to " + agent)))
+      .catch(() => setOut("pr-save-o", "hive node offline"));
+  };
+  document.getElementById("rq-send").onclick = () => {
+    const body = {
+      agent: document.getElementById("rq-agent").value.trim(),
+      kind: document.getElementById("rq-kind").value,
+      text: document.getElementById("rq-text").value,
+      requester: document.getElementById("rq-name").value.trim(),
+      contact: document.getElementById("rq-contact").value.trim()
+    };
+    post("/api/prompts/request", body)
+      .then(r => setOut("rq-o", r.error || ("sent. your request id: " + r.request.id + "\n" + r.note)))
+      .catch(() => setOut("rq-o", "hive node offline"));
+  };
+  document.getElementById("rq-refresh").onclick = loadAgents;
+  document.getElementById("rq-check").onclick = () => {
+    const id = document.getElementById("rq-id").value.trim();
+    if (!id) return;
+    fetch("/api/prompts/requests/"+encodeURIComponent(id)).then(r => r.json()).then(d => {
+      setOut("rq-check-o", d.error || (d.status + ": " + ((d.delivery||{}).message || d.text)));
+    }).catch(() => setOut("rq-check-o", "hive node offline"));
+  };
+}
+
 function renderLiveApps() {
   const el = document.getElementById("live-apps");
   if (!el) return;
@@ -301,7 +414,10 @@ function boot() {
   renderGrid();
   renderRun("hive");
 
-  document.querySelectorAll("nav.tab button").forEach(b => b.onclick = () => tab(b.dataset.tab));
+  document.querySelectorAll("nav.tab button").forEach(b => b.onclick = () => {
+    tab(b.dataset.tab);
+    if (b.dataset.tab === "prompts") renderPrompts();
+  });
   document.getElementById("open-wix").onclick = () => location.href = "https://jackschitt1134.wixsite.com/the-universal-hive";
   document.getElementById("install").onclick = () => {
     document.getElementById("install-hint").textContent = "PHONE: Share → Add to Home Screen.\nSame Wi-Fi node: python3 seed/serve.py --host 0.0.0.0 --port 8787\nThis PWA is the finished mobile app. Dead web repos open under RUN.";
