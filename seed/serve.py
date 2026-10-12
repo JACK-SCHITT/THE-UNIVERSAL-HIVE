@@ -231,8 +231,10 @@ class Handler(SimpleHTTPRequestHandler):
             if v != "PASS":
                 return self._json(200, {"agent": agent, "law": PRIME, "veto": v, "text": f"[{v}] {PRIME}"})
             full_prompt = agent_prompt + "\n\nUser: " + prompt + "\n\nAssistant:"
-            out = MODEL.generate(full_prompt)
-            return self._json(200, {"agent": agent, "law": PRIME, "prefix_chars": len(agent_prompt), "text": out})
+            routed = models.auto(MODEL, full_prompt)
+            out = routed.get("text") or MODEL.generate(full_prompt)
+            return self._json(200, {"agent": agent, "law": PRIME, "prefix_chars": len(agent_prompt),
+                                    "provider": routed.get("provider"), "text": out})
         if path == "/api/spawn":
             child = body.get("child") or "sub"
             parent = body.get("parent") or "base"

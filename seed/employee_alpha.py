@@ -98,6 +98,9 @@ def chat(model, prompt: str, session: str = "default") -> dict:
     ctx = context(prompt, session)
     full = ctx + "\n\nUser: " + prompt + "\n\nAssistant:"
     seed_voice = model.generate(full, enforce_law=False)
+    import models as model_router
+    routed = model_router.auto(model, full)
+    voice = routed.get("text") if routed.get("ok") else seed_voice
     text = compose(prompt, recalled, matched)
     mem.remember(AGENT, session, prompt, "user", 1)
     return {
@@ -105,7 +108,9 @@ def chat(model, prompt: str, session: str = "default") -> dict:
         "name": NAME,
         "law": PRIME,
         "text": text,
+        "voice": voice,
         "seed_voice": seed_voice,
+        "provider": routed.get("provider"),
         "recalled": [{"when": e["when"], "text": e["text"]} for e in recalled],
         "matched_skills": matched,
         "skills_loaded": len(skills()),

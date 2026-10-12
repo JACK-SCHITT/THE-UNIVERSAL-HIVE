@@ -256,6 +256,7 @@ def _rest(method: str, table: str, query: dict, headers: dict, body):
 
 def _functions(name: str, body: dict, model=None):
     import plugins as plugs
+    import models as model_router
     payload = body.get("body") if isinstance(body, dict) and "body" in body else body
     if not isinstance(payload, dict):
         payload = {"input": payload}
@@ -266,18 +267,15 @@ def _functions(name: str, body: dict, model=None):
         names = set()
     if name in names:
         return 200, {"result": plugs.run(name, payload)}
-    # otherwise an AI edge function -> run through the Hive model
+    # otherwise an AI edge function -> run through the Hive model router (auto)
     prompt = payload.get("prompt") or payload.get("message") or payload.get("input") or ""
-    text = ""
     if model is not None and prompt:
-        try:
-            text = model.generate(str(prompt))
-        except Exception as e:
-            text = f"[hive function {name}] {e}"
-    return 200, {
-        "function": name, "text": text, "ok": True,
-        "note": "served by Hive edge function shim",
-    }
+        out = model_router.auto(model, str(prompt))
+        return 200, {
+            "function": name, "text": out.get("text", ""), "ok": bool(out.get("text")),
+            "provider": out.get("provider"), "note": "served by Hive edge function router",
+        }
+    return 200, {"function": name, "text": "", "ok": False, "note": "no model/prompt bound"}
 
 
 def _storage(method: str, parts: list, query: dict, headers: dict, body) -> tuple:
