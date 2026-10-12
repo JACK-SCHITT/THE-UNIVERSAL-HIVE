@@ -155,6 +155,7 @@
   },
   "private": true,
   "overrides": {
-    "path-to-regexp": "^6.3.0"
+    "path-to-regexp": "^6.3.0",
+    "@react-navigation/core": "7.8.5"
   }
 }
