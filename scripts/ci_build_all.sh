@@ -68,8 +68,11 @@ record() {
   local id="$1" status="$2" logfile="$3"
   local err=""
   if [ -n "$logfile" ] && [ -s "$logfile" ]; then
-    err="$(grep -aE "Error:|error|Cannot find|SyntaxError|TypeError|failed|Unexpected|RequireError" "$logfile" 2>/dev/null | head -1)"
+    # cause usually sits near the top of the build log (vite/esbuild print the
+    # offending module first, then the faiure summary); fall back to last line
+    err="$(head -45 "$logfile" | grep -aE "Error:|Cannot find|error during|error TS|SyntaxError|ReferenceError|Unexpected|✘|Resolution error" 2>/dev/null | head -1)"
     [ -n "$err" ] || err="$(tail -1 "$logfile" 2>/dev/null)"
+    [ -n "$err" ] || err="$(grep -aE "Error:|Cannot find|failed" "$logfile" 2>/dev/null | head -1)"
   fi
   printf '%s\t%s\t%s\n' "$id" "$status" "$err" >> "$REPORT.txt"
 }
