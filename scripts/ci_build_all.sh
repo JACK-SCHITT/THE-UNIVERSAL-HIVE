@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Build every absorbed app in apps/<lane>/<id>/ into site/apps/<lane>/<id>/.
-# Runs in GitHub Actions (fast network). Never fails the job on a single app.
+# Build every absorbed app in apps/<lane>/<id>/ into site/apps/<lane>/<id>/ and
+# write site/apps/_build_report.json (per-app truth). Runs in GitHub Actions
+# (fast network). Never fails the job on a single app, unless HIVE_STRICT_BUILD=1.
 set -u
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -12,6 +13,9 @@ export EXPO_NO_TELEMETRY=1
 
 rm -rf "$SITE"
 mkdir -p "$SITE/apps"
+
+REPORT="$SITE/apps/_build_report.json"
+: > "$REPORT.txt"
 
 copy_out() {
   local appdir="$1" dest="$2"
@@ -59,6 +63,17 @@ build_expo() {
   fi
 }
 
+# record per-app result; error text = first meaningful build error line
+record() {
+  local id="$1" status="$2" logfile="$3"
+  local err=""
+  if [ -n "$logfile" ] && [ -s "$logfile" ]; then
+    err="$(grep -aE "Error:|error|Cannot find|SyntaxError|TypeError|failed|Unexpected|RequireError" "$logfile" 2>/dev/null | head -1)"
+    [ -n "$err" ] || err="$(tail -1 "$logfile" 2>/dev/null)"
+  fi
+  printf '%s\t%s\t%s\n' "$id" "$status" "$err" >> "$REPORT.txt"
+}
+
 built=0; skipped=0; failed=0
 
 for appdir in "$APPS"/*/*/; do
@@ -75,6 +90,7 @@ for appdir in "$APPS"/*/*/; do
     # auth/Postgres server. It cannot be hosted on Pages -> skip, don't fail.
     field/dragonfly)
       echo "  server-rendered (Nitro/Vercel SSR, no static output) -> skip"
+      record "$lane/$id" skipped ""
       skipped=$((skipped+1)); continue
       ;;
   esac
@@ -84,7 +100,7 @@ for appdir in "$APPS"/*/*/; do
     grep -q '"expo"' "$appdir/package.json" && kind="expo"
     if [ "$kind" = "node" ] && grep -q '"next"' "$appdir/package.json"; then kind="next"; fi
     if [ "$kind" = "node" ] && ! grep -q '"build"' "$appdir/package.json"; then
-      echo "  no build script -> skip"; skipped=$((skipped+1)); continue
+      echo "  no build script -> skip"; record "$lane/$id" skipped ""; skipped=$((skipped+1)); continue
     fi
 
     ( cd "$appdir" || exit 1
@@ -102,19 +118,23 @@ for appdir in "$APPS"/*/*/; do
     )
 
     if copy_out "$appdir" "$dest"; then
-      echo "  built -> $lane/$id"; built=$((built+1))
+      echo "  built -> $lane/$id"; record "$lane/$id" built ""
+      built=$((built+1))
     else
       echo "  FAILED -> $lane/$id"
       echo "  --- npm.log (last 15) ---"; tail -15 /tmp/npm.log 2>/dev/null | sed 's/^/    /'
       echo "  --- build.log errors (first 15) ---"; grep -aE "Error|error:|Cannot find|SyntaxError|TypeError|failed|Unexpected" /tmp/build.log 2>/dev/null | head -15 | sed 's/^/    /'
       echo "  --- build.log (last 12) ---"; tail -12 /tmp/build.log 2>/dev/null | sed 's/^/    /'
+      record "$lane/$id" failed /tmp/build.log
       failed=$((failed+1))
     fi
   elif [ -f "$appdir/index.html" ]; then
     mkdir -p "$dest"; cp -a "$appdir/." "$dest/"
-    echo "  static -> $lane/$id"; built=$((built+1))
+    echo "  static -> $lane/$id"; record "$lane/$id" built ""
+    built=$((built+1))
   else
-    echo "  stub (no package.json/index.html) -> skip"; skipped=$((skipped+1))
+    echo "  stub (no package.json/index.html) -> skip"; record "$lane/$id" skipped ""
+    skipped=$((skipped+1))
   fi
 done
 
@@ -126,3 +146,28 @@ python3 "$ROOT/seed/ci_site.py" "$APPS" "$SITE" || true
 echo "-----------------------------------------"
 echo "built=$built skipped=$skipped failed=$failed"
 echo "site contents:"; find "$SITE" -maxdepth 3 -name index.html | sed "s#$SITE#  #"
+
+# per-app truth report (also lands in the Pages deploy + github-pages artifact)
+python3 - "$REPORT.txt" "$REPORT" "$built" "$skipped" "$failed" <<'PY'
+import json, sys
+rows_file, out, built, skipped, failed = sys.argv[1:6]
+rows = {}
+for line in open(rows_file):
+    line = line.rstrip("\n")
+    if not line:
+        continue
+    app, status, err = line.split("\t", 2)
+    rows[app] = {"status": status, "error": err[:240]}
+json.dump({"counts": {"built": int(built), "skipped": int(skipped), "failed": int(failed)},
+           "apps": rows,
+           "note": "run 'scripts/ci_build_all.sh' in Actions; HIVE_STRICT_BUILD=1 turns any failed into an exit 1"},
+          open(out, "w"), indent=2, sort_keys=True)
+print(f"wrote {out} ({len(rows)} apps)")
+PY
+echo "report:"; cat "$REPORT"
+
+# strict mode: fail the job so Pages/#/apps shows the truth
+if [ "${HIVE_STRICT_BUILD:-0}" = "1" ] && [ "$failed" -gt 0 ]; then
+  echo "HIVE_STRICT_BUILD: $failed app(s) failed"
+  exit 1
+fi
